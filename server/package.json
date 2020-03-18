@@ -1,0 +1,16 @@
+{
+    "name": "guesss-art-server",
+    "version": "1.0.0",
+    "description": "The backend of Guess'Art game.",
+    "main": "main.js",
+    "scripts": {
+        "start": "node main.js"
+    },
+    "contributors": [
+        "Benjamin Benesti",
+        "Baptiste Gasser"
+    ],
+    "dependencies": {
+        "express": "^4.17.1"
+    }
+}
