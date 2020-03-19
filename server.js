@@ -37,7 +37,8 @@ app.use(session({
 
 
 // Middleware pour les page qui nécessitent la connection
-const NEED_LOGIN = [];
+// TODO enlever /none, il est là pour pas prendre le défaut qui est '/'
+const NEED_LOGIN = ['/none'];
 app.use(NEED_LOGIN, function(req, res, next) {
     if (!req.session.user) {
         res.redirect('/login');
