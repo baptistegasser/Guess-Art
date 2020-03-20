@@ -77,4 +77,20 @@ router.post('/login', (req, res) => {
     });
 });
 
+router.get('/logout', (req, res) => {
+    // Si on est pas connecter, erreur
+    if (!req.session.user) {
+        res.status(200).send();
+    }
+    
+    // Supprime la session
+    req.session.destroy(function(err) {
+        if (err) {
+            res.status(500).send();
+        } else {
+            res.status(200).send();
+        }
+    });
+});
+
 module.exports = router;
