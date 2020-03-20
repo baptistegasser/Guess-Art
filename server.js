@@ -1,4 +1,4 @@
-// Chargement des variables
+// Chargement des variables depuis le .env
 require('dotenv').config();
 
 const mongoose = require('mongoose');
@@ -10,16 +10,17 @@ const app = express();
 const path = require('path');
 const morgan = require('morgan');
 
-const ConnecToMongoDB = require("./db");
+const ConnectToMongoDB = require("./db");
 const api = require('./api');
 
+// Récupération des constantes
 const ENV_CURRENT = process.env.ENV;
 const SESSION_SECRET = process.env.SESSION_SECRET;
 const LISTEN_IP = process.env.LISTEN_IP;
 const LISTEN_PORT = process.env.LISTEN_PORT;
 
 // Initialisation de la connection à la BD
-ConnecToMongoDB();
+ConnectToMongoDB();
 
 
 // Parse la requête
@@ -64,6 +65,7 @@ if (ENV_CURRENT === 'production') {
         res.sendFile(path.join(__dirname, 'build', 'index.html'))
     })
 } else {
+    // Affiche les reqûetes, utilie lors du dev
     app.use(morgan('tiny'));
 }
 

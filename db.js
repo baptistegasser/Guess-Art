@@ -7,7 +7,7 @@ const MONGODB_PASS = process.env.MONGODB_PASS;
 
 const MONGO_URL = `mongodb://${MONGODB_USER}:${MONGODB_PASS}@${MONGODB_ADDRESS}:27017/${MONGODB_DATABASE}`;
 
-const ConnecToMongoDB = async () => {
+const ConnectToMongoDB = async () => {
     try {
         await mongoose.connect(MONGO_URL, {
             useNewUrlParser: true,
@@ -19,4 +19,4 @@ const ConnecToMongoDB = async () => {
     }
 }
 
-module.exports = ConnecToMongoDB;
+module.exports = ConnectToMongoDB;
