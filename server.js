@@ -29,7 +29,10 @@ app.use(bodyParser.json());
 
 // Gestion de la session avec des cookies et stockage dans MongoDB
 app.use(session({
-    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection,
+        ttl: 0 // Expire en fin de session
+    }),
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false // Login se chargeras d'initialiser
