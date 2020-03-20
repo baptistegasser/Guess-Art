@@ -15,6 +15,8 @@ const api = require('./api');
 
 const ENV_CURRENT = process.env.ENV;
 const SESSION_SECRET = process.env.SESSION_SECRET;
+const LISTEN_IP = process.env.LISTEN_IP;
+const LISTEN_PORT = process.env.LISTEN_PORT;
 
 // Initialisation de la connection à la BD
 ConnecToMongoDB();
@@ -76,4 +78,7 @@ app.use((req, res) => {
 })
 
 
-app.listen(8080);
+// Démarre le serveur
+app.listen(LISTEN_PORT, LISTEN_IP, () => {
+    console.log(`Le serveur écoute sur: ${LISTEN_IP}:${LISTEN_PORT}`)
+});
