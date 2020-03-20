@@ -8,7 +8,7 @@ router.post('/register', (req, res) => {
 
     // Vérif qu'on a les params
     if (username === undefined || password === undefined) {
-        return res.status(400).send();
+        return res.status(400).send({ message: 'données incomplètes' });
     }
 
     // Vérification que l'utilisateur n'existe pas
@@ -19,7 +19,7 @@ router.post('/register', (req, res) => {
         }
 
         if (user) {
-            return res.status(409).send({ message: 'pseudo déjà utilisé' });
+            return res.status(400).send({ message: 'pseudo déjà utilisé' });
         } else {
             // Création d'un nouvel utilisateur
             let newUser = new UserModel();
@@ -45,7 +45,7 @@ router.post('/login', (req, res) => {
 
     // Vérif qu'on a les params
     if (req.body.username === undefined || req.body.password === undefined) {
-        return res.status(400).send();
+        return res.status(400).send({ message: 'données incomplètes' });
     }
 
     UserModel.findOne({username: req.body.username}, function(err, user) {
