@@ -20,16 +20,24 @@ Le jeu contient plusieurs fonctionnalités supplémentaires :
 la possibilité de rejoindre soit par son identifiant unique ou bien de manière aléatoire.
 la possibilité de lancer un vote pour expulser une personne qui serait absente, antijeu (écriture du mot au lieu du dessin) ou bien qui tiendrait de propos inappropriés.
 
-## Strucutre du projet
+## Configuration
 
-Le projet est divisé en deux parties:
+Le projet support la modification de certain paramètres via des variablesenvironnements chargées depuis un fichier `.env`.
+Le fichier `.env.example` liste les variables environnements attendus.
 
-### Le client
+Ainsi pour utilis le projet il faudras copier le fichier exemple en un fichier `.env` puis éditer les variables comme on le désire.
 
-Le client est une application NodeJS utilisant React.
-Les sources se trouvent dans le dossier [client](./client).
+## Dévelopement
 
-### Le server
+Pour lancer l'application durant le developement il faudra mettre la variable environnement `ENV` à toute autre valeur autre que "production", par exemple "dev".
+On utilisera ensuite les commande suivantes:
 
-Le server est une application NodeJS utilisant Express.
-Les sources se trouvent dans le dossier [server](./server).
+1. `npm run start` pour lancer le serveur React pour la partie Front-End.
+2. `npm run server` pour lancer le serveur Express qui gère l'API et la communication client/serveur.
+
+## Mise en production
+
+Pour mettre l'application en production il faut:
+
+1. Build l'application React avec `npm run build`;
+2. Créer un fichier `.env` avec les identifiants adaptés vers la BD ainsi que la variable `ENV` fixé à "production".
