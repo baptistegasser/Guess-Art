@@ -23,7 +23,7 @@ const LISTEN_PORT = process.env.LISTEN_PORT;
 ConnectToMongoDB();
 
 
-// Parse la requête
+// Parse la requête pour un accès facile au données
 // https://stackoverflow.com/a/4296402
 app.use(bodyParser.urlencoded({
     extended: true
@@ -38,7 +38,7 @@ app.use(session({
     }),
     secret: SESSION_SECRET,
     resave: false,
-    saveUninitialized: false // Login se chargeras d'initialiser
+    saveUninitialized: false // Pas de creation automatique de session
 }));
 
 
@@ -65,7 +65,7 @@ if (ENV_CURRENT === 'production') {
         res.sendFile(path.join(__dirname, 'build', 'index.html'))
     })
 } else {
-    // Affiche les reqûetes, utilie lors du dev
+    // Affiche les requêtes, utilie lors du dev
     app.use(morgan('tiny'));
 }
 
