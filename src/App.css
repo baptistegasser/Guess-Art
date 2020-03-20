@@ -2,6 +2,19 @@
   text-align: center;
 }
 
+#Canvas{
+  width: 50%;
+  margin: 0px;
+}
+
+#canvas{
+  border : solid 1px;
+}
+
+#HboxPlayer{
+  width: 25%;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
