@@ -39,8 +39,9 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
+    // Si on est connecter economisé une requête
     if (req.session.user) {
-        res.status(200).send();
+        return res.status(200).send();
     }
 
     // Vérif qu'on a les params
@@ -54,34 +55,29 @@ router.post('/login', (req, res) => {
             return res.status(500).send();
         }
 
-        // Pseudo non lié à un compte
-        if (!user) {
-            return res.status(400).send({ message: 'pseudo ou mot de passe invalide' });
-        }
-
-        // Mot de passe invalide
-        if (!Bcrypt.compareSync(req.body.password, user.password)) {
+        // Pseudo non lié à un compte ou mot de passe invalide
+        if (!user || !Bcrypt.compareSync(req.body.password, user.password)) {
             return res.status(400).send({ message: 'pseudo ou mot de passe invalide' });
         }
 
         // Sauvegarde la session
         req.session.user = user;
-        res.status(200).send();
+        return res.status(200).send();
     });
 });
 
 router.get('/logout', (req, res) => {
     // Si on est pas connecter, erreur
     if (!req.session.user) {
-        res.status(200).send();
+        return res.status(200).send();
     }
     
     // Supprime la session
     req.session.destroy(function(err) {
         if (err) {
-            res.status(500).send();
+            return res.status(500).send();
         } else {
-            res.status(200).send();
+            return res.status(200).send();
         }
     });
 });
