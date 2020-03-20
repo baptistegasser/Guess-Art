@@ -3,16 +3,13 @@ const Bcrypt = require('bcryptjs');
 const UserModel = require('./user');
 
 router.post('/register', (req, res) => {
-    const username = req.body.username;
-    const password = Bcrypt.hashSync(req.body.password, 10);
-
     // Vérif qu'on a les params
-    if (username === undefined || password === undefined) {
+    if (req.body.username === undefined || req.body.password === undefined) {
         return res.status(400).send({ message: 'données incomplètes' });
     }
 
     // Vérification que l'utilisateur n'existe pas
-    UserModel.findOne({username: username}, function(err, user) {
+    UserModel.findOne({username: req.body.username}, function(err, user) {
         if (err) {
             console.error(err);
             return res.status(500).send();
@@ -23,8 +20,8 @@ router.post('/register', (req, res) => {
         } else {
             // Création d'un nouvel utilisateur
             let newUser = new UserModel();
-            newUser.username = username;
-            newUser.password = password;
+            newUser.username = req.body.username;
+            newUser.password = Bcrypt.hashSync(req.body.password, 10);
 
             newUser.save(function(err, user) {
                 if (err) {
