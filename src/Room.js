@@ -44,7 +44,7 @@ class Room extends React.Component {
         return (<Container>
                     <Row>
                         <Col xs={2}><div id="HboxPlayer">{players}</div></Col>
-                        <Col xs={8}><div id="Canvas"><Canvas id="canvas"></Canvas></div></Col>
+                        <Col xs={8}><div id="Canvas"><Canvas id="canvas" color={this.state.color}></Canvas></div></Col>
                         <Col xs={2}><div id="chat"></div></Col>
                     </Row>
                     <Row>

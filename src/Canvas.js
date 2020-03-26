@@ -13,11 +13,12 @@ class Canvas extends React.Component
         this.handler = this.handler.bind(this)
     }
 
-    draw_line(last_x,last_y,x,y)
+    draw_line(last_x,last_y,x,y,color)
     {
         this.g.beginPath()
         this.g.moveTo(last_x,last_y)
         this.g.lineTo(x,y)
+        this.g.strokeStyle = this.props.color
         this.g.stroke()
     }
 
