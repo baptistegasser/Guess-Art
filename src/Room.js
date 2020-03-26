@@ -4,7 +4,7 @@ import Canvas from "./Canvas.js";
 import Player from "./Player";
 
 
-function App() {
+function Room() {
   return (
       /*<div><Field name = "Pseudo" type = "Text"/>
            <Field name = "Mot de Passe" type = "password"/>
@@ -19,4 +19,4 @@ function App() {
   );
 }
 
-export default App;
+export default Room;
