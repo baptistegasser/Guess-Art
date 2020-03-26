@@ -16,7 +16,6 @@ class Player extends React.Component
             return <div id="case">
                 <h1>{this.props.pseudo}</h1>
                 Score : <h2>{this.props.score}</h2>
-                <h2>Boss</h2>
             </div>
         }
 

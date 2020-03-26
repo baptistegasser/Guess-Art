@@ -1,22 +1,25 @@
 import React from 'react';
-import './App.css';
+import './Room.css';
 import Canvas from "./Canvas.js";
 import Player from "./Player";
 
 
-function Room() {
-  return (
-      /*<div><Field name = "Pseudo" type = "Text"/>
-           <Field name = "Mot de Passe" type = "password"/>
-           <Field name = "Âge" type="number" /></div>*/
-      <div>
-          <div id="HboxPlayer"><Player pseudo="LaTeuTeu" score="1500" boss="true"></Player><Player pseudo="darsk" score="200" boss="false"></Player></div>
-          <div id="Canvas"><Canvas id="canvas"></Canvas></div>
 
-      </div>
+class Room extends React.Component {
 
+    render(){
 
-  );
+        let tab = ['red','blue','green','brown','yellow','pink','black','white','orange','purple','grey']
+        let selectColor = tab.map(col=>{
+            return(<button class="color" id={col} style={{backgroundColor : col}}></button>)
+        });
+
+        return (<div>
+                <div id="HboxPlayer"><Player pseudo="LaTeuTeu" score="1500" boss="true"></Player><Player pseudo="darsk" score="200" boss="false"></Player></div>
+                <div id="Canvas"><Canvas id="canvas"></Canvas></div>
+                <div>{selectColor}</div>
+                </div>)
+    }
 }
 
 export default Room;

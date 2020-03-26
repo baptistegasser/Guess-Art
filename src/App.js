@@ -10,7 +10,7 @@ class App extends React.Component {
             <Switch>
                 <Route path='/' exact component={ Home }/>
                 <Route path='/room' exact component={ Room }/>
-                <Route path='/room/:id' exact component={ Home }/>
+                <Route path='/room/:id' exact component={ Room }/>
                 <Route path='/' render={() => <div>404 eror page</div> } />
             </Switch>
         </BrowserRouter>);
