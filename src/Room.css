@@ -16,3 +16,14 @@
 #HboxPlayer{
     width: 50%;
 }
+
+#chat{
+    border: solid 1px;
+    height: 100%;
+    width: 100%;
+}
+
+.selected
+{
+    border : deepskyblue solid 3px;
+}

@@ -5,7 +5,7 @@ class Canvas extends React.Component
 {
     constructor(props) {
         super(props);
-        this.canvas =  <canvas id="canvas" width="800" height="600"/>
+        this.canvas =  <canvas id="canvas" width="700" height="600"/>
         this.g = null;
         this.clicked = false;
         this.last_x = 0;
