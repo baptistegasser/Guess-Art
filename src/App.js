@@ -1,22 +1,20 @@
 import React from 'react';
-import './App.css';
-import Canvas from "./Canvas.js";
-import Player from "./Player";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Home from "./Home";
+import Room from "./Room";
 
-
-function App() {
-  return (
-      /*<div><Field name = "Pseudo" type = "Text"/>
-           <Field name = "Mot de Passe" type = "password"/>
-           <Field name = "Âge" type="number" /></div>*/
-      <div>
-          <div id="HboxPlayer"><Player pseudo="LaTeuTeu" score="1500" boss="true"></Player><Player pseudo="darsk" score="200" boss="false"></Player></div>
-          <div id="Canvas"><Canvas id="canvas"></Canvas></div>
-
-      </div>
-
-
-  );
-}
+class App extends React.Component {
+    render () {
+        return (
+        <BrowserRouter>
+            <Switch>
+                <Route path='/' exact component={ Home }/>
+                <Route path='/room' exact component={ Room }/>
+                <Route path='/room/:id' exact component={ Home }/>
+                <Route path='/' render={() => <div>404 eror page</div> } />
+            </Switch>
+        </BrowserRouter>);
+    }
+};
 
 export default App;
