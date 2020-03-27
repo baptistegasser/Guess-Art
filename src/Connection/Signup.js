@@ -14,29 +14,12 @@ class Signup extends React.Component{
             password_2: '',
         };
         this.FormRef = React.createRef();
-        // Regex: 8 char min, 1 upper, 1 lower, 1 number, 1 special
-        this.regex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&\\/*])(?=.{8,})");
-        this.space_regex = /\s/;
 
-        this.displayError = this.displayError.bind(this);
-        this.clearPassword = this.clearPassword.bind(this);
+        this.checkAndSubmit = this.checkAndSubmit.bind(this);
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handlePassword_2Change = this.handlePassword_2Change.bind(this);
-        this.checkAndSubmit = this.checkAndSubmit.bind(this);
-    }
-
-    displayError(message) {
-        this.FormRef.current.displayError(message);
-    }
-
-    containSpace(txt) {
-        return /\s/.test(txt);
-    }
-
-    clearPassword () {
-        this.setState({ password: '', password_2: '' });
     }
 
     handleEmailChange (event) {
@@ -55,12 +38,10 @@ class Signup extends React.Component{
         this.setState({ password_2: event.target.value });
     }
 
-
     render() {
         return (
         <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Sign me up !' ref={this.FormRef}>
-            <Form.Group controlId='PseudoGroup'>
-            <Form.Group controlId='PseudoGroup'>
+            <Form.Group controlId='E-mailGroup'>
                 <Form.Label>E-mail</Form.Label>
                 <Form.Control
                     required
@@ -69,6 +50,7 @@ class Signup extends React.Component{
                     value={this.state.email}
                     onChange={this.handleEmailChange}/>
             </Form.Group>
+            <Form.Group controlId='UsernameGroup'>
                 <Form.Label>Username</Form.Label>
                 <Form.Control
                     required
@@ -144,7 +126,7 @@ class Signup extends React.Component{
                 message = json.message;
             }
 
-            this.displayError(message);
+            this.FormRef.current.displayError(message);
         }
     }
 }

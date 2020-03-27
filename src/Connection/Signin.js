@@ -14,15 +14,10 @@ class Signin extends React.Component{
         };
         this.FormRef = React.createRef();
 
-        this.signin = this.signin.bind(this);
-        this.clearPassword = this.clearPassword.bind(this);
+        this.checkAndSubmit = this.checkAndSubmit.bind(this);
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleRememberMeChange = this.handleRememberMeChange.bind(this);
-    }
-
-    clearPassword() {
-        this.setState({ password: '' });
     }
 
     handleUsernameChange(event) {
@@ -39,7 +34,7 @@ class Signin extends React.Component{
 
     render() {
         return (
-        <ConnectForm onSubmit={this.signin} submit_text='Sign in' ref={this.FormRef}>
+        <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Sign in' ref={this.FormRef}>
             <Form.Group controlId='UsernameGroup'>
                 <Form.Label>Username</Form.Label>
                 <Form.Control
@@ -70,7 +65,7 @@ class Signin extends React.Component{
         )
     }
 
-    async signin(event) {
+    async checkAndSubmit(event) {
         event.preventDefault();
         event.stopPropagation();
 
