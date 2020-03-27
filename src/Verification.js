@@ -38,6 +38,8 @@ class Verification {
             console.log("check 4");
             return false;
         }
+
+        return true;
     }
 
     // Do the required check for a password
@@ -56,6 +58,8 @@ class Verification {
             this.setMessage('Passwords must match !');
             return false;
         }
+
+        return true;
     }
 }
 // Static message from the last error
