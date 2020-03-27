@@ -2,6 +2,7 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import ConnectForm from './ConnectForm';
+import Verification from '../Utils';
 
 class Signin extends React.Component{
     constructor(props) {
@@ -78,13 +79,16 @@ class Signin extends React.Component{
         const password = this.state.password;
         const rememberMe = this.state.rememberMe;
 
-        // Ensure pseudo and password not empty
-        if (pseudo.trim().length < 1 || password.trim().length < 1) {
-            this.clearPassword();
-            this.FormRef.current.displayError("Pseudo and Password fields can't be empty.");
+        // Ensure the fields are valid
+        if (!Verification.checkString(username, 'Username') || !Verification.checkString(password, 'Password')) {
+            this.FormRef.current.displayError(Verification.getMessage());
             return;
         }
 
+        await this.submitForm(username, password, rememberMe);
+    }
+
+    async submitForm(username, password, rememberMe) {
         // Create the and send the signin request
         var data = new URLSearchParams();
         data.append('username', username);

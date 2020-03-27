@@ -2,6 +2,7 @@ import React from "react";
 import ConnectForm from './ConnectForm';
 import { Form } from "react-bootstrap";
 import { Link } from 'react-router-dom';
+import Verification from '../Utils';
 
 class Signup extends React.Component{
     constructor(props) {
@@ -108,23 +109,9 @@ class Signup extends React.Component{
         const password = this.state.password;
         const password_2 = this.state.password_2;
 
-        if (email.match(this.space_regex)) {
-            this.displayError("Email can't contain spaces");
-            return;
-        }
-        if (pseudo.match(this.space_regex)) {
-            this.displayError("Email can't contain spaces");
-            return;
-        }
-
-        if (password.match(this.space_regex)) {
-            this.displayError("Email can't contain spaces");
-            return;
-        }else if (password !== password_2) {
-            this.displayError('Passwords must match !');
-            return;
-        }else if (!this.regex.test(password)) {
-            this.displayError('Passwords must contain minimum 8 chars with 1 UPPER case, 1 lower case, 1 number and 1 spcial char.');
+        // Ensure the fields are valid
+        if (!Verification.checkString(email, 'E-mail') || !Verification.checkString(username, 'Username') || !Verification.checkPassword(password, password_2)) {
+            this.FormRef.current.displayError(Verification.getMessage());
             return;
         }
 
