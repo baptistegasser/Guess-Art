@@ -71,14 +71,14 @@ router.post('/signin', (req, res) => {
             return res.status(400).send({ message: 'Username or password invalid.' });
         }
 
-        // Create the session
-        req.session.user = user;
+        delete user.password; // Delete  the password so it's not saved in the cookie
+        req.session.user = user; // Create the session
         return res.status(200).send();
     });
 });
 
 // Route used to sign out of the app
-router.all('/signout', (req, res) => {
+router.get('/signout', (req, res) => {
     // If we are not connected, ignore and send success
     if (!req.session.user) {
         return res.status(200).send();
@@ -92,6 +92,20 @@ router.all('/signout', (req, res) => {
             return res.status(200).send();
         }
     });
+});
+
+// Route used to get user info such as: if he is logged in, his username
+router.get('/user', (req, res) => {
+    if (req.session.user) {
+        res.status(200).send({
+            logged: true,
+            user: req.session.user
+        });
+    } else {
+        res.status(200).send({
+            logged: false,
+        });
+    }
 });
 
 module.exports = router;

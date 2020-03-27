@@ -96,7 +96,8 @@ class Signin extends React.Component{
             headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
             },
-            body: data
+            body: data,
+            credentials: 'same-origin',
         });
 
         // If response is ok redirect
