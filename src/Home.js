@@ -19,7 +19,7 @@ class Home extends React.Component {
             </Row>
             <Row>
                 <Col className='text-center'>
-                    <Link to="/login">
+                    <Link to="/signin">
                         <Button>login</Button>
                     </Link>
                 </Col>
