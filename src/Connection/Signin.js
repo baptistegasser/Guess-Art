@@ -38,6 +38,7 @@ class Signin extends React.Component{
             <Form.Group controlId='UsernameGroup'>
                 <Form.Label>Username</Form.Label>
                 <Form.Control
+                    required
                     type="text"
                     placeholder="Enter your Username"
                     value={this.state.username}
@@ -46,6 +47,7 @@ class Signin extends React.Component{
             <Form.Group controlId='PasswordGroup'>
                 <Form.Label>Password</Form.Label>
                 <Form.Control
+                    required
                     type="password"
                     placeholder="Password"
                     value={this.state.password}
