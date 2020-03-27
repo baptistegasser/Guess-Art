@@ -7,7 +7,7 @@ class Signin extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            pseudo: '',
+            username: '',
             password: '',
             rememberMe: false
         };
@@ -15,7 +15,7 @@ class Signin extends React.Component{
 
         this.signin = this.signin.bind(this);
         this.clearPassword = this.clearPassword.bind(this);
-        this.handlePseudoChange = this.handlePseudoChange.bind(this);
+        this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleRememberMeChange = this.handleRememberMeChange.bind(this);
     }
@@ -24,8 +24,8 @@ class Signin extends React.Component{
         this.setState({ password: '' });
     }
 
-    handlePseudoChange(event) {
-        this.setState({ pseudo: event.target.value });
+    handleUsernameChange(event) {
+        this.setState({ username: event.target.value });
     }
 
     handlePasswordChange(event) {
@@ -39,13 +39,13 @@ class Signin extends React.Component{
     render() {
         return (
         <ConnectForm onSubmit={this.signin} submit_text='Sign in' ref={this.FormRef}>
-            <Form.Group controlId='PseudoGroup'>
-                <Form.Label>Pseudo</Form.Label>
+            <Form.Group controlId='UsernameGroup'>
+                <Form.Label>Username</Form.Label>
                 <Form.Control
                     type="text"
-                    placeholder="Enter your pseudo"
-                    value={this.state.pseudo}
-                    onChange={this.handlePseudoChange}/>
+                    placeholder="Enter your Username"
+                    value={this.state.username}
+                    onChange={this.handleUsernameChange}/>
             </Form.Group>
             <Form.Group controlId='PasswordGroup'>
                 <Form.Label>Password</Form.Label>
@@ -74,7 +74,7 @@ class Signin extends React.Component{
         event.stopPropagation();
 
         // Retrieve data to prevent change during handling
-        const pseudo = this.state.pseudo;
+        const username = this.state.username;
         const password = this.state.password;
         const rememberMe = this.state.rememberMe;
 
@@ -87,7 +87,7 @@ class Signin extends React.Component{
 
         // Create the and send the signin request
         var data = new URLSearchParams();
-        data.append('pseudo', pseudo);
+        data.append('username', username);
         data.append('password', password);
         data.append('rememberMe', rememberMe);
         const response = await fetch('/api/v1/signin', {

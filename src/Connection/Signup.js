@@ -8,7 +8,7 @@ class Signup extends React.Component{
         super(props);
         this.state = {
             email: '',
-            pseudo: '',
+            username: '',
             password: '',
             password_2: '',
         };
@@ -20,7 +20,7 @@ class Signup extends React.Component{
         this.displayError = this.displayError.bind(this);
         this.clearPassword = this.clearPassword.bind(this);
         this.handleEmailChange = this.handleEmailChange.bind(this);
-        this.handlePseudoChange = this.handlePseudoChange.bind(this);
+        this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handlePassword_2Change = this.handlePassword_2Change.bind(this);
         this.checkAndSubmit = this.checkAndSubmit.bind(this);
@@ -42,8 +42,8 @@ class Signup extends React.Component{
         this.setState({ email: event.target.value });
     }
 
-    handlePseudoChange (event) {
-        this.setState({ pseudo: event.target.value });
+    handleUsernameChange (event) {
+        this.setState({ username: event.target.value });
     }
 
     handlePasswordChange (event) {
@@ -68,13 +68,13 @@ class Signup extends React.Component{
                     value={this.state.email}
                     onChange={this.handleEmailChange}/>
             </Form.Group>
-                <Form.Label>Pseudo</Form.Label>
+                <Form.Label>Username</Form.Label>
                 <Form.Control
                     required
                     type="text"
-                    placeholder="Enter your pseudo"
-                    value={this.state.pseudo}
-                    onChange={this.handlePseudoChange}/>
+                    placeholder="Enter your username"
+                    value={this.state.username}
+                    onChange={this.handleUsernameChange}/>
             </Form.Group>
             <Form.Group controlId='PasswordGroup'>
                 <Form.Label>Password</Form.Label>
@@ -104,7 +104,7 @@ class Signup extends React.Component{
 
         // Retrieve data to prevent change during handling
         const email = this.state.email;
-        const pseudo = this.state.pseudo;
+        const username = this.state.username;
         const password = this.state.password;
         const password_2 = this.state.password_2;
 
@@ -128,14 +128,14 @@ class Signup extends React.Component{
             return;
         }
 
-        await this.submitForm(email, pseudo, password);
+        await this.submitForm(email, username, password);
     }
 
-    async submitForm(email, pseudo, password) {
+    async submitForm(email, username, password) {
         // Create the and send the signup request
         var data = new URLSearchParams();
         data.append('email', email);
-        data.append('pseudo', pseudo);
+        data.append('username', username);
         data.append('password', password);
         const response = await fetch('/api/v1/signup', {
             method: 'POST',
