@@ -44,7 +44,7 @@ class Room extends React.Component {
         let tapPlayers = {1:{pseudo:"laTeuteu",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
 
         let players = Object.entries(tapPlayers).map(([key,val])=>{
-            return (<Player pseudo={val.pseudo} score={val.score} boss={val.boss}></Player>)
+            return (<Player pseudo={val.pseudo} score={val.score} boss={val.boss}/>)
         });
 
 
@@ -53,9 +53,9 @@ class Room extends React.Component {
             if (this.state.color === "")
             {
                 if (col === 'black')
-                    return(<button className="color selected" id={col} style={{backgroundColor : col}} onClick={this.clickColor}></button>)
+                    return(<button className="color selected" id={col} style={{backgroundColor: col}} onClick={this.clickColor}/>)
             }
-                return(<button className="color" id={col} style={{backgroundColor : col}} onClick={this.clickColor}></button>)
+                return(<button className="color" id={col} style={{backgroundColor: col}} onClick={this.clickColor}/>)
         });
 
         let tabWidth = [1,5,10,15,20];
@@ -64,25 +64,25 @@ class Room extends React.Component {
             if (this.state.tool ==="")
             {
                 if (val === 1)
-                    return(<button className="width selected" id={val}  onClick={this.clickTool} style={{backgroundImage : 'url('+picture+')'}}></button>)
+                    return(<button className="width selected" id={val}  onClick={this.clickTool} style={{backgroundImage: 'url(' + picture + ')'}}/>)
             }
-            return(<button className="width " id={val}  onClick={this.clickTool} style={{backgroundImage : 'url('+picture+')'}}></button>)
+            return(<button className="width " id={val}  onClick={this.clickTool} style={{backgroundImage: 'url(' + picture + ')'}}/>)
         })
 
-        return (<Container>
-                    <Row>
-                        <Col xs={2}><div id="HboxPlayer">{players}</div></Col>
-                        <Col xs={8}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.tool}></Canvas></div></Col>
-                        <Col xs={2}><div id="chat"></div></Col>
+        return (<Container fluid>
+                    <Row style={{margin:0}}>
+                        <Col xs={3}><div id="HboxPlayer">{players}</div></Col>
+                        <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.tool}/></div></Col>
+                        <Col xs={2}><div id="chat"/></Col>
                     </Row>
-                    <Row>
-                        <Col xs={2}></Col>
-                        <Col xs={8}><div>{selectColor}</div></Col>
+                    <Row style={{margin:0}}>
+                        <Col xs={3}/>
+                        <Col xs={7}><div>{selectColor}</div></Col>
                         <Col xs={2}><input placeholder="Ecrire ici"/></Col>
                     </Row>
-                    <Row>
-                        <Col xs={2}></Col>
-                        <Col xs={8}><div>{selectorWidth}</div></Col>
+                    <Row style={{margin:0}}>
+                        <Col xs={3}/>
+                        <Col xs={7}><div>{selectorWidth}</div></Col>
                     </Row>
 
                 </Container>)

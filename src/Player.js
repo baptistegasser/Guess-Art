@@ -7,24 +7,23 @@ class Player extends React.Component
     render() {
         if (this.props.boss === true)
         {
-            return <div id="case">
-                <Row>
+            return <div id="case" style={{borderBottom:"1px solid"}}>
+                <Row style={{margin:0}}>
                     <Col><h4>{this.props.pseudo}</h4></Col>
+                    <Col><img src="https://media.giphy.com/media/QXJAPsp0Q35qlOqMUy/giphy.gif" style={{height: "50px", width: "50px"}} alt=""/></Col>
                 </Row>
-                <Row>
-                    <Col xs={4}><p>{this.props.score}</p></Col>
-                    <Col xs={5}><img src="https://media.giphy.com/media/QXJAPsp0Q35qlOqMUy/giphy.gif" style={{height:"50px",width:"50px"}}></img></Col>
+                <Row style={{margin:0}}>
+                    <Col><p>{this.props.score}</p></Col>
                 </Row>
-
             </div>
         }
         else
         {
-            return <div id="case">
-                <Row>
+            return <div id="case" style={{borderBottom:"1px solid"}}>
+                <Row style={{margin:0}}>
                     <Col><h4>{this.props.pseudo}</h4></Col>
                 </Row>
-                <Row>
+                <Row style={{margin:0}}>
                     <Col><p>{this.props.score}</p></Col>
                 </Row>
             </div>
