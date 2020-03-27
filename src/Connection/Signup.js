@@ -2,48 +2,32 @@ import React from "react";
 import ConnectForm from './ConnectForm';
 import { Form } from "react-bootstrap";
 import { Link } from 'react-router-dom';
+import Verification from '../Verification';
 
 class Signup extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             email: '',
-            pseudo: '',
+            username: '',
             password: '',
             password_2: '',
         };
         this.FormRef = React.createRef();
-        // Regex: 8 char min, 1 upper, 1 lower, 1 number, 1 special
-        this.regex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&\\/*])(?=.{8,})");
-        this.space_regex = /\s/;
 
-        this.displayError = this.displayError.bind(this);
-        this.clearPassword = this.clearPassword.bind(this);
+        this.checkAndSubmit = this.checkAndSubmit.bind(this);
         this.handleEmailChange = this.handleEmailChange.bind(this);
-        this.handlePseudoChange = this.handlePseudoChange.bind(this);
+        this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handlePassword_2Change = this.handlePassword_2Change.bind(this);
-        this.checkAndSubmit = this.checkAndSubmit.bind(this);
-    }
-
-    displayError(message) {
-        this.FormRef.current.displayError(message);
-    }
-
-    containSpace(txt) {
-        return /\s/.test(txt);
-    }
-
-    clearPassword () {
-        this.setState({ password: '', password_2: '' });
     }
 
     handleEmailChange (event) {
         this.setState({ email: event.target.value });
     }
 
-    handlePseudoChange (event) {
-        this.setState({ pseudo: event.target.value });
+    handleUsernameChange (event) {
+        this.setState({ username: event.target.value });
     }
 
     handlePasswordChange (event) {
@@ -54,12 +38,10 @@ class Signup extends React.Component{
         this.setState({ password_2: event.target.value });
     }
 
-
     render() {
         return (
         <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Sign me up !' ref={this.FormRef}>
-            <Form.Group controlId='PseudoGroup'>
-            <Form.Group controlId='PseudoGroup'>
+            <Form.Group controlId='E-mailGroup'>
                 <Form.Label>E-mail</Form.Label>
                 <Form.Control
                     required
@@ -68,13 +50,14 @@ class Signup extends React.Component{
                     value={this.state.email}
                     onChange={this.handleEmailChange}/>
             </Form.Group>
-                <Form.Label>Pseudo</Form.Label>
+            <Form.Group controlId='UsernameGroup'>
+                <Form.Label>Username</Form.Label>
                 <Form.Control
                     required
                     type="text"
-                    placeholder="Enter your pseudo"
-                    value={this.state.pseudo}
-                    onChange={this.handlePseudoChange}/>
+                    placeholder="Enter your username"
+                    value={this.state.username}
+                    onChange={this.handleUsernameChange}/>
             </Form.Group>
             <Form.Group controlId='PasswordGroup'>
                 <Form.Label>Password</Form.Label>
@@ -104,38 +87,24 @@ class Signup extends React.Component{
 
         // Retrieve data to prevent change during handling
         const email = this.state.email;
-        const pseudo = this.state.pseudo;
+        const username = this.state.username;
         const password = this.state.password;
         const password_2 = this.state.password_2;
 
-        if (email.match(this.space_regex)) {
-            this.displayError("Email can't contain spaces");
-            return;
-        }
-        if (pseudo.match(this.space_regex)) {
-            this.displayError("Email can't contain spaces");
+        // Ensure the fields are valid
+        if (!Verification.checkString(email, 'E-mail') || !Verification.checkString(username, 'Username') || !Verification.checkPassword(password, password_2)) {
+            this.FormRef.current.displayError(Verification.getMessage());
             return;
         }
 
-        if (password.match(this.space_regex)) {
-            this.displayError("Email can't contain spaces");
-            return;
-        }else if (password !== password_2) {
-            this.displayError('Passwords must match !');
-            return;
-        }else if (!this.regex.test(password)) {
-            this.displayError('Passwords must contain minimum 8 chars with 1 UPPER case, 1 lower case, 1 number and 1 spcial char.');
-            return;
-        }
-
-        await this.submitForm(email, pseudo, password);
+        await this.submitForm(email, username, password);
     }
 
-    async submitForm(email, pseudo, password) {
+    async submitForm(email, username, password) {
         // Create the and send the signup request
         var data = new URLSearchParams();
         data.append('email', email);
-        data.append('pseudo', pseudo);
+        data.append('username', username);
         data.append('password', password);
         const response = await fetch('/api/v1/signup', {
             method: 'POST',
@@ -157,7 +126,7 @@ class Signup extends React.Component{
                 message = json.message;
             }
 
-            this.displayError(message);
+            this.FormRef.current.displayError(message);
         }
     }
 }
