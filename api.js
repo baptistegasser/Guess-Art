@@ -71,8 +71,8 @@ router.post('/signin', (req, res) => {
             return res.status(400).send({ message: 'Username or password invalid.' });
         }
 
-        // Create the session
-        req.session.user = user;
+        delete user.password; // Delete  the password so it's not saved in the cookie
+        req.session.user = user; // Create the session
         return res.status(200).send();
     });
 });
