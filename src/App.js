@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from "./Home/Home";
 import Room from "./Room";
-import Signup from './Signup';
-import Signin from './Signin';
+import Signup from './Connection/Signup';
+import Signin from './Connection/Signin';
 
 class App extends React.Component {
     render () {
