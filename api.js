@@ -1,4 +1,4 @@
-import Verification from './src/Utils';
+const Verification = require('./src/Verification');
 const router = require('express').Router();
 const Bcrypt = require('bcryptjs');
 const UserModel = require('./user');

@@ -11,27 +11,31 @@ class Verification {
     // Do the required check for a generic string
     static checkString(str, name) {
         const field = name === undefined ? 'Field' : name;
-
+        
         // Ensure there is data to test
         if (str === undefined) {
             this.setMessage(`${field} contain no value !`);
+            console.log("check 1");
             return false;
         }
 
         // Ensure we are checking a string
         if (typeof str !== 'string') {
             this.setMessage(`${field} contain unreadable value !`);
+            console.log("check 2");
             return false;
         }
 
         // Ensure there is no matching with spaces regex
         if (this.space_regex.test(str)) {
             this.setMessage(`${field} can't contain space or white chars !`);
+            console.log("check 3");
             return false;
         }
         // Ensure the string is not empty
         if (str.length < 1) {
             this.setMessage(`${field} can't be empty !`);
+            console.log("check 4");
             return false;
         }
     }
@@ -63,4 +67,4 @@ Verification.password_regex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.
 // White chars regex
 Verification.space_regex = /\s/;
 
-exports.Verification = Verification;
+module.exports = Verification;

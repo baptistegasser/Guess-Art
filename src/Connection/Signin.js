@@ -2,7 +2,7 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import ConnectForm from './ConnectForm';
-import Verification from '../Utils';
+import Verification from '../Verification';
 
 class Signin extends React.Component{
     constructor(props) {

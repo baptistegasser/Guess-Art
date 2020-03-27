@@ -2,7 +2,7 @@ import React from "react";
 import ConnectForm from './ConnectForm';
 import { Form } from "react-bootstrap";
 import { Link } from 'react-router-dom';
-import Verification from '../Utils';
+import Verification from '../Verification';
 
 class Signup extends React.Component{
     constructor(props) {
