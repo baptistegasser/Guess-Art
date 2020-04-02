@@ -12,6 +12,7 @@ const morgan = require('morgan');
 
 const ConnectToMongoDB = require("./db");
 const api = require('./api');
+const handleConnection = require('./salon');
 
 // Récupération des constantes
 const ENV_CURRENT = process.env.ENV;
@@ -30,8 +31,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-// Gestion de la session avec des cookies et stockage dans MongoDB
-app.use(session({
+
+// Middleware to handle sessions
+const sessionMiddleware = session({
     store: new MongoStore({
         mongooseConnection: mongoose.connection,
         ttl: 0 // Expire en fin de session
@@ -39,7 +41,10 @@ app.use(session({
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false // Pas de creation automatique de session
-}));
+})
+
+// Express app use the sessions middleware
+app.use(sessionMiddleware);
 
 
 // Middleware pour les page qui nécessitent la connection
@@ -81,6 +86,14 @@ app.use((req, res) => {
 
 
 // Démarre le serveur
-app.listen(LISTEN_PORT, LISTEN_IP, () => {
+const server = app.listen(LISTEN_PORT, LISTEN_IP, () => {
     console.log(`Le serveur écoute sur: ${LISTEN_IP}:${LISTEN_PORT}`)
 });
+
+// Link socket.io to the http server create by express
+const io = require('socket.io')(server);
+// socket.io use the sessions middleware
+io.use(function(socket, next) {
+    sessionMiddleware(socket.request, socket.request.res, next);
+});
+io.sockets.on('connection', handleConnection);
