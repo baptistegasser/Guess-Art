@@ -71,7 +71,8 @@ router.post('/signin', (req, res) => {
             return res.status(400).send({ message: 'Username or password invalid.' });
         }
 
-        delete user.password; // Delete  the password so it's not saved in the cookie
+        user.password = undefined; // Set the password as undefined
+        delete user.password; // Delete the password now that it's undefined
         req.session.user = user; // Create the session
         return res.status(200).send();
     });
