@@ -1,31 +1,40 @@
 import React from "react";
 import { Form } from "react-bootstrap";
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import ConnectForm from './ConnectForm';
+import Verification from '../Verification';
+import { signIn } from '../store/actions';
 
-class Signin extends React.Component{
+const mapStateToProps = state => ({
+    isLogged: state.isLogged
+});
+
+const mapDispatchToProps = () => {
+    return {
+        signIn
+    };
+};
+
+class SigninForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            pseudo: '',
+            username: '',
             password: '',
-            rememberMe: false
+            rememberMe: false,
+            success: false
         };
         this.FormRef = React.createRef();
 
-        this.signin = this.signin.bind(this);
-        this.clearPassword = this.clearPassword.bind(this);
-        this.handlePseudoChange = this.handlePseudoChange.bind(this);
+        this.checkAndSubmit = this.checkAndSubmit.bind(this);
+        this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleRememberMeChange = this.handleRememberMeChange.bind(this);
     }
 
-    clearPassword() {
-        this.setState({ password: '' });
-    }
-
-    handlePseudoChange(event) {
-        this.setState({ pseudo: event.target.value });
+    handleUsernameChange(event) {
+        this.setState({ username: event.target.value });
     }
 
     handlePasswordChange(event) {
@@ -37,19 +46,26 @@ class Signin extends React.Component{
     }
 
     render() {
+        // If the login was successfull, redirect
+        if (this.state.success) {
+            return <Redirect to='/room'/>
+        }
+
         return (
-        <ConnectForm onSubmit={this.signin} submit_text='Sign in' ref={this.FormRef}>
-            <Form.Group controlId='PseudoGroup'>
-                <Form.Label>Pseudo</Form.Label>
+        <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Sign in' ref={this.FormRef}>
+            <Form.Group controlId='UsernameGroup'>
+                <Form.Label>Username</Form.Label>
                 <Form.Control
+                    required
                     type="text"
-                    placeholder="Enter your pseudo"
-                    value={this.state.pseudo}
-                    onChange={this.handlePseudoChange}/>
+                    placeholder="Enter your Username"
+                    value={this.state.username}
+                    onChange={this.handleUsernameChange}/>
             </Form.Group>
             <Form.Group controlId='PasswordGroup'>
                 <Form.Label>Password</Form.Label>
                 <Form.Control
+                    required
                     type="password"
                     placeholder="Password"
                     value={this.state.password}
@@ -69,25 +85,28 @@ class Signin extends React.Component{
         )
     }
 
-    async signin(event) {
+    async checkAndSubmit(event) {
         event.preventDefault();
         event.stopPropagation();
 
         // Retrieve data to prevent change during handling
-        const pseudo = this.state.pseudo;
+        const username = this.state.username;
         const password = this.state.password;
         const rememberMe = this.state.rememberMe;
 
-        // Ensure pseudo and password not empty
-        if (pseudo.trim().length < 1 || password.trim().length < 1) {
-            this.clearPassword();
-            this.FormRef.current.displayError("Pseudo and Password fields can't be empty.");
+        // Ensure the fields are valid
+        if (!Verification.checkString(username, 'Username') || !Verification.checkString(password, 'Password')) {
+            this.FormRef.current.displayError(Verification.getMessage());
             return;
         }
 
+        await this.submitForm(username, password, rememberMe);
+    }
+
+    async submitForm(username, password, rememberMe) {
         // Create the and send the signin request
         var data = new URLSearchParams();
-        data.append('pseudo', pseudo);
+        data.append('username', username);
         data.append('password', password);
         data.append('rememberMe', rememberMe);
         const response = await fetch('/api/v1/signin', {
@@ -95,12 +114,14 @@ class Signin extends React.Component{
             headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
             },
-            body: data
+            body: data,
+            credentials: 'same-origin',
         });
 
-        // If response is ok redirect
+        // If response is ok set success and signed in
         if (response.ok) {
-            window.location.href = '/room';
+            this.props.signIn();
+            this.setState({ success: true });
         } else {
             let message = 'Unknown error while sign in. If it keep happening, please contact an admin.';
 
@@ -115,4 +136,7 @@ class Signin extends React.Component{
     }
 }
 
-export default Signin;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps()
+)(SigninForm);

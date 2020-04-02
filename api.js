@@ -1,27 +1,35 @@
+const Verification = require('./src/Verification');
 const router = require('express').Router();
 const Bcrypt = require('bcryptjs');
 const UserModel = require('./user');
 
-router.post('/register', (req, res) => {
-    // Vérif qu'on a les params
-    if (req.body.username === undefined || req.body.password === undefined) {
-        return res.status(400).send({ message: 'données incomplètes' });
+// Route used to sign up and create a account for the app
+router.post('/signup', (req, res) => {
+    // Retrieve data for usage
+    const email = req.body.email;
+    const username = req.body.username;
+    const password = req.body.password;
+
+    // check the data is valid
+    if (!Verification.checkString(email, 'E-mail') || !Verification.checkString(username, 'Username') || !Verification.checkPassword(password)) {
+        return res.status(400).send({ message: Verification.getMessage() });
     }
 
-    // Vérification que l'utilisateur n'existe pas
-    UserModel.findOne({username: req.body.username}, function(err, user) {
+    // Try to find a user
+    UserModel.findOne({username: username}, function(err, user) {
         if (err) {
             console.error(err);
             return res.status(500).send();
         }
 
+        // If there is a result: username already taken
         if (user) {
-            return res.status(400).send({ message: 'pseudo déjà utilisé' });
+            return res.status(400).send({ message: 'Username already taken.' });
         } else {
-            // Création d'un nouvel utilisateur
+            // Create a new user here
             let newUser = new UserModel();
-            newUser.username = req.body.username;
-            newUser.password = Bcrypt.hashSync(req.body.password, 10);
+            newUser.username = username;
+            newUser.password = Bcrypt.hashSync(password, 10);
 
             newUser.save(function(err, user) {
                 if (err) {
@@ -35,41 +43,48 @@ router.post('/register', (req, res) => {
     });
 });
 
-router.post('/login', (req, res) => {
-    // Si on est connecter economisé une requête
+// Route used to sign in the app
+router.post('/signin', (req, res) => {
+    // If we are connected, send a valid response
     if (req.session.user) {
         return res.status(200).send();
     }
 
-    // Vérif qu'on a les params
-    if (req.body.username === undefined || req.body.password === undefined) {
-        return res.status(400).send({ message: 'données incomplètes' });
+    // Retrieve data for usage
+    const username = req.body.username;
+    const password = req.body.password;
+    
+    // check the data is valid
+    if (!Verification.checkString(username, 'Username') || !Verification.checkString(password, 'Password')) {
+        return res.status(400).send({ message: Verification.getMessage() });
     }
 
-    UserModel.findOne({username: req.body.username}, function(err, user) {
+    // Request the database to find the username
+    UserModel.findOne({username: username}, function(err, user) {
         if (err) {
             console.error(err);
             return res.status(500).send();
         }
 
-        // Pseudo non lié à un compte ou mot de passe invalide
-        if (!user || !Bcrypt.compareSync(req.body.password, user.password)) {
-            return res.status(400).send({ message: 'pseudo ou mot de passe invalide' });
+        // Username don't exist or invalid password
+        if (!user || !Bcrypt.compareSync(password, user.password)) {
+            return res.status(400).send({ message: 'Username or password invalid.' });
         }
 
-        // Sauvegarde la session
-        req.session.user = user;
+        delete user.password; // Delete  the password so it's not saved in the cookie
+        req.session.user = user; // Create the session
         return res.status(200).send();
     });
 });
 
-router.get('/logout', (req, res) => {
-    // Si on est pas connecter, erreur
+// Route used to sign out of the app
+router.get('/signout', (req, res) => {
+    // If we are not connected, ignore and send success
     if (!req.session.user) {
         return res.status(200).send();
     }
     
-    // Supprime la session
+    // Delete the session and send the response
     req.session.destroy(function(err) {
         if (err) {
             return res.status(500).send();
@@ -77,6 +92,20 @@ router.get('/logout', (req, res) => {
             return res.status(200).send();
         }
     });
+});
+
+// Route used to get user info such as: if he is logged in, his username
+router.get('/user', (req, res) => {
+    if (req.session.user) {
+        res.status(200).send({
+            logged: true,
+            user: req.session.user
+        });
+    } else {
+        res.status(200).send({
+            logged: false,
+        });
+    }
 });
 
 module.exports = router;

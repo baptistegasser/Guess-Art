@@ -41,3 +41,7 @@ Pour mettre l'application en production il faut:
 
 1. Build l'application React avec `npm run build`;
 2. Créer un fichier `.env` avec les identifiants adaptés vers la BD ainsi que la variable `ENV` fixé à "production".
+
+## Utilisation de Redux
+
+Voir le fichier [TUTO_REDUX.md](./TUTO_REDUX.md)
