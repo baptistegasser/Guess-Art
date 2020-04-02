@@ -18,7 +18,7 @@ class PrivateRoute extends Route {
         // If the route don't match let the default route render handle it
 
         // If user is signed in, let the route render, else redirect
-        if (this.state.isLogged) {
+        if (this.props.isLogged) {
             return super.render();
         } else {
             return <Redirect to='/signin'/>
