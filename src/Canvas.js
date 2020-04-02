@@ -15,6 +15,7 @@ class Canvas extends React.Component
 
     draw_line(last_x,last_y,x,y)
     {
+        this.fill(x,y)
         this.g.beginPath()
         this.g.moveTo(last_x,last_y)
         this.g.lineTo(x,y)
@@ -27,9 +28,24 @@ class Canvas extends React.Component
             this.g.strokeStyle = this.props.color
         }
         this.g.lineCap = 'round';
-        console.log(this.props.tool)
         this.g.lineWidth = this.props.width
         this.g.stroke()
+    }
+
+    fill(x,y)
+    {
+        var canv = this.g.getImageData(x,y,1,1)
+        var data = canv.data
+        var color = 'rgb('+data[0]+','+data[1]+','+data[2]+')';
+        if (color !== this.props.color)
+        {
+            this.g.moveTo(x,y)
+            this.g.lineTo(x,y)
+            this.g.strokeStyle = this.props.color
+            this.g.stroke()
+        }
+
+
     }
 
     handler(event)

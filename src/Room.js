@@ -72,7 +72,7 @@ class Room extends React.Component {
             var allWidths = document.getElementsByClassName("width")
             for (let i = 0; i <allWidths.length;i++)
             {
-                allWidths.item(i).setAttribute("class","color")
+                allWidths.item(i).setAttribute("class","width")
             }
             this.setState({width:""})
         }
@@ -88,11 +88,11 @@ class Room extends React.Component {
         });
 
 
-        let tabColors = ['red','blue','green','brown','yellow','pink','black','white','orange','purple','grey']
+        let tabColors = ['rgb(255, 0, 0)','rgb(0, 0, 255)','rgb(0, 255, 0)','rgb(102, 51, 0)','rgb(255, 255, 0)','rgb(255, 102, 204)','rgb(0,0,0)','rgb(255, 255, 255)','rgb(255, 102, 0)','rgb(204, 0, 153)','rgb(113, 113, 113)']
         let selectColor = tabColors.map(col=>{
             if (this.state.color === "" && this.state.tool === "")
             {
-                if (col === 'black')
+                if (col === 'rgb(0,0,0)')
                     return(<button className="color selected" id={col} style={{backgroundColor: col}} onClick={this.clickColor}/>)
             }
                 return(<button className="color" id={col} style={{backgroundColor: col}} onClick={this.clickColor}/>)
@@ -101,7 +101,7 @@ class Room extends React.Component {
         let tabWidth = [1,5,10,15,20];
         let selectorWidth = tabWidth.map(val=>{
             let picture = process.env.PUBLIC_URL + '/width/taille_'+val+'.jpg';
-            if (this.state.width === "" && this.state.tool === "" )
+            if (this.state.width === "")
             {
                 if (val === 1)
                     return(<button className="width selected" id={val}  onClick={this.clickWidth} style={{backgroundImage: 'url(' + picture + ')'}}/>)
