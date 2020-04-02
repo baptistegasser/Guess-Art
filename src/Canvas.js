@@ -18,8 +18,15 @@ class Canvas extends React.Component
         this.g.beginPath()
         this.g.moveTo(last_x,last_y)
         this.g.lineTo(x,y)
-        this.g.strokeStyle = this.props.color
-        this.g.lineCap = 'round'
+        if (this.props.tool === "eraser")
+        {
+            this.g.strokeStyle = 'white';
+        }
+        else
+        {
+            this.g.strokeStyle = this.props.color
+        }
+        this.g.lineCap = 'round';
         console.log(this.props.tool)
         this.g.lineWidth = this.props.width
         this.g.stroke()
@@ -59,12 +66,17 @@ class Canvas extends React.Component
 
     componentDidMount()
     {
+
         var canvas  = document.querySelector('canvas')
         this.g = canvas.getContext('2d')
         this.g.miterLimit = 1;
-        canvas.addEventListener("mousedown",this.handler)
-        canvas.addEventListener("mouseup",this.handler)
-        canvas.addEventListener("mousemove",this.handler)
+        if (this.props.boss === true)
+        {
+            canvas.addEventListener("mousedown",this.handler)
+            canvas.addEventListener("mouseup",this.handler)
+            canvas.addEventListener("mousemove",this.handler)
+        }
+
     }
 
     render() {

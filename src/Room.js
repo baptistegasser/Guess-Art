@@ -11,8 +11,9 @@ import {Row} from "react-bootstrap";
 class Room extends React.Component {
     constructor() {
         super();
-        this.state = {color:"",tool:""}
+        this.state = {color:"",tool:"",width:""}
         this.clickColor =this.clickColor.bind(this)
+        this.clickWidth =this.clickWidth.bind(this)
         this.clickTool = this.clickTool.bind(this)
 
     }
@@ -26,10 +27,14 @@ class Room extends React.Component {
         }
         e.target.className = "color selected"
         this.setState({color : ""+e.target.id})
+        var eraser = document.getElementById("eraser")
+        eraser.setAttribute("class","tool")
+        if (this.state.tool === "eraser")
+            this.setState({tool:""})
 
     }
 
-    clickTool(e)
+    clickWidth(e)
     {
         var allButtons = document.getElementsByClassName("width")
         for (let i = 0; i <allButtons.length;i++)
@@ -37,10 +42,45 @@ class Room extends React.Component {
             allButtons.item(i).setAttribute("class","width")
         }
         e.target.className = "width selected"
+        this.setState({width : ""+e.target.id})
+        var bucket = document.getElementById("bucket")
+        bucket.setAttribute("class","tool")
+        if (this.state.tool === "bucket")
+            this.setState({tool:""})
+    }
+
+    clickTool(e)
+    {
+        var allButtons = document.getElementsByClassName("tool")
+        for (let i = 0; i <allButtons.length;i++)
+        {
+            allButtons.item(i).setAttribute("class","tool")
+        }
+        e.target.className = "tool selected"
         this.setState({tool : ""+e.target.id})
+        if (e.target.id === "eraser")
+        {
+            var allColors = document.getElementsByClassName("color")
+            for (let i = 0; i <allColors.length;i++)
+            {
+                allColors.item(i).setAttribute("class","color")
+            }
+            this.setState({color:""})
+        }
+        if (e.target.id === "bucket")
+        {
+            var allWidths = document.getElementsByClassName("width")
+            for (let i = 0; i <allWidths.length;i++)
+            {
+                allWidths.item(i).setAttribute("class","color")
+            }
+            this.setState({width:""})
+        }
+
     }
 
     render(){
+        let boss = true;
         let tapPlayers = {1:{pseudo:"laTeuteu",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
 
         let players = Object.entries(tapPlayers).map(([key,val])=>{
@@ -50,7 +90,7 @@ class Room extends React.Component {
 
         let tabColors = ['red','blue','green','brown','yellow','pink','black','white','orange','purple','grey']
         let selectColor = tabColors.map(col=>{
-            if (this.state.color === "")
+            if (this.state.color === "" && this.state.tool === "")
             {
                 if (col === 'black')
                     return(<button className="color selected" id={col} style={{backgroundColor: col}} onClick={this.clickColor}/>)
@@ -61,31 +101,71 @@ class Room extends React.Component {
         let tabWidth = [1,5,10,15,20];
         let selectorWidth = tabWidth.map(val=>{
             let picture = process.env.PUBLIC_URL + '/width/taille_'+val+'.jpg';
-            if (this.state.tool ==="")
+            if (this.state.width === "" && this.state.tool === "" )
             {
                 if (val === 1)
-                    return(<button className="width selected" id={val}  onClick={this.clickTool} style={{backgroundImage: 'url(' + picture + ')'}}/>)
+                    return(<button className="width selected" id={val}  onClick={this.clickWidth} style={{backgroundImage: 'url(' + picture + ')'}}/>)
             }
-            return(<button className="width " id={val}  onClick={this.clickTool} style={{backgroundImage: 'url(' + picture + ')'}}/>)
-        })
+            return(<button className="width " id={val}  onClick={this.clickWidth} style={{backgroundImage: 'url(' + picture + ')'}}/>)
+        });
 
-        return (<Container fluid>
-                    <Row style={{margin:0}}>
-                        <Col xs={3}><div id="HboxPlayer">{players}</div></Col>
-                        <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.tool}/></div></Col>
-                        <Col xs={2}><div id="chat"/></Col>
-                    </Row>
-                    <Row style={{margin:0}}>
-                        <Col xs={3}/>
-                        <Col xs={7}><div>{selectColor}</div></Col>
-                        <Col xs={2}><input placeholder="Ecrire ici"/></Col>
-                    </Row>
-                    <Row style={{margin:0}}>
-                        <Col xs={3}/>
-                        <Col xs={7}><div>{selectorWidth}</div></Col>
-                    </Row>
+        let tabTool = ['eraser','bucket'];
+        let selectorTool = tabTool.map(val=>{
+            let picture = process.env.PUBLIC_URL + '/tool/'+val+'.png';
+            return(<button className="tool" id={val} onClick={this.clickTool} style={{backgroundImage: 'url('+picture+')'}}/>)
+        });
 
-                </Container>)
+        if (boss === true)
+        {
+            return (<Container fluid>
+                <Row style={{margin:0}}>
+                    <Col xs={4}><img className="logo" src="https://media.giphy.com/media/YWmGm0UFfYnQs/giphy.gif" alt=""/></Col>
+                    <Col xs={6}> <h2>_ _ _ _ _ _ _ </h2></Col>
+                    <Col><button>Quitter le salon</button></Col>
+                </Row>
+                <Row style={{margin:0}}>
+                    <Col xs={3}><div id="HboxPlayer">{players}</div></Col>
+                    <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={boss}/></div></Col>
+                    <Col xs={2}><div id="chat"/></Col>
+                </Row>
+                <Row style={{margin:0}}>
+                    <Col xs={3}/>
+                    <Col xs={7}><div>{selectColor}</div></Col>
+                    <Col xs={2}><input placeholder="Ecrire ici"/></Col>
+                </Row>
+                <Row style={{margin:0}}>
+                    <Col xs={3}/>
+                    <Col xs={7}><div>{selectorWidth}{selectorTool}</div></Col>
+                </Row>
+
+            </Container>)
+        }
+        else
+        {
+            return (<Container fluid>
+                <Row>
+                    <Col xs={3}><img className="logo" src="https://media.giphy.com/media/YWmGm0UFfYnQs/giphy.gif" alt=""/></Col>
+                    <Col><h2>_ _ _ _ _ _ _ </h2></Col>
+                </Row>
+                <Row style={{margin:0}}>
+                    <Col xs={3}><div id="HboxPlayer">{players}</div></Col>
+                    <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={boss}/></div></Col>
+                    <Col xs={2}><div id="chat"/></Col>
+                </Row>
+                <Row style={{margin:0}}>
+                    <Col xs={3}/>
+                    <Col xs={7}><div></div></Col>
+                    <Col xs={2}><input placeholder="Ecrire ici"/></Col>
+                </Row>
+                <Row style={{margin:0}}>
+                    <Col xs={3}/>
+                    <Col xs={7}><div></div></Col>
+                </Row>
+
+            </Container>)
+        }
+
+
     }
 }
 
