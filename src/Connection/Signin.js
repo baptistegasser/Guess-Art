@@ -1,16 +1,29 @@
 import React from "react";
 import { Form } from "react-bootstrap";
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import ConnectForm from './ConnectForm';
 import Verification from '../Verification';
+import { signIn } from '../store/actions';
 
-class Signin extends React.Component{
+const mapStateToProps = state => ({
+    isLogged: state.isLogged
+});
+
+const mapDispatchToProps = () => {
+    return {
+        signIn
+    };
+};
+
+class SigninForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             username: '',
             password: '',
-            rememberMe: false
+            rememberMe: false,
+            success: false
         };
         this.FormRef = React.createRef();
 
@@ -33,6 +46,11 @@ class Signin extends React.Component{
     }
 
     render() {
+        // If the login was successfull, redirect
+        if (this.state.success) {
+            return <Redirect to='/room'/>
+        }
+
         return (
         <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Sign in' ref={this.FormRef}>
             <Form.Group controlId='UsernameGroup'>
@@ -100,9 +118,10 @@ class Signin extends React.Component{
             credentials: 'same-origin',
         });
 
-        // If response is ok redirect
+        // If response is ok set success and signed in
         if (response.ok) {
-            window.location.href = '/room';
+            this.props.signIn();
+            this.setState({ success: true });
         } else {
             let message = 'Unknown error while sign in. If it keep happening, please contact an admin.';
 
@@ -117,4 +136,7 @@ class Signin extends React.Component{
     }
 }
 
-export default Signin;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps()
+)(SigninForm);
