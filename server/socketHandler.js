@@ -62,7 +62,7 @@ function handle_draw_instr(socket, draw_instr) {
     const username = getUsername(socket);
     const room = RoomList.getRoomFromUser(username);
 
-    if (room === undefined || !room.isBoss(username)) return;
+    if (room === undefined /* TODO put back when better || !room.isBoss(username)*/) return;
 
     room.addDrawInstructions(draw_instr);
     socket.to(room.id).emit('draw_instr', draw_instr);
