@@ -5,6 +5,11 @@ const UserModel = require('./user');
 
 // Route used to sign up and create a account for the app
 router.post('/signup', (req, res) => {
+    // Special case: manual register disabled by admin
+    if (process.env.REGISTER_IS_ENABLED === 'NO') {
+        return res.status(400).send({ message: 'Sorry, it\'s currently not possible to register for an account. Please come back alter !' });
+    }
+
     // Retrieve data for usage
     const email = req.body.email;
     const username = req.body.username;

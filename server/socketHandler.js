@@ -4,6 +4,8 @@ const RoomList = require('./roomList');
 // Mock room, TODO: remove
 const mock_room = new Room('mock_id', 4);
 RoomList.addRoom(mock_room);
+// TODO Don't disable, it's for the mock time
+RoomList.stopRoomCleaning();
 
 function getUsername(socket) {
     return socket.request.session.user.username;
@@ -62,7 +64,7 @@ function handle_draw_instr(socket, draw_instr) {
     const username = getUsername(socket);
     const room = RoomList.getRoomFromUser(username);
 
-    if (room === undefined /* TODO put back when better || !room.isBoss(username)*/) return;
+    if (room === undefined /* TODO put back when boss system in place || !room.isBoss(username)*/) return;
 
     for (let instr of draw_instr) {
         room.addDrawInstructions(instr);
