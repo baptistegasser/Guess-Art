@@ -5,12 +5,15 @@ import Player from "./Player";
 import {Container} from "react-bootstrap";
 import {Col} from "react-bootstrap";
 import {Row} from "react-bootstrap";
+const socketIo = require("socket.io-client");
+
 
 
 
 class Room extends React.Component {
     constructor() {
         super();
+        this.socket = socketIo("http://localhost/")
         this.state = {color:"",tool:"",width:""}
         this.clickColor =this.clickColor.bind(this)
         this.clickWidth =this.clickWidth.bind(this)
@@ -125,7 +128,7 @@ class Room extends React.Component {
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={3}><div id="HboxPlayer">{players}</div></Col>
-                    <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={boss}/></div></Col>
+                    <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={boss} socket={this.socket}/></div></Col>
                     <Col xs={2}><div id="chat"/></Col>
                 </Row>
                 <Row style={{margin:0}}>
