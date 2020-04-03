@@ -5,17 +5,20 @@ class Canvas extends React.Component
 {
     constructor(props) {
         super(props);
-        this.props.socket.on('draw_instr',()=>this.updateDraw(data))
+        this.props.socket.on('draw_instr',(data)=>this.updateDraw(data))
         this.canvas =  <canvas id="canvas" width="700" height="600"/>
         this.g = null;
         this.clicked = false;
         this.last_x = 0;
         this.last_y = 0;
         this.handler = this.handler.bind(this)
+        this.updateDraw = this.updateDraw.bind(this)
+
     }
 
     updateDraw(data)
     {
+        console.log(data)
         data.forEach(index=>
         {
             this.draw_line(data[index].coordinates[0],data[index].coordinates[1],data[index].coordinates[2],data[index].coordinates[3],data[index].color,data[index].width,data[index].tool)

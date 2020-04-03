@@ -13,7 +13,8 @@ const socketIo = require("socket.io-client");
 class Room extends React.Component {
     constructor() {
         super();
-        this.socket = socketIo("http://localhost/")
+        this.socket = socketIo()
+        this.socket.on("connect",()=>{this.socket.emit("join_room","mock_id")})
         this.state = {color:"",tool:"",width:""}
         this.clickColor =this.clickColor.bind(this)
         this.clickWidth =this.clickWidth.bind(this)
