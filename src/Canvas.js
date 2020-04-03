@@ -17,8 +17,8 @@ class Canvas extends React.Component {
 
     updateDraw(data) {
         for (let instr of data) {
-            console.log(`#################### ${instr}`)
-            //this.draw_line(instr.coordinates[0], instr.coordinates[1], instr.coordinates[2], instr.coordinates[3], instr.color, instr.width, instr.tool)
+            //console.log(`#################### ${instr}`)
+            this.draw_line(instr.coordinates[0], instr.coordinates[1], instr.coordinates[2], instr.coordinates[3], instr.color, instr.width, instr.tool)
         }
 
 
