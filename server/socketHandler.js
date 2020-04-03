@@ -89,7 +89,7 @@ function handle_draw_instr(socket, draw_instr) {
  * Handle a client socket
  * @param {SocketIO.socket} socket 
  */
-const handleConnection = (socket) => {
+const socketHandler = (socket) => {
     console.log('A client connected');
 
     socket.on('disconnect', () => leave(socket));
@@ -99,4 +99,4 @@ const handleConnection = (socket) => {
     socket.on('draw_instr', draw_instr => handle_draw_instr(socket, draw_instr))
 }
 
-module.exports = handleConnection;
+module.exports = socketHandler;

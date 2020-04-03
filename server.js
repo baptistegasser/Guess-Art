@@ -12,7 +12,7 @@ const morgan = require('morgan');
 
 const ConnectToMongoDB = require("./server/db");
 const api = require('./server/api');
-const handleConnection = require('./server/salon');
+const socketHandler = require('./server/socketHandler');
 
 // Récupération des constantes
 const ENV_CURRENT = process.env.ENV;
@@ -106,4 +106,4 @@ io.use((socket, next) => {
     }
 });
 // Set the handler for socket connetion
-io.sockets.on('connection', handleConnection);
+io.sockets.on('connection', socketHandler);
