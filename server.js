@@ -10,9 +10,9 @@ const app = express();
 const path = require('path');
 const morgan = require('morgan');
 
-const ConnectToMongoDB = require("./db");
-const api = require('./api');
-const handleConnection = require('./salon');
+const ConnectToMongoDB = require("./server/db");
+const api = require('./server/api');
+const handleConnection = require('./server/salon');
 
 // Récupération des constantes
 const ENV_CURRENT = process.env.ENV;
