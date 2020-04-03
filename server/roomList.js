@@ -15,6 +15,11 @@ class RoomList {
          * @type {Map.<string, Room>}
          */
         this._rooms = new Map();
+        /**
+         * Map a user to a room id
+         * @type {Map.<string, string>}
+         */
+        this._userToRoomMap = new Map();
         // Set the interval at which the unused room shall be cleaned
         this._cleaningIntervalID = setInterval(this.cleanRooms, this.DEFAULT_INTERVAL);
     }
@@ -24,15 +29,75 @@ class RoomList {
      * @param {Room} room 
      */
     addRoom(room) {
-        this._rooms.set(room.ident, room);
+        this._rooms.set(room.id, room);
     }
 
     /**
      * Retrieve a room by it's ID
      * @param {string} id The room's ID
+     * @return {Room}
      */
-    getRoom(id) {
+    getRoomFromID(id) {
         return this._rooms.get(id);
+    }
+
+    /**
+     * Retrieve a room where the user is
+     * @param {string} username The user's username
+     * @return {Room}
+     */
+    getRoomFromUser(username) {
+        const id = this._userToRoomMap.get(username);
+        if (id !== undefined) {
+            return this.getRoomFromID(id);
+        } else {
+            return undefined;
+        }
+    }
+
+    /**
+     * Test if a room is available
+     * @param {string} id The room's id
+     * @return {boolean}
+     */
+    isAvailable(id) {
+        const room = this.getRoomFromID(id);
+        return room !== undefined && room.hasEmptySlot();
+    }
+
+    /**
+     * Add a user to the given room
+     * @param {string} username The user's username
+     * @param {string} id The room's id
+     */
+    addUserToRoom(username, id) {
+        const room = this.getRoomFromID(id);
+        room.addUser(username);
+        this._userToRoomMap.set(username, id);
+    }
+
+    /**
+     * Remove a user from the room he is connected to
+     * @param {string} username The user's username
+     * @return {string} The id of the ex user's room
+     */
+    removeUserFromIsRoom(username) {
+        const room = this.getRoomFromUser(username)
+        if (room === undefined) return undefined;
+
+        this._userToRoomMap.delete(username);
+        room.removeUser(username);
+
+        return room.id;
+    }
+
+    getDrawInstruction(id) {
+        const room = this.getRoomFromID(id);
+        if (room !== undefined) {
+            return room.getDrawInstruction();
+        } else {
+            return [undefined];
+        }
     }
 
     /**
