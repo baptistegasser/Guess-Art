@@ -91,10 +91,10 @@ class RoomList {
         return room.id;
     }
 
-    getDrawInstruction(id) {
+    getDrawInstructions(id) {
         const room = this.getRoomFromID(id);
         if (room !== undefined) {
-            return room.getDrawInstruction();
+            return room.getDrawInstructions();
         } else {
             return [undefined];
         }

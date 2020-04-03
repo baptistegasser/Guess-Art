@@ -31,7 +31,7 @@ function join_room(socket, room_id) {
     RoomList.addUserToRoom(username, room_id);
     socket.join(room_id);
     socket.to(room_id).emit('user_joined', username);
-    socket.emit('draw_instr', RoomList.getDrawInstruction(room_id));
+    socket.emit('draw_instr', RoomList.getDrawInstructions(room_id));
 }
 
 /**
