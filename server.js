@@ -92,8 +92,18 @@ const server = app.listen(LISTEN_PORT, LISTEN_IP, () => {
 
 // Link socket.io to the http server create by express
 const io = require('socket.io')(server);
-// socket.io use the sessions middleware
+// socket.io use the sessions middleware to store session infos in request.session
 io.use(function(socket, next) {
     sessionMiddleware(socket.request, socket.request.res, next);
 });
+// Middleware preventing access to client not signed in
+io.use((socket, next) => {
+    if(!socket.request.session.user) {
+        console.log(`A client not signed in tried to connect from ${socket.request.connection.remoteAddress}`);
+        return next(new Error('not authorized'));
+    } else {
+        next();
+    }
+});
+// Set the handler for socket connetion
 io.sockets.on('connection', handleConnection);
