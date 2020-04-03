@@ -5,12 +5,12 @@ const words_list = ['Box', 'Brush', 'Calendar', 'CD Player', 'Comb', 'Computer',
  */
 class Room {
     /**
-     * @param {string} ident Room unique id
+     * @param {string} id Room unique id
      * @param {string} max_players Max number of players allowed
      */
-    constructor(ident, max_players) {
-        // Unique identifier for the room
-        this.ident = ident;
+    constructor(id, max_players) {
+        // Unique id for the room
+        this.id = id;
         // Maximum number of player allowed
         this.max_players = max_players;
         
