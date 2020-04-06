@@ -125,4 +125,13 @@ router.get('/user', (req, res) => {
     }
 });
 
+// Test to know if we are logged in
+router.get('/isLogged', (req, res) => {
+    if(req.session.user) {
+        res.status(200).send();
+    } else {
+        res.status(400).send();
+    }
+});
+
 module.exports = router;
