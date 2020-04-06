@@ -42,7 +42,7 @@ class SigninForm extends React.Component{
     }
 
     handleRememberMeChange(event) {
-        this.setState({ rememberMe: event.target.value });
+        this.setState({ rememberMe: event.target.checked });
     }
 
     render() {
