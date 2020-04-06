@@ -39,9 +39,9 @@ class Canvas extends React.Component {
     }
 
     handler(event) {
-        var rect = event.target.getBoundingClientRect()
-        var x = event.clientX - rect.left
-        var y = event.clientY - rect.top
+        var x = Math.trunc(event.offsetX)
+        var y = Math.trunc(event.offsetY)
+        
         if (event.type === "mousedown") {
             this.clicked = true;
             this.last_x = x;
