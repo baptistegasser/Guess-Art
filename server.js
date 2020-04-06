@@ -36,7 +36,6 @@ app.use(bodyParser.json());
 const sessionMiddleware = session({
     store: new MongoStore({
         mongooseConnection: mongoose.connection,
-        ttl: 0 // Expire en fin de session
     }),
     secret: SESSION_SECRET,
     resave: false,
