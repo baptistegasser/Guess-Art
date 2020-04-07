@@ -70,7 +70,7 @@ if (ENV_CURRENT === 'production') {
     })
 } else {
     // Affiche les requêtes, utilie lors du dev
-    app.use(morgan('tiny'));
+    app.use(morgan('dev'));
 }
 
 
