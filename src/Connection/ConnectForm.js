@@ -1,39 +1,27 @@
 import React from "react";
-import ReactDOM from 'react-dom';
 import { Container, Form, Button, Alert } from "react-bootstrap";
 
 class ConnectForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { error_holder: undefined };
-        this.displayError = this.displayError.bind(this);
-    }
-
-    componentDidMount() {
-        this.setState({ error_holder: document.getElementById('ErrorHolder') });
-    }
-
-    displayError(message) {
-        if (this.state.error_holder === undefined) return;
-
-        const alert = (
-        <Alert key='error' variant='danger'>
-            <p>{message}</p>
-        </Alert>
-        );
-
-        // https://tinyurl.com/sf7vw76
-        ReactDOM.unmountComponentAtNode(this.state.error_holder);
-        ReactDOM.render(alert, this.state.error_holder);
-    }
-
     render() {
+        let i = 0;
+        let error_alert;
+
+        // If the error message is a non empty string, create an error Alert
+        if (typeof this.props.error_msg === 'string' && this.props.error_msg.trim().length > 0) {
+            error_alert = (
+                <Alert key='error' variant='danger'>
+                    {this.props.error_msg.split('\n').map(line => { return(<p key={i++}>{line}</p>); }) }
+                </Alert>
+            );
+        }
+
         return (
             <Container>
                 <Form onSubmit={this.props.onSubmit}>
-                    <Form.Group id='ErrorHolder'>
+                    <Form.Group>
+                        {error_alert}
                     </Form.Group>
-                    {this.props.children}
+                        {this.props.children}
                     <Form.Group>
                         <Button type='submit'>{this.props.submit_text}</Button>
                     </Form.Group>
