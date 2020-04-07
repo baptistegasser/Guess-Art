@@ -13,8 +13,8 @@ function getUsername(socket) {
 
 /**
  * Link a user to a specific room
- * @param {SocketIO.socket} socket 
- * @param {string} room_id 
+ * @param {SocketIO.socket} socket
+ * @param {string} room_id
  */
 function join_room(socket, room_id) {
     const username = getUsername(socket);
@@ -37,7 +37,7 @@ function join_room(socket, room_id) {
 }
 
 /**
- * @param {SocketIO.socket} socket 
+ * @param {SocketIO.socket} socket
  */
 function leave_room(socket) {
     const username = getUsername(socket);
@@ -74,7 +74,7 @@ function handle_draw_instr(socket, draw_instr) {
 
 /**
  * Handle a client socket
- * @param {SocketIO.socket} socket 
+ * @param {SocketIO.socket} socket
  */
 const socketHandler = (socket) => {
     console.log('A client connected');

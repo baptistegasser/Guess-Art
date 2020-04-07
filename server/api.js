@@ -59,7 +59,7 @@ router.post('/signin', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     const rememberMe = (req.body.rememberMe === 'true');
-    
+
     // check the data is valid
     if (!Verification.checkString(username, 'Username') || !Verification.checkString(password, 'Password')) {
         return res.status(400).send({ message: Verification.getMessage() });
@@ -80,7 +80,7 @@ router.post('/signin', (req, res) => {
         user.password = undefined; // Set the password as undefined
         delete user.password; // Delete the password now that it's undefined
         req.session.user = user; // Create the session
-        
+
         // If the user want to the cookie to live after the browser session
         if (rememberMe) {
             const hour = 3600000
@@ -89,7 +89,7 @@ router.post('/signin', (req, res) => {
         } else {
             req.session.cookie.expires = false;
         }
-        
+
         return res.status(200).send();
     });
 });
@@ -100,7 +100,7 @@ router.get('/signout', (req, res) => {
     if (!req.session.user) {
         return res.status(200).send();
     }
-    
+
     // Delete the session and send the response
     req.session.destroy(function(err) {
         if (err) {
