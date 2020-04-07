@@ -1,12 +1,11 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { connect } from 'react-redux';
-import PrivateRoute from './PrivateRoute';
-import Home from "./Home/Home";
-import Room from "./Room";
-import Signup from './Connection/Signup';
-import Signin from './Connection/Signin';
 import {signIn} from './store/actions'
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+
+import Room from "./Room";
+import Home from "./Home/Home";
+import { Signin, Signup, PrivateRoute } from './Connection';
 
 const mapDispatchToProps = () => {
     return {
@@ -27,14 +26,14 @@ class App extends React.Component {
 
     async getLoggedStatus() {
         const response = await fetch('/api/v1/isLogged');
-        
+
         if (response.ok) {
             this.props.signIn();
         }
-        
+
         this.setState({loading: false})
     }
-    
+
     render () {
         if (this.state.loading) {
             return(<div><p>loading</p></div>);
