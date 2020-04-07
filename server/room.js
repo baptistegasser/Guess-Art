@@ -13,7 +13,7 @@ class Room {
         this.id = id;
         // Maximum number of player allowed
         this.max_players = max_players;
-        
+
         /**
          * List of connected users and there score
          * @type {Map.<string, number>}
@@ -41,7 +41,7 @@ class Room {
         if (!this.hasEmptySlot() || this.isConnected(username)) {
             return false;
         }
-        
+
         this.users.set(username, 0);
         return true;
     }

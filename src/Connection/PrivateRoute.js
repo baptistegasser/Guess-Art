@@ -33,4 +33,4 @@ export default connect(
     mapStateToProps,
     null
 )(PrivateRoute);
-  
+
