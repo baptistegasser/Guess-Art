@@ -6,14 +6,14 @@ const words_list = ['Box', 'Brush', 'Calendar', 'CD Player', 'Comb', 'Computer',
 class Room {
     /**
      * @param {string} id Room unique id
-     * @param {string} max_players Max number of players allowed
+     * @param {object} settings Options of the room
      */
-    constructor(id, max_players) {
+    constructor(id, settings) {
         // Unique id for the room
         this.id = id;
-        // Maximum number of player allowed
-        this.max_players = max_players;
 
+        // Set the options
+        this.setSettings(settings);
         /**
          * List of connected users and there score
          * @type {Map.<string, number>}
@@ -32,6 +32,50 @@ class Room {
         this.round_started = false;
     }
 
+    /**
+     * Check and set the room's settings
+     */
+    setSettings(settings) {
+        // Room options
+        const max_player        = this.assertValidNumber(settings.max_player);
+        const min_player_start  = this.assertValidNumber(settings.min_player_start);
+        const round_duration    = this.assertValidNumber(settings.round_duration);
+        const round_count       = this.assertValidNumber(settings.round_count);
+
+        if (min_player_start < 2) {
+            throw new Error('The minimum required player count to start a game should be 2.');
+        }
+        if (max_player < 2 || max_player > 10) {
+            throw new Error('The max player count should be between 2 and 10.');
+        }
+        if (round_duration < 30 || round_duration > 180) {
+            throw new Error('The round duration should be between 30 seconds and 3 minutes.');
+        }
+        if (round_count < 1 || round_count > 50) {
+            throw new Error('The round count should be between 1 and 50 rounds.');
+        }
+
+        this.max_player         = max_player;
+        this.min_player_start   = min_player_start;
+        this.round_duration     = round_duration;
+        this.round_count        = round_count;
+    }
+
+    /**
+     * Assert the setting is a valid number
+     * @param {object} setting The setting to check
+     */
+    assertValidNumber(setting) {
+        if (setting === undefined
+            || setting === null
+            || isNaN(setting)
+        ) {
+            throw new Error('Invalid setting format/type.');
+        }
+
+        return parseInt(setting);
+    }
+
     isConnected(username) {
         return this.users.has(username);
     }
@@ -47,7 +91,7 @@ class Room {
     }
 
     hasEmptySlot() {
-        return this.users.size < this.max_players;
+        return this.users.size < this.max_player;
     }
 
     isEmpty() {
