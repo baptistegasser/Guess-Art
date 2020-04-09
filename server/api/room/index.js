@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const Room = require('./room');
-const IDGenerator = require('./id_generator');
-const RoomList = require('./roomList');
+const Room = require('../../room');
+const IDGenerator = require('../../id_generator');
+const RoomList = require('../../roomList');
 
-router.post('/room/create', (req, res) => {
+router.post('/create', (req, res) => {
     // Check connected
     if (!req.session.user) {
         return res.status(403).send();
