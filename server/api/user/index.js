@@ -1,7 +1,7 @@
 const Verification = require('../../../src/Verification');
 const router = require('express').Router();
 const Bcrypt = require('bcryptjs');
-const UserModel = require('../../user');
+const UserModel = require('../../model/user');
 
 // Route used to sign up and create a account for the app
 router.post('/signup', (req, res) => {

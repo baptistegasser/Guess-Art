@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const Room = require('../../room');
+const Room = require('../../model/room');
 const IDGenerator = require('../../id_generator');
 const RoomList = require('../../roomList');
 
