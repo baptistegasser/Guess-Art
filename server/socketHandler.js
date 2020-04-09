@@ -1,4 +1,4 @@
-const Room = require('./room');
+const Room = require('./model/room');
 const RoomList = require('./roomList');
 
 // Mock room, TODO: remove
