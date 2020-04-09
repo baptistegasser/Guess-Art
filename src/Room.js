@@ -2,6 +2,7 @@ import React from 'react';
 import './Room.css';
 import Canvas from "./Canvas.js";
 import Player from "./Player";
+import Chrono from "./Chrono";
 import {Container} from "react-bootstrap";
 import {Col} from "react-bootstrap";
 import {Row} from "react-bootstrap";
@@ -123,7 +124,7 @@ class Room extends React.Component {
         {
             return (<Container fluid>
                 <Row style={{margin:0}}>
-                    <Col xs={4}><img className="logo" src="https://media.giphy.com/media/YWmGm0UFfYnQs/giphy.gif" alt=""/></Col>
+                    <Col xs={4}><Chrono socket = {this.socket}/></Col>
                     <Col xs={6}> <h2>_ _ _ _ _ _ _ </h2></Col>
                     <Col><button>Quitter le salon</button></Col>
                 </Row>
