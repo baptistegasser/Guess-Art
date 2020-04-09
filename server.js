@@ -36,7 +36,6 @@ app.use(bodyParser.json());
 const sessionMiddleware = session({
     store: new MongoStore({
         mongooseConnection: mongoose.connection,
-        ttl: 0 // Expire en fin de session
     }),
     secret: SESSION_SECRET,
     resave: false,
@@ -71,7 +70,7 @@ if (ENV_CURRENT === 'production') {
     })
 } else {
     // Affiche les requêtes, utilie lors du dev
-    app.use(morgan('tiny'));
+    app.use(morgan('dev'));
 }
 
 

@@ -21,7 +21,10 @@ class PrivateRoute extends Route {
         if (this.props.isLogged) {
             return super.render();
         } else {
-            return <Redirect to='/signin'/>
+            return <Redirect to={{
+                pathname: '/signin',
+                state: { destination: this.props.computedMatch.url }
+            }}/>
         }
     }
 }
@@ -30,4 +33,4 @@ export default connect(
     mapStateToProps,
     null
 )(PrivateRoute);
-  
+
