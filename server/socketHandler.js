@@ -2,7 +2,12 @@ const Room = require('./room');
 const RoomList = require('./roomList');
 
 // Mock room, TODO: remove
-const mock_room = new Room('mock_id', 4);
+const mock_room = new Room('mock_id', {
+    max_player: 8,
+    min_player_start: 4,
+    round_duration: 45,
+    round_count: 10,
+});
 RoomList.addRoom(mock_room);
 // TODO Don't disable, it's for the mock time
 RoomList.stopRoomCleaning();
