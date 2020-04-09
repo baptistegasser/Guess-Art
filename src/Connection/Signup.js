@@ -107,7 +107,7 @@ class Signup extends React.Component{
         data.append('email', email);
         data.append('username', username);
         data.append('password', password);
-        const response = await fetch('/api/v1/signup', {
+        const response = await fetch('/api/v1/user/signup', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'

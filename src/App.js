@@ -25,7 +25,7 @@ class App extends React.Component {
     }
 
     async getLoggedStatus() {
-        const response = await fetch('/api/v1/isLogged');
+        const response = await fetch('/api/v1/user/isLogged');
 
         if (response.ok) {
             this.props.signIn();
