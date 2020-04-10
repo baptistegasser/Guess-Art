@@ -17,8 +17,7 @@ const socketHandler = require('./server/socketHandler');
 // Récupération des constantes
 const ENV_CURRENT = process.env.ENV;
 const SESSION_SECRET = process.env.SESSION_SECRET;
-const LISTEN_IP = process.env.LISTEN_IP;
-const LISTEN_PORT = process.env.LISTEN_PORT;
+const PORT = process.env.PORT || 3001;
 
 // Initialisation de la connection à la BD
 ConnectToMongoDB();
@@ -65,7 +64,7 @@ if (ENV_CURRENT === 'production') {
 
     // Renvoie l'app react
     app.use(express.static(path.join(__dirname, 'build')))
-    app.get('/', (req, res) => {
+    app.use((req, res) => {
         res.sendFile(path.join(__dirname, 'build', 'index.html'))
     })
 } else {
@@ -73,20 +72,12 @@ if (ENV_CURRENT === 'production') {
     app.use(morgan('dev'));
 }
 
-
 // Requête vers l'api
 app.use('/api/v1/', api);
 
-
-// Autres requêtes
-app.use((req, res) => {
-    res.status(404).send('Unknow Request');
-})
-
-
 // Démarre le serveur
-const server = app.listen(LISTEN_PORT, LISTEN_IP, () => {
-    console.log(`Le serveur écoute sur: ${LISTEN_IP}:${LISTEN_PORT}`)
+const server = app.listen(PORT, () => {
+    console.log(`The serveur listen on ${PORT}`)
 });
 
 // Link socket.io to the http server create by express
