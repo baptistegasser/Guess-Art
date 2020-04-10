@@ -56,6 +56,8 @@ app.use(NEED_LOGIN, function(req, res, next) {
     }
 });
 
+// Requête vers l'api
+app.use('/api/v1/', api);
 
 // En prod on doit servir le build de React
 if (ENV_CURRENT === 'production') {
@@ -64,16 +66,13 @@ if (ENV_CURRENT === 'production') {
 
     // Renvoie l'app react
     app.use(express.static(path.join(__dirname, 'build')))
-    app.use((req, res) => {
+    app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, 'build', 'index.html'))
     })
 } else {
     // Affiche les requêtes, utilie lors du dev
     app.use(morgan('dev'));
 }
-
-// Requête vers l'api
-app.use('/api/v1/', api);
 
 // Démarre le serveur
 const server = app.listen(PORT, () => {
