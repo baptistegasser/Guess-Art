@@ -1,4 +1,4 @@
-const Verification = require('../../../src/Verification');
+const Verification = require('../../verification');
 const router = require('express').Router();
 const Bcrypt = require('bcryptjs');
 const UserModel = require('../../model/user');
