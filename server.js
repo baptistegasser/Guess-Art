@@ -17,8 +17,7 @@ const socketHandler = require('./server/socketHandler');
 // Récupération des constantes
 const ENV_CURRENT = process.env.ENV;
 const SESSION_SECRET = process.env.SESSION_SECRET;
-const LISTEN_IP = process.env.LISTEN_IP;
-const LISTEN_PORT = process.env.LISTEN_PORT;
+const PORT = process.env.PORT || 3001;
 
 // Initialisation de la connection à la BD
 ConnectToMongoDB();
@@ -85,8 +84,8 @@ app.use((req, res) => {
 
 
 // Démarre le serveur
-const server = app.listen(LISTEN_PORT, LISTEN_IP, () => {
-    console.log(`Le serveur écoute sur: ${LISTEN_IP}:${LISTEN_PORT}`)
+const server = app.listen(PORT, () => {
+    console.log(`The serveur listen on ${PORT}`)
 });
 
 // Link socket.io to the http server create by express
