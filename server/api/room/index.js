@@ -9,12 +9,7 @@ router.post('/create', (req, res) => {
         return res.status(403).send();
     }
 
-    const settings = {
-        max_player: 8,
-        min_player_start: 4,
-        round_duration: 45,
-        round_count: 10,
-    }
+    const settings = JSON.parse(req.body.settings);
 
     try {
         const id = IDGenerator.getNewID();
@@ -28,6 +23,15 @@ router.post('/create', (req, res) => {
             res.status(500).send({ message: 'Unknown server error.' });
         }
     }
-})
+});
+
+router.get('/', (req, res) => {
+    // Check connected
+    if (!req.session.user) {
+        return res.status(403).send();
+    }
+
+    res.status(200).send(RoomList.getAvailableRooms());
+});
 
 module.exports = router;

@@ -127,6 +127,17 @@ class RoomList {
             }
         }
     }
+
+    getAvailableRooms() {
+        let availableRooms = [];
+
+        this._rooms.forEach((room, id, map) => {
+            if (!room.hasEmptySlot()) return;
+            availableRooms.push({ room_id: id, player_count: room.playerCount() })
+        });
+
+        return availableRooms;
+    }
 }
 
 /**

@@ -98,6 +98,10 @@ class Room {
         return this.users.size < 1;
     }
 
+    playerCount() {
+        return this.users.size;
+    }
+
     removeUser(username) {
         // If the user was the boss reset the boss
         if (this.isBoss(username)) {
