@@ -26,7 +26,7 @@ class RoomList {
 
     /**
      * Add a new room to the list
-     * @param {Room} room 
+     * @param {Room} room
      */
     addRoom(room) {
         this._rooms.set(room.id, room);

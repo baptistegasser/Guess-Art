@@ -5,6 +5,11 @@ const UserModel = require('./user');
 
 // Route used to sign up and create a account for the app
 router.post('/signup', (req, res) => {
+    // Special case: manual register disabled by admin
+    if (process.env.REGISTER_IS_ENABLED === 'NO') {
+        return res.status(400).send({ message: 'Sorry, it\'s currently not possible to register for an account. Please come back alter !' });
+    }
+
     // Retrieve data for usage
     const email = req.body.email;
     const username = req.body.username;
@@ -53,7 +58,8 @@ router.post('/signin', (req, res) => {
     // Retrieve data for usage
     const username = req.body.username;
     const password = req.body.password;
-    
+    const rememberMe = (req.body.rememberMe === 'true');
+
     // check the data is valid
     if (!Verification.checkString(username, 'Username') || !Verification.checkString(password, 'Password')) {
         return res.status(400).send({ message: Verification.getMessage() });
@@ -74,6 +80,16 @@ router.post('/signin', (req, res) => {
         user.password = undefined; // Set the password as undefined
         delete user.password; // Delete the password now that it's undefined
         req.session.user = user; // Create the session
+
+        // If the user want to the cookie to live after the browser session
+        if (rememberMe) {
+            const hour = 3600000
+            // will expire in a week
+            req.session.cookie.maxAge = 7 * 24 * hour;
+        } else {
+            req.session.cookie.expires = false;
+        }
+
         return res.status(200).send();
     });
 });
@@ -84,7 +100,7 @@ router.get('/signout', (req, res) => {
     if (!req.session.user) {
         return res.status(200).send();
     }
-    
+
     // Delete the session and send the response
     req.session.destroy(function(err) {
         if (err) {
@@ -106,6 +122,15 @@ router.get('/user', (req, res) => {
         res.status(200).send({
             logged: false,
         });
+    }
+});
+
+// Test to know if we are logged in
+router.get('/isLogged', (req, res) => {
+    if(req.session.user) {
+        res.status(200).send();
+    } else {
+        res.status(400).send();
     }
 });
 

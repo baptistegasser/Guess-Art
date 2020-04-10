@@ -4,6 +4,8 @@ const RoomList = require('./roomList');
 // Mock room, TODO: remove
 const mock_room = new Room('mock_id', 4);
 RoomList.addRoom(mock_room);
+// TODO Don't disable, it's for the mock time
+RoomList.stopRoomCleaning();
 
 function getUsername(socket) {
     return socket.request.session.user.username;
@@ -11,8 +13,8 @@ function getUsername(socket) {
 
 /**
  * Link a user to a specific room
- * @param {SocketIO.socket} socket 
- * @param {string} room_id 
+ * @param {SocketIO.socket} socket
+ * @param {string} room_id
  */
 function join_room(socket, room_id) {
     const username = getUsername(socket);
@@ -35,7 +37,7 @@ function join_room(socket, room_id) {
 }
 
 /**
- * @param {SocketIO.socket} socket 
+ * @param {SocketIO.socket} socket
  */
 function leave_room(socket) {
     const username = getUsername(socket);
@@ -62,7 +64,7 @@ function handle_draw_instr(socket, draw_instr) {
     const username = getUsername(socket);
     const room = RoomList.getRoomFromUser(username);
 
-    if (room === undefined /* TODO put back when better || !room.isBoss(username)*/) return;
+    if (room === undefined /* TODO put back when boss system in place || !room.isBoss(username)*/) return;
 
     for (let instr of draw_instr) {
         room.addDrawInstructions(instr);
@@ -72,7 +74,7 @@ function handle_draw_instr(socket, draw_instr) {
 
 /**
  * Handle a client socket
- * @param {SocketIO.socket} socket 
+ * @param {SocketIO.socket} socket
  */
 const socketHandler = (socket) => {
     console.log('A client connected');
