@@ -25,7 +25,6 @@ class Chrono extends React.Component
             else
             {
                 clearInterval(chrono)
-                this.props.socket.emit("chrono_instr",0)
             }
 
         }.bind(this),1000)
