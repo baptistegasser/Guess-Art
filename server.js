@@ -64,7 +64,7 @@ if (ENV_CURRENT === 'production') {
 
     // Renvoie l'app react
     app.use(express.static(path.join(__dirname, 'build')))
-    app.get('/', (req, res) => {
+    app.use((req, res) => {
         res.sendFile(path.join(__dirname, 'build', 'index.html'))
     })
 } else {
@@ -72,16 +72,8 @@ if (ENV_CURRENT === 'production') {
     app.use(morgan('dev'));
 }
 
-
 // Requête vers l'api
 app.use('/api/v1/', api);
-
-
-// Autres requêtes
-app.use((req, res) => {
-    res.status(404).send('Unknow Request');
-})
-
 
 // Démarre le serveur
 const server = app.listen(PORT, () => {
