@@ -14,7 +14,8 @@ class Room extends React.Component {
     constructor() {
         super();
         this.socket = socketIo()
-        this.socket.on("connect",()=>{this.socket.emit("join_room","mock_id")})
+        const room_id = window.location.pathname.replace('/room');
+        this.socket.on("connect",()=>{this.socket.emit("join_room", room_id)})
         this.state = {color:"",tool:"",width:""}
         this.clickColor =this.clickColor.bind(this)
         this.clickWidth =this.clickWidth.bind(this)
