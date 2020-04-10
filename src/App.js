@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import Room from "./Room";
 import Home from "./Home/Home";
+import RoomCreate from "./RoomCreate/RoomCreate";
 import { Signin, Signup, PrivateRoute } from './Connection';
 
 const mapDispatchToProps = () => {
@@ -25,7 +26,7 @@ class App extends React.Component {
     }
 
     async getLoggedStatus() {
-        const response = await fetch('/api/v1/isLogged');
+        const response = await fetch('/api/v1/user/isLogged');
 
         if (response.ok) {
             this.props.signIn();
@@ -42,7 +43,7 @@ class App extends React.Component {
                 <BrowserRouter>
                     <Switch>
                         <Route path='/' exact component={ Home }/>
-                        <PrivateRoute path='/room' exact component={ Room }/>
+                        <PrivateRoute path='/room' exact component={ RoomCreate }/>
                         <PrivateRoute path='/room/:id' exact component={ Room }/>
                         <Route path='/signin' exact component={ Signin }/>
                         <Route path='/signup' exact component={ Signup }/>

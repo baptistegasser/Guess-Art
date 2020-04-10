@@ -117,7 +117,7 @@ class SigninForm extends React.Component{
         data.append('username', username);
         data.append('password', password);
         data.append('rememberMe', rememberMe);
-        const response = await fetch('/api/v1/signin', {
+        const response = await fetch('/api/v1/user/signin', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
