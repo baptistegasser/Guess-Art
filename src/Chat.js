@@ -6,7 +6,7 @@ class Chat extends React.Component
 {
     constructor(props) {
         super(props);
-        this.props.socket.on('usr_msg',(data) => this.updateChat(data))
+        this.props.socket.on('user_msg',(data) => this.updateChat(data))
         this.props.socket.on('guess_success',(data) => this.successGuess(data))
         this.writeMessage = this.writeMessage.bind(this)
         this.handleChange = this.handleChange.bind(this)
