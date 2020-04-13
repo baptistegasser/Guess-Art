@@ -14,12 +14,14 @@
 }
 
 .title {
-    font-size: 4rem;
+    font-size: 4.5rem;
     padding: 50px;
 }
 
 .presentation {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     text-align: justify;
     text-align-last: center;
+    border-radius: 10px;
+    padding: 0 50px 50px 50px;
 }
