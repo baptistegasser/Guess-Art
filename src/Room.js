@@ -103,7 +103,7 @@ class Room extends React.Component {
         });
 
         let tabColors = ['rgb(255, 0, 0)','rgb(0, 0, 255)','rgb(0, 255, 0)','rgb(102, 51, 0)','rgb(255, 255, 0)','rgb(255, 102, 204)','rgb(0,0,0)','rgb(255, 255, 255)','rgb(255, 102, 0)','rgb(204, 0, 153)','rgb(113, 113, 113)']
-        let selectColor = tabColors.map(col=>{
+        let selectorColor = tabColors.map(col=>{
             if (this.state.color === "" && this.state.tool === "")
             {
                 if (col === 'rgb(0,0,0)')
@@ -129,9 +129,13 @@ class Room extends React.Component {
             return(<button className="tool" id={val} onClick={this.clickTool} style={{backgroundImage: 'url('+picture+')'}}/>)
         });
 
-        if (boss === true)
+        if (boss === false)
         {
-            return (<Container fluid>
+            selectorColor = ""
+            selectorTool = ""
+            selectorWidth = ""
+        }
+        return (<Container fluid>
                 <Row style={{margin:0}}>
                     <Col xs={4}><Chrono socket = {this.socket}/></Col>
                     <Col xs={6}> <h2>_ _ _ _ _ _ _ </h2></Col>
@@ -144,7 +148,7 @@ class Room extends React.Component {
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={3}/>
-                    <Col xs={7}><div>{selectColor}</div></Col>
+                    <Col xs={7}><div>{selectorColor}</div></Col>
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={3}/>
@@ -153,32 +157,7 @@ class Room extends React.Component {
 
             </Container>)
         }
-        else
-        {
-            return (<Container fluid>
-                <Row>
-                    <Col xs={3}><img className="logo" src="https://media.giphy.com/media/YWmGm0UFfYnQs/giphy.gif" alt=""/></Col>
-                    <Col><h2>_ _ _ _ _ _ _ </h2></Col>
-                </Row>
-                <Row style={{margin:0}}>
-                    <Col xs={3}><div id="HboxPlayer">{players}</div></Col>
-                    <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={boss}/></div></Col>
-                    <Col xs={2}><Chat socket = {this.socket}/></Col>
-                </Row>
-                <Row style={{margin:0}}>
-                    <Col xs={3}/>
-                    <Col xs={7}><div></div></Col>
-                </Row>
-                <Row style={{margin:0}}>
-                    <Col xs={3}/>
-                    <Col xs={7}><div></div></Col>
-                </Row>
 
-            </Container>)
-        }
-
-
-    }
 }
 
 export default Room;
