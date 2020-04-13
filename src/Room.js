@@ -99,7 +99,7 @@ class Room extends React.Component {
         let tapPlayers = {1:{pseudo:"laTeuteu",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
 
         let players = Object.entries(tapPlayers).map(([key,val])=>{
-            return (<Player pseudo={val.pseudo} score={val.score} boss={val.boss}/>)
+            return (<Player key={val.pseudo} pseudo={val.pseudo} score={val.score} boss={val.boss}/>)
         });
 
         let tabColors = ['rgb(255, 0, 0)','rgb(0, 0, 255)','rgb(0, 255, 0)','rgb(102, 51, 0)','rgb(255, 255, 0)','rgb(255, 102, 204)','rgb(0,0,0)','rgb(255, 255, 255)','rgb(255, 102, 0)','rgb(204, 0, 153)','rgb(113, 113, 113)']
@@ -107,9 +107,9 @@ class Room extends React.Component {
             if (this.state.color === "" && this.state.tool === "")
             {
                 if (col === 'rgb(0,0,0)')
-                    return(<button className="color selected" id={col} style={{backgroundColor: col}} onClick={this.clickColor}/>)
+                    return(<button className="color selected" key={col} id={col} style={{backgroundColor: col}} onClick={this.clickColor}/>)
             }
-                return(<button className="color" id={col} style={{backgroundColor: col}} onClick={this.clickColor}/>)
+                return(<button className="color" key={col} id={col} style={{backgroundColor: col}} onClick={this.clickColor}/>)
         });
 
         let tabWidth = [1,5,10,15,20];
@@ -118,15 +118,15 @@ class Room extends React.Component {
             if (this.state.width === "")
             {
                 if (val === 1)
-                    return(<button className="width selected" id={val}  onClick={this.clickWidth} style={{backgroundImage: 'url(' + picture + ')'}}/>)
+                    return(<button className="width selected" id={val} key={val} onClick={this.clickWidth} style={{backgroundImage: 'url(' + picture + ')'}}/>)
             }
-            return(<button className="width " id={val}  onClick={this.clickWidth} style={{backgroundImage: 'url(' + picture + ')'}}/>)
+            return(<button className="width " key={val} id={val}  onClick={this.clickWidth} style={{backgroundImage: 'url(' + picture + ')'}}/>)
         });
 
         let tabTool = ['eraser','bucket'];
         let selectorTool = tabTool.map(val=>{
             let picture = process.env.PUBLIC_URL + '/tool/'+val+'.png';
-            return(<button className="tool" id={val} onClick={this.clickTool} style={{backgroundImage: 'url('+picture+')'}}/>)
+            return(<button className="tool"  key={val} id={val} onClick={this.clickTool} style={{backgroundImage: 'url('+picture+')'}}/>)
         });
 
         if (boss === false)
