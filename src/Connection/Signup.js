@@ -1,6 +1,6 @@
 import React from "react";
 import ConnectForm from './ConnectForm';
-import { Form } from "react-bootstrap";
+import { Form, Row, Col, Container } from "react-bootstrap";
 import { Link, Redirect } from 'react-router-dom';
 import Verification from '../Verification';
 
@@ -33,47 +33,52 @@ class Signup extends React.Component{
             return <Redirect to='/signin' />
         }
 
+        const link = <p>Already have an account ? <Link to='/signin'>Sign in !</Link></p>;
+
         return (
-        <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Sign me up !' error_msg={this.state.error_msg}>
-            <Form.Group controlId='email'>
-                <Form.Label>E-mail</Form.Label>
-                <Form.Control
-                    required
-                    type="email"
-                    placeholder="Enter your e-mail address"
-                    value={this.state.email}
-                    onChange={this.handleChange}/>
-            </Form.Group>
-            <Form.Group controlId='username'>
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                    required
-                    type="text"
-                    placeholder="Enter your username"
-                    value={this.state.username}
-                    onChange={this.handleChange}/>
-            </Form.Group>
-            <Form.Group controlId='password'>
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                    required
-                    type="password"
-                    placeholder="Password"
-                    value={this.state.password}
-                    onChange={this.handleChange}/>
-            </Form.Group>
-            <Form.Group controlId='password_2'>
-                <Form.Control
-                    required
-                    type="password"
-                    placeholder="Validate your password"
-                    value={this.state.password_2}
-                    onChange={this.handleChange}/>
-            </Form.Group>
-            <Form.Group>
-                <Link to='/signin'>I already have an account</Link>
-            </Form.Group>
-        </ConnectForm>
+        <Container className="h-100">
+            <Row xs="1">
+                <Col>
+                    <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Sign me up !' error_msg={this.state.error_msg} link={link}>
+                        <Form.Group controlId='email'>
+                            <Form.Label>E-mail</Form.Label>
+                            <Form.Control
+                                required
+                                type="email"
+                                placeholder="Enter your e-mail address"
+                                value={this.state.email}
+                                onChange={this.handleChange}/>
+                        </Form.Group>
+                        <Form.Group controlId='username'>
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control
+                                required
+                                type="text"
+                                placeholder="Enter your username"
+                                value={this.state.username}
+                                onChange={this.handleChange}/>
+                        </Form.Group>
+                        <Form.Group controlId='password'>
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control
+                                required
+                                type="password"
+                                placeholder="Password"
+                                value={this.state.password}
+                                onChange={this.handleChange}/>
+                        </Form.Group>
+                        <Form.Group controlId='password_2'>
+                            <Form.Control
+                                required
+                                type="password"
+                                placeholder="Validate your password"
+                                value={this.state.password_2}
+                                onChange={this.handleChange}/>
+                        </Form.Group>
+                    </ConnectForm>
+                </Col>
+            </Row>
+        </Container>
         );
     }
 

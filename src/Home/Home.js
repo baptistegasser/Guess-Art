@@ -8,19 +8,21 @@ class Home extends React.Component {
 
     render() {
         return (
-        <Container className="h-100">
-            <Row xs={1}>
-                <Col className='text-center'>
-                    <h1>Guess Art</h1>
+        <Container fluid className="h-100 bg-primary text">
+            <Row xs={1} fluid className="align-item-center">
+                <Col className='text-center yellow'>
+                    <h1 className="title">Guess Art</h1>
                 </Col>
-                <Col className='text-center'>
+                <Col md={{ span: 10, offset: 1 }} lg={{ span: 4, offset: 4 }} className="presentation">
                     <p>A fun online about drawing and mysterious words...</p>
+                    <p>As the "<b>Boss</b>" your goal is to draw the mysterious word given to you such as other player will be able to guess it.</p>
+                    <p>As one of the "<b>Guesser</b>", your goal is to find the mysterious word, the faster you are compared to other player, the more point you will get !</p>
                 </Col>
             </Row>
             <Row>
                 <Col className='text-center'>
-                    <Link to="/signin">
-                        <Button>login</Button>
+                    <Link to="/room">
+                        <Button size="lg" className="bg-secondary">Start playing</Button>
                     </Link>
                 </Col>
             </Row>

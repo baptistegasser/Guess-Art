@@ -1,5 +1,5 @@
 import React from "react";
-import { Form } from "react-bootstrap";
+import { Form, Row, Col, Container } from "react-bootstrap";
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ConnectForm from './ConnectForm';
@@ -54,37 +54,42 @@ class SigninForm extends React.Component{
             return <Redirect to={ this.state.destination } />
         }
 
+        const link = <p>Don't have an account ? <Link to='/signup'>Create one !</Link></p>;
+
         return (
-        <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Sign in' error_msg={this.state.error_msg}>
-            <Form.Group controlId='username'>
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                    required
-                    type="text"
-                    placeholder="Enter your Username"
-                    value={this.state.username}
-                    onChange={this.handleChange}/>
-            </Form.Group>
-            <Form.Group controlId='password'>
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                    required
-                    type="password"
-                    placeholder="Password"
-                    value={this.state.password}
-                    onChange={this.handleChange}/>
-            </Form.Group>
-            <Form.Group controlId='rememberMe'>
-                <Form.Check
-                    type='switch'
-                    label='Remember me'
-                    value={this.state.rememberMe}
-                    onChange={this.handleChange}/>
-            </Form.Group>
-            <Form.Group>
-                <Link to='/signup'>I don't have an account</Link>
-            </Form.Group>
-        </ConnectForm>
+        <Container className="h-100">
+            <Row xs="1">
+                <Col>
+                    <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Sign in' error_msg={this.state.error_msg} link={link}>
+                        <Form.Group controlId='username'>
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control
+                                required
+                                type="text"
+                                placeholder="Enter your Username"
+                                value={this.state.username}
+                                onChange={this.handleChange}/>
+                        </Form.Group>
+                        <Form.Group controlId='password'>
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control
+                                required
+                                type="password"
+                                placeholder="Password"
+                                value={this.state.password}
+                                onChange={this.handleChange}/>
+                        </Form.Group>
+                        <Form.Group controlId='rememberMe'>
+                            <Form.Check
+                                type='switch'
+                                label='Remember me'
+                                value={this.state.rememberMe}
+                                onChange={this.handleChange}/>
+                        </Form.Group>
+                    </ConnectForm>
+                </Col>
+            </Row>
+        </Container>
         )
     }
 

@@ -1,5 +1,6 @@
 import React from "react";
-import { Container, Form, Button, Alert } from "react-bootstrap";
+import { Container, Form, Button, Alert, Row, Col } from "react-bootstrap";
+import './form.css';
 
 class ConnectForm extends React.Component {
     render() {
@@ -16,16 +17,23 @@ class ConnectForm extends React.Component {
         }
 
         return (
-            <Container>
-                <Form onSubmit={this.props.onSubmit}>
-                    <Form.Group>
-                        {error_alert}
-                    </Form.Group>
-                        {this.props.children}
-                    <Form.Group>
-                        <Button type='submit'>{this.props.submit_text}</Button>
-                    </Form.Group>
-                </Form>
+            <Container className="h-100 bg-primary">
+                <Row xs="1">
+                    <Col lg={{span: 6, offset: 3}} sm={{span: 8, offset: 2}}>
+                        <Form onSubmit={this.props.onSubmit}>
+                            <Form.Group>
+                                {error_alert}
+                            </Form.Group>
+                            {this.props.children}
+                            <Form.Group className="text-center" style={{marginTop: "60px"}}>
+                                <Button type='submit' className="bg-secondary">{this.props.submit_text}</Button>
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                    <Col className="text-center">
+                        {this.props.link === undefined ? '' : this.props.link }
+                    </Col>
+                </Row>
             </Container>
         );
     }
