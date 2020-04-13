@@ -6,6 +6,7 @@ import Chrono from "./Chrono";
 import {Container} from "react-bootstrap";
 import {Col} from "react-bootstrap";
 import {Row} from "react-bootstrap";
+import Chat from "./Chat";
 const socketIo = require("socket.io-client");
 
 
@@ -15,13 +16,13 @@ class Room extends React.Component {
     constructor() {
         super();
         this.socket = socketIo()
-        const room_id = window.location.pathname.replace('/room');
+        const room_id = window.location.pathname.replace('/room/','');
         this.socket.on("connect",()=>{this.socket.emit("join_room", room_id)})
         this.state = {color:"",tool:"",width:""}
         this.clickColor =this.clickColor.bind(this)
         this.clickWidth =this.clickWidth.bind(this)
         this.clickTool = this.clickTool.bind(this)
-
+        this.leaveRoom = this.leaveRoom.bind(this)
     }
 
     clickColor(e)
@@ -85,6 +86,14 @@ class Room extends React.Component {
 
     }
 
+    leaveRoom()
+    {
+        this.socket.emit("leave_room");
+    }
+
+
+
+
     render(){
         let boss = true;
         let tapPlayers = {1:{pseudo:"laTeuteu",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
@@ -92,7 +101,6 @@ class Room extends React.Component {
         let players = Object.entries(tapPlayers).map(([key,val])=>{
             return (<Player pseudo={val.pseudo} score={val.score} boss={val.boss}/>)
         });
-
 
         let tabColors = ['rgb(255, 0, 0)','rgb(0, 0, 255)','rgb(0, 255, 0)','rgb(102, 51, 0)','rgb(255, 255, 0)','rgb(255, 102, 204)','rgb(0,0,0)','rgb(255, 255, 255)','rgb(255, 102, 0)','rgb(204, 0, 153)','rgb(113, 113, 113)']
         let selectColor = tabColors.map(col=>{
@@ -127,17 +135,16 @@ class Room extends React.Component {
                 <Row style={{margin:0}}>
                     <Col xs={4}><Chrono socket = {this.socket}/></Col>
                     <Col xs={6}> <h2>_ _ _ _ _ _ _ </h2></Col>
-                    <Col><button>Quitter le salon</button></Col>
+                    <Col><button onClick={this.leaveRoom}>Quitter le salon</button></Col>
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={3}><div id="HboxPlayer">{players}</div></Col>
                     <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={boss} socket={this.socket}/></div></Col>
-                    <Col xs={2}><div id="chat"/></Col>
+                    <Col xs={2}><Chat socket={this.socket}/></Col>
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={3}/>
                     <Col xs={7}><div>{selectColor}</div></Col>
-                    <Col xs={2}><input placeholder="Ecrire ici"/></Col>
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={3}/>
@@ -156,12 +163,11 @@ class Room extends React.Component {
                 <Row style={{margin:0}}>
                     <Col xs={3}><div id="HboxPlayer">{players}</div></Col>
                     <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={boss}/></div></Col>
-                    <Col xs={2}><div id="chat"/></Col>
+                    <Col xs={2}><Chat socket = {this.socket}/></Col>
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={3}/>
                     <Col xs={7}><div></div></Col>
-                    <Col xs={2}><input placeholder="Ecrire ici"/></Col>
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={3}/>
