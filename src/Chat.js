@@ -25,7 +25,9 @@ class Chat extends React.Component
             var inp = document.getElementById('input-msg')
             console.log(inp.value)
             this.props.socket.emit("guess",inp.value);
+            this.updateChat(inp.value);
             inp.value = "";
+
         }
 
     }
