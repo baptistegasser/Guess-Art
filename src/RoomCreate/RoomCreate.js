@@ -36,11 +36,18 @@ class RoomCreate extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({ [event.target.id]: event.target.value });
-        if (event.target.id === 'max_player') {
-            if (event.target.value < this.state.min_player_start) {
-                this.setState({ min_player_start: event.target.value });
+        event.preventDefault();
+        event.stopPropagation();
+        try {
+            const id    = event.target.id;
+            const value = Number(event.target.value);
+
+            this.setState({ [id]: value });
+            if (id === 'max_player' && value < this.state.min_player_start) {
+                this.setState({ min_player_start: value });
             }
+        } catch(error) {
+            return;
         }
     }
 
