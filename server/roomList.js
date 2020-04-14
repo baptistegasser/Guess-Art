@@ -17,11 +17,32 @@ class RoomList {
         this._rooms = new Map();
         /**
          * Map a user to a room id
-         * @type {Map.<string, string>}
+         * @type {Map.<SocketIO.Socket, string>}
          */
-        this._userToRoomMap = new Map();
+        this._socketToRoomMap = new Map();
         // Set the interval at which the unused room shall be cleaned
         this._cleaningIntervalID = setInterval(this.cleanRooms, this.DEFAULT_INTERVAL);
+    }
+
+    /**
+     * Set a new interval between the cleaning of the rooms
+     * @param {number} time The new cleaning intervarl in ms
+     */
+    setRoomCleaningInterval(time) {
+        clearInterval(this._cleaningIntervalID);
+        this._cleaningIntervalID = setInterval(this.cleanRooms, time);
+    }
+
+    /**
+     * Clean unused rooms
+     */
+    cleanRooms() {
+        const ids = this._rooms.keys();
+        for (let id of ids) {
+            if (this._rooms.get(id).isEmpty()) {
+                this._rooms.delete(id);
+            }
+        }
     }
 
     /**
@@ -43,11 +64,11 @@ class RoomList {
 
     /**
      * Retrieve a room where the user is
-     * @param {string} username The user's username
+     * @param {SocketIO.Socket} socket
      * @return {Room}
      */
-    getRoomFromUser(username) {
-        const id = this._userToRoomMap.get(username);
+    getRoomFromSocket(socket) {
+        const id = this._socketToRoomMap.get(socket);
         if (id !== undefined) {
             return this.getRoomFromID(id);
         } else {
@@ -62,31 +83,32 @@ class RoomList {
      */
     isAvailable(id) {
         const room = this.getRoomFromID(id);
-        return room !== undefined && room.hasEmptySlot();
+        return room !== undefined && !room.isFull();
     }
 
     /**
-     * Add a user to the given room
-     * @param {string} username The user's username
+     * Add a socket to the given room
+     * @param {SocketIO.Socket} socket
      * @param {string} id The room's id
      */
-    addUserToRoom(username, id) {
+    addSocketToRoom(socket, id) {
         const room = this.getRoomFromID(id);
-        room.addUser(username);
-        this._userToRoomMap.set(username, id);
+        if (room === undefined) return;
+        room.addUser(socket);
+        this._socketToRoomMap.set(socket, id);
     }
 
     /**
-     * Remove a user from the room he is connected to
-     * @param {string} username The user's username
+     * Remove a socket from the room he is connected to
+     * @param {SocketIO.Socket} socket
      * @return {string} The id of the ex user's room
      */
-    removeUserFromIsRoom(username) {
-        const room = this.getRoomFromUser(username)
+    removeSocketFromIsRoom(socket) {
+        const room = this.getRoomFromSocket(socket)
         if (room === undefined) return undefined;
 
-        this._userToRoomMap.delete(username);
-        room.removeUser(username);
+        this._socketToRoomMap.delete(socket);
+        room.removeUser(socket);
 
         return room.id;
     }
@@ -99,40 +121,11 @@ class RoomList {
             return [undefined];
         }
     }
-
-    /**
-     * Stop the automatic room cleaning
-     */
-    stopRoomCleaning() {
-        clearInterval(this._cleaningIntervalID);
-    }
-
-    /**
-     * Set a new interval between the cleaning of the rooms
-     * @param {number} time The new cleaning intervarl in ms
-     */
-    setRoomCleaningInterval(time) {
-        this.stopRoomCleaning();
-        this._cleaningIntervalID = setInterval(this.cleanRooms, time);
-    }
-
-    /**
-     * Clean unused rooms
-     */
-    cleanRooms() {
-        const ids = this._rooms.keys();
-        for (let id of ids) {
-            if (this._rooms.get(id).isEmpty()) {
-                this._rooms.delete(id);
-            }
-        }
-    }
-
     getAvailableRooms() {
         let availableRooms = [];
 
         this._rooms.forEach((room, id, map) => {
-            if (!room.hasEmptySlot()) return;
+            if (room.isFull()) return;
             availableRooms.push({ room_id: id, player_count: room.playerCount() })
         });
 
