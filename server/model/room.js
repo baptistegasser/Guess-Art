@@ -220,6 +220,43 @@ class Room {
         let boss_score = this.users.get(this.boss) + this.users_guessed.length * point_per_guess;
         this.users.set(this.boss, boss_score);
     }
+
+    /**
+     * Set the static IO server used by the room class
+     * @param {SocketIO.Server} io The IO server
+     */
+    static setIO(io) {
+        Room._io = io;
+    }
+
+    /**
+     * Send a socket.io message to all users
+     * @param {string} msg_type Identify the type of message sent
+     * @param {*} datas
+     */
+    broadcast(msg_type, datas) {
+        if (Room._io === undefined) {
+            throw new Error('Room class have no instance of io from socket.io.');
+        }
+
+        Room._io.to(this.id).send(msg_type, datas);
+    }
+
+    /**
+     * Send a socket.io message to a specific user
+     * @param {sting} username
+     * @param {string} msg_type
+     * @param {*} datas
+     */
+    send(username, msg_type, datas) {
+        //socket.send(msg_types, datas);
+    }
 }
+
+/**
+ * Static instance of a socket.io server used for communication.
+ * @type {SocketIO.Server}
+ */
+Room._io = undefined;
 
 module.exports = Room;

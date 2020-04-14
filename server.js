@@ -81,6 +81,9 @@ const server = app.listen(PORT, () => {
 
 // Link socket.io to the http server create by express
 const io = require('socket.io')(server);
+// Configure the Room class instances to use this IO server
+require('./server/model/room').setIO(io);
+
 // socket.io use the sessions middleware to store session infos in request.session
 io.use(function(socket, next) {
     sessionMiddleware(socket.request, socket.request.res, next);
