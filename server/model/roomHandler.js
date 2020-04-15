@@ -28,30 +28,30 @@ class RoomHandler {
      */
     getSocketHandler() {
         return (socket) => {
-            socket.on('join_room',  (...args) => this.addSocket(socket, ...args));
-            socket.on('leave_room', (...args) => this.removeSocket(socket, ...args));
-            socket.on('disconnect', (...args) => this.removeSocket(socket, ...args));
+            socket.on('join_room',  (...args) => this.connectSocketToRoom(socket, ...args));
+            socket.on('leave_room', (...args) => this.disconnectSocketRooms(socket, ...args));
+            socket.on('disconnect', (...args) => this.disconnectSocketRooms(socket, ...args));
         }
     }
 
     /**
-     * Link a user to a specific room
+     * Connect a client to a room
      * @param {SocketIO.socket} socket
      * @param {string} id
      */
-    addSocket(socket, id) {
+    connectSocketToRoom(socket, id) {
         try {
-            // Remove the user from the old room
-            const old_room = this._rooms.get(this._socketToRoomMap.get(socket));
-            if (old_room !== undefined) {
-                this.removeSocket(socket);
-            }
+            // Remove the user from any room he was connected
+            this.disconnectSocketRooms(socket);
 
-            // Add the user to the room, the socket.io room
+            // Add the user to the room
             const room = this._rooms.get(id);
-            if (room === undefined) return;
-            room.addClient(socket);
-            this._socketToRoomMap.set(socket, id);
+            if (room !== undefined) {
+                room.addClient(socket);
+                this._socketToRoomMap.set(socket, id);
+            } else {
+                throw new Error('Attempting to join a room that does not exist !');
+            }
         } catch (e) {
             console.error(e.message);
             socket.emit('game_error', e.message);
@@ -59,16 +59,16 @@ class RoomHandler {
     }
 
     /**
-     * Remove a socket from the connected sockets
+     * Disconnect a socket from the connected sockets
      * @param {SocketIO.Socket} socket
      */
-    removeSocket(socket) {
+    disconnectSocketRooms(socket) {
         try {
             const room = this._rooms.get(this._socketToRoomMap.get(socket));
-            if (room === undefined) return;
-
-            room.removeClient(socket);
-            this._socketToRoomMap.delete(socket);
+            if (room !== undefined) {
+                room.removeClient(socket);
+                this._socketToRoomMap.delete(socket);
+            }
         } catch (e) {
             console.error(e.message);
             socket.emit('game_error', e.message);
@@ -86,13 +86,21 @@ class RoomHandler {
         this._rooms.set(room.getID(), room);
     }
 
+    /**
+     * Return all available rooms
+     * @returns {{ id: string, playerCount: number, maxPlayerCount: number}}
+     */
     getAvailableRooms() {
         let availableRooms = [];
 
-        this._rooms.forEach((room, id, map) => {
+        for (let room of this._rooms.values()) {
             if (room.isFull()) return;
-            availableRooms.push({ room_id: id, player_count: room.getPlayerCount() })
-        });
+            availableRooms.push({
+                id: room.getID(),
+                playerCount: room.getPlayerCount(),
+                maxPlayerCount: room.getMaxPlayerCount(),
+            });
+        }
 
         return availableRooms;
     }
