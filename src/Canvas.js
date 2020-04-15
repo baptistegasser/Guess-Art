@@ -17,7 +17,6 @@ class Canvas extends React.Component {
 
     updateDraw(data) {
         for (let instr of data) {
-            //console.log(`#################### ${instr}`)
             this.draw_line(instr.coordinates[0], instr.coordinates[1], instr.coordinates[2], instr.coordinates[3], instr.color, instr.width, instr.tool)
         }
 
@@ -41,7 +40,7 @@ class Canvas extends React.Component {
     handler(event) {
         var x = Math.trunc(event.offsetX)
         var y = Math.trunc(event.offsetY)
-        
+
         if (event.type === "mousedown") {
             this.clicked = true;
             this.last_x = x;
@@ -72,7 +71,8 @@ class Canvas extends React.Component {
 
         var canvas = document.querySelector('canvas')
         this.g = canvas.getContext('2d')
-        this.g.miterLimit = 1;
+        //this.g.miterLimit = 1;
+        console.log(this.props.boss)
         if (this.props.boss === true) {
             canvas.addEventListener("mousedown", this.handler)
             canvas.addEventListener("mouseup", this.handler)
@@ -82,6 +82,7 @@ class Canvas extends React.Component {
     }
 
     render() {
+        console.log(this.props.boss)
         return this.canvas
     }
 
