@@ -13,9 +13,10 @@ class GameHandler {
         this._userWhoGuessed = [];
         this._mysteryWord = undefined;
         this._drawingInstrHistory = [];
-        this._remainingRounds = this._room.playerCount;
-        this._roundInPlay = false;
-        this._endRoundTimeout = undefined;
+        this._remainingRounds = this._room.roundCount;
+        this._gameStarted = false;
+        this._roundStarted = false;
+        this._roundTimeout = undefined;
     }
 
     isBoss(socket) {
@@ -31,12 +32,27 @@ class GameHandler {
             }
         }
 
-        this._room.broadcast('boss', this._socketToUser.get(socket).username)
+        this._room.broadcast('boss', this._room.getUsername(socket))
+        this.log(`${this._room.getUsername(socket)} is the new boss !`);
     }
 
     removeUser(socket) {
         this._socketToUser.delete(socket);
-        // TODO Was the user the boss ? -> End game, choose new boss, start new round (count round ?)
+
+        // If the user was the boss handle it
+        if (this.isBoss(socket)) {
+            this.prematureEndRound(true);
+        }
+
+        // If the user guessed before leaving just remove him from the list of user who guessed
+        if (this._userWhoGuessed.includes(socket)) {
+            this._userWhoGuessed.splice(this._userWhoGuessed.indexOf(socket), 1);
+        } else {
+            // The user didn't guess, check if there is still users who didn't guessed
+            if (this._userWhoGuessed.length >= this._room.playerCount - 1) {
+                this.prematureEndRound();
+            }
+        }
     }
 
     addUser(socket, username) {
@@ -47,14 +63,12 @@ class GameHandler {
 
         socket.on('guess', message => this.submitGuess(socket, message));
 
-        if (this._room.playerCount >= this._room.minPlayerToStart) {
+        if (!this._gameStarted && this._room.playerCount >= this._room.minPlayerToStart) {
             this.startGame();
         }
     }
 
     submitGuess(socket, message) {
-        console.log(this._room.getUsername(socket), ':', message);
-
         // If already guessed or is boss: ignore
         if (this._userWhoGuessed.includes(socket) || this.isBoss(socket)) {
             return;
@@ -67,19 +81,19 @@ class GameHandler {
         };
 
         // If the user guessed right tell him and adapt the message seen by other player
-        if (this._roundInPlay && message === this.guess_word) {
+        if (this._roundStarted && message === this._mysteryWord) {
             this._userWhoGuessed.push(socket);
             socket.emit('guess_succes');
 
             data.username = '';
-            data.message = `${this.getUsername(socket)} guessed the word !`;
+            data.message = `${this._room.getUsername(socket)} guessed the word !`;
         }
         // Send the message
         this._room.broadcast('user_msg', data);
 
         // If everybody guessed the word
-        if (this._userWhoGuessed.size >= this._room.playerCount - 1) {
-            this.endRound();
+        if (this._userWhoGuessed.length >= this._room.playerCount - 1) {
+            this.prematureEndRound();
         }
     }
 
@@ -92,63 +106,27 @@ class GameHandler {
     }
 
     /**
-     * Start a new round
-     */
-    startRound() {
-        if (this._remainingRounds <= 0) return;
-        if (this._roundInPlay) return;
-
-        this.initRound();
-        this._roundInPlay = true;
-        this._remainingRounds -= 1;
-
-        setTimeout(() => {
-            this._endRoundTimeout = undefined;
-            this.endRound();
-        }, this._room.roundDuration * 1000);
-
-        this._room.broadcast('start_round', this._room.roundDuration);
-    }
-
-    /**
      * Init the values for a new round
      */
     initRound() {
         // Get a new boss
         let newBoss = this._boss;
-        let candidat = Array.from(this.socketToUser.keys());
+        let candidat = Array.from(this._socketToUser.keys());
         while (newBoss === this._boss) {
             newBoss = candidat[Math.round(Math.random() * candidat.length)]
         }
         this.setBoss(newBoss);
 
         // Get a new word
-        let index = Math.random() * words_list.length;
-        while (words_list[index] === this.guess_word) {
+        let index = this._mysteryWord;
+        while (words_list[index] === this._mysteryWord) {
             index = Math.round(Math.random() * words_list.length);
         }
         this._mysteryWord = words_list[index];
+        this.log(`The mystery word is: '${this._mysteryWord}'`)
 
         this._userWhoGuessed = [];
         this._drawingInstrHistory = [];
-    }
-
-    /**
-     * Handle a round end
-     */
-    endRound() {
-        if (!this._roundInPlay) return;
-
-        if (this._endRoundTimeout !== undefined) {
-            clearTimeout(this._endRoundTimeout);
-            this._endRoundTimeout = undefined;
-        }
-
-        this._roundInPlay = false;
-        // Get the new scores
-        const scores = this.calcAndSetScores();
-        // Return the scores as end of round datas
-        this._room.broadcast('end_round', scores);
     }
 
     /**
@@ -185,6 +163,79 @@ class GameHandler {
         });
 
         return Object.freeze(scores);
+    }
+
+    startGame() {
+        if (this._gameStarted) return;
+
+        this._gameStarted = true;
+        this._room.broadcast('game_start', 3);
+        setTimeout(() => { this.startRound() }, 3 * 1000);
+        this.log('Starting game');
+    }
+
+    startRound() {
+        if (this._roundStarted) return;
+
+        this._roundStarted = true;
+        this._remainingRounds -= 1;
+        this.initRound();
+
+        this._room.broadcast('round_start', this._room.roundDuration);
+        setTimeout(() => { this.endRound() }, this._room.roundDuration * 1000);
+        this.log(`Starting round ${this._remainingRounds}`);
+    }
+
+    prematureEndRound(bossLeft) {
+        this.log('Ending round before timeout !');
+        if (this._roundTimeout !== undefined) {
+            clearInterval(this._roundTimeout);
+        }
+
+        // If the premature end is due to boss leaving handle it,
+        // as this create a trouble for all players.
+        if (bossLeft === true) {
+            this._remainingRounds += 1; // don't count this round toward the player rounds
+            this._userWhoGuessed = []; // consider it like nobody found the word and give 0 points
+        }
+
+        this.endRound();
+    }
+
+    endRound() {
+        this.log(`Round ${this._remainingRounds} ended`);
+
+        this._roundStarted = false;
+        this._roundTimeout = undefined;
+
+        // Get the new scores
+        const scores = this.calcAndSetScores();
+        // Return the scores as end of round datas
+        this._room.broadcast('end_round', scores);
+
+        // Schedule next round
+        if (this._remainingRounds > 0) {
+            setTimeout(() => { this.startRound() }, 5 * 1000);
+        } else {
+            this.endGame();
+        }
+    }
+
+    endGame() {
+        this.log('Game ended');
+
+        this._gameStarted = false;
+        let final_scores = [];
+        this._socketToUser.forEach((user, socket, map) => {
+            final_scores.push(user);
+        });
+
+        this._room.broadcast('game_end', final_scores);
+        setTimeout(this.startRound, 10 * 1000);
+    }
+
+    log(message) {
+        this._room.log(message);
     }
 }
 
