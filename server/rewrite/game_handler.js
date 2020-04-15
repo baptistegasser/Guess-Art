@@ -118,7 +118,7 @@ class GameHandler {
         this.setBoss(newBoss);
 
         // Get a new word
-        let index = this._mysteryWord;
+        let index = words_list.indexOf(this._mysteryWord);
         while (words_list[index] === this._mysteryWord) {
             index = Math.round(Math.random() * words_list.length);
         }
@@ -187,7 +187,7 @@ class GameHandler {
     }
 
     prematureEndRound(bossLeft) {
-        this.log('Ending round before timeout !');
+        this.log('Ending round before timeout');
         if (this._roundTimeout !== undefined) {
             clearInterval(this._roundTimeout);
         }
