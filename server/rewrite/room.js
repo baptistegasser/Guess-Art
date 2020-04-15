@@ -119,6 +119,7 @@ class Room {
         socket.emit('draw_instr', this._gameHandler._drawingInstrHistory);
         this.broadcastFrom(socket, 'user_joined', this.getUsername(socket));
         this._gameHandler.addUser(socket);
+        this.log(`${this.getUsername(socket)} connected`)
     }
 
     removeClient(socket) {
@@ -127,10 +128,15 @@ class Room {
         this.playerCount -= 1;
         delete this._connectedClient[this._connectedClient.indexOf(socket)];
         this._gameHandler.removeUser(socket);
+        this.log(`${this.getUsername(socket)} disconnected`)
     }
 
     getDrawInstr() {
         return this._gameHandler.getDrawInstr();
+    }
+
+    log(message) {
+        console.log(`[${this._id}]: ${message}`);
     }
 
     static setIO(io) {
