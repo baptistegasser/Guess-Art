@@ -100,6 +100,10 @@ class Room {
         return this.playerCount;
     }
 
+    getMaxPlayerCount() {
+        return this.maxPlayerCount;
+    }
+
     addClient(socket) {
         if (this.isFull()) throw new Error('Too much clients !');
         if (this.isConnected(socket)) throw new Error('Client already connected !');
@@ -110,6 +114,7 @@ class Room {
             }
         }
 
+        this.playerCount += 1;
         socket.join(this._id);
         socket.emit('draw_instr', this._gameHandler._drawingInstrHistory);
         this.broadcastFrom(socket, 'user_joined', this.getUsername(socket));
