@@ -1,4 +1,3 @@
-const Room = require('./room');
 const words_list = ['Box', 'Brush', 'Calendar', 'CD Player', 'Comb', 'Computer', 'Roll of Film', 'Folder', 'Lipstick', 'Mirror', 'Notebook', 'Notepad', 'Pencil', 'Perfume', 'Radio cassette player']
 
 class GameHandler {
@@ -81,7 +80,7 @@ class GameHandler {
         };
 
         // If the user guessed right tell him and adapt the message seen by other player
-        if (this._roundStarted && message === this._mysteryWord) {
+        if (this._roundStarted && message.toLowerCase() === this._mysteryWord) {
             this._userWhoGuessed.push(socket);
             socket.emit('guess_succes');
 
@@ -118,11 +117,11 @@ class GameHandler {
         this.setBoss(newBoss);
 
         // Get a new word
-        let index = this._mysteryWord;
+        let index = words_list.indexOf(this._mysteryWord);
         while (words_list[index] === this._mysteryWord) {
             index = Math.round(Math.random() * words_list.length);
         }
-        this._mysteryWord = words_list[index];
+        this._mysteryWord = words_list[index].toLowerCase();
         this.log(`The mystery word is: '${this._mysteryWord}'`)
 
         this._userWhoGuessed = [];
@@ -187,7 +186,7 @@ class GameHandler {
     }
 
     prematureEndRound(bossLeft) {
-        this.log('Ending round before timeout !');
+        this.log('Ending round before timeout');
         if (this._roundTimeout !== undefined) {
             clearInterval(this._roundTimeout);
         }
