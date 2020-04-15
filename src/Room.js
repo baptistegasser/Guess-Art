@@ -32,7 +32,8 @@ class Room extends React.Component {
         this.socket = socketIo()
         const room_id = window.location.pathname.replace('/room/','');
         this.socket.on("connect",()=>{this.socket.emit("join_room", room_id)})
-        this.state = {color:"",tool:"",width:""}
+        this.socket.on("boss",(data)=>this.setState({boss : data}))
+        this.state = {color:"",tool:"",width:"",boss:""}
         this.clickColor =this.clickColor.bind(this)
         this.clickWidth =this.clickWidth.bind(this)
         this.clickTool = this.clickTool.bind(this)
@@ -110,16 +111,14 @@ class Room extends React.Component {
 
     render(){
         let boss = false;
-        let tabPlayers = {1:{pseudo:"sfsdfsdf",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
+        let tabPlayers = {1:{pseudo:"ben",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
+
+        if (this.state.boss === this.props.user)
+        {
+            boss = true;
+        }
 
         let players = Object.entries(tabPlayers).map(([key,val])=>{
-            if (val.pseudo === this.props.user)
-            {
-                if (val.boss === true)
-                {
-                    boss = true;
-                }
-            }
             return (<Player key={val.pseudo} pseudo={val.pseudo} score={val.score} boss={val.boss}/>)
         });
 
