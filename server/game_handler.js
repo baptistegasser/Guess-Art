@@ -31,6 +31,7 @@ class GameHandler {
             }
         }
 
+        this._boss = socket;
         this._room.broadcast('boss', this._room.getUsername(socket))
         this.log(`${this._room.getUsername(socket)} is the new boss !`);
     }
@@ -117,7 +118,7 @@ class GameHandler {
         this.setBoss(newBoss);
 
         // Get a new word
-        let index = words_list.indexOf(this._mysteryWord);
+        let index = Math.round(Math.random() * words_list.length);
         while (words_list[index] === this._mysteryWord) {
             index = Math.round(Math.random() * words_list.length);
         }
