@@ -89,7 +89,11 @@ class RoomCreate extends React.Component {
         }
 
         const room_list = this.state.room_list.map(val => {
-        return <li key={val.room_id}><Link to={'/room/'+val.room_id}>{val.room_id}: {val.player_count} players</Link></li>;
+            return (
+            <li key={val.id}>
+                <p><Link to={'/room/'+val.id}>{val.id}</Link>: {val.playerCount}/{val.maxPlayerCount} players</p>
+            </li>
+            );
         });
 
         return (
