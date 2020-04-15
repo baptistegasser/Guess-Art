@@ -110,7 +110,7 @@ class Room extends React.Component {
 
     render(){
         let boss = false;
-        let tabPlayers = {1:{pseudo:"laTeuTeu",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
+        let tabPlayers = {1:{pseudo:"sfsdfsdf",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
 
         let players = Object.entries(tabPlayers).map(([key,val])=>{
             if (val.pseudo === this.props.user)
@@ -160,14 +160,14 @@ class Room extends React.Component {
         }
         return (<Container fluid>
                 <Row style={{margin:0}}>
-                    <Col xs={4}><Chrono socket = {this.socket}/></Col>
+                    <Col xs={4}><Chrono socket = {this.socket} /></Col>
                     <Col xs={6}> <h2>_ _ _ _ _ _ _ </h2></Col>
                     <Col><button onClick={this.leaveRoom}>Quitter le salon</button></Col>
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={3}><div id="HboxPlayer">{players}</div></Col>
                     <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={boss} socket={this.socket}/></div></Col>
-                    <Col xs={2}><Chat socket={this.socket}/></Col>
+                    <Col xs={2}><Chat socket={this.socket} boss={boss}/></Col>
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={3}/>
