@@ -12,7 +12,6 @@ const morgan = require('morgan');
 
 const ConnectToMongoDB = require("./server/db");
 const api = require('./server/api');
-const socketHandler = require('./server/socketHandler');
 
 // Récupération des constantes
 const ENV_CURRENT = process.env.ENV;
