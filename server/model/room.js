@@ -1,4 +1,4 @@
-const GameHandler = require('./game_handler');
+const GameHandler = require('../game_handler');
 
 class Room {
     constructor(id, settings) {

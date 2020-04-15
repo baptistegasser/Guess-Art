@@ -81,9 +81,9 @@ const server = app.listen(PORT, () => {
 // Link socket.io to the http server create by express
 const io = require('socket.io')(server);
 // Configure the Room class instances to use this IO server
-const Room = require('./server/rewrite/room');
+const Room = require('./server/model/room');
 Room.setIO(io);
-const RoomHandler = require('./server/model/roomHandler');
+const RoomHandler = require('./server/roomHandler');
 
 // Mock room, TODO: remove
 RoomHandler.addRoom(

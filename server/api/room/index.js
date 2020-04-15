@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const Room = require('../../rewrite/room');
+const Room = require('../../model/room');
 const IDGenerator = require('../../id_generator');
-const RoomHandler = require('../../model/roomHandler');
+const RoomHandler = require('../../roomHandler');
 
 router.post('/create', (req, res) => {
     // Check connected
