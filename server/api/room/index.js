@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Room = require('../../model/room');
 const IDGenerator = require('../../id_generator');
-const RoomList = require('../../roomList');
+const RoomHandler = require('../../model/roomHandler');
 
 router.post('/create', (req, res) => {
     // Check connected
@@ -14,7 +14,7 @@ router.post('/create', (req, res) => {
     try {
         const id = IDGenerator.getNewID();
         const room = new Room(id, settings);
-        RoomList.addRoom(room);
+        RoomHandler.addRoom(room);
         res.status(200).send({ id: id });
     } catch (e) {
         if (e instanceof Error) {
@@ -31,7 +31,7 @@ router.get('/', (req, res) => {
         return res.status(403).send();
     }
 
-    res.status(200).send(RoomList.getAvailableRooms());
+    res.status(200).send(RoomHandler.getAvailableRooms());
 });
 
 module.exports = router;

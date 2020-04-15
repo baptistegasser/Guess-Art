@@ -14,12 +14,22 @@ class Room {
 
         // Set the options
         this.setSettings(settings);
-        /**
-         * List of connected users and there score
-         * @type {Map.<string, number>}
-         */
-        this.users = new Map();
 
+        this.player_count = 0;
+        /**
+         * @type {Map.<SocketIO.Socket, string>}
+         */
+        this.socketToUser = new Map();
+        /**
+         * @type {Map.<SocketIO.Socket, number>}
+         */
+        this.socketToScore = new Map();
+
+        // Set the var linked to a round to zero
+        this.resetRoundDatas();
+    }
+
+    resetRoundDatas() {
         // The current boss, the one who draw
         this.boss = undefined;
         // The word to guesss
@@ -27,9 +37,11 @@ class Room {
         // The history of draw instruction made by the boss
         this.draw_instr_history = [];
         // List of users who guessed the word
-        this.users_guessed = new Set();
+        this.socketGuessed = new Set();
         // Old the state of the current round
         this.round_started = false;
+
+        this.endRoundTimeout = undefined;
     }
 
     /**
@@ -76,150 +88,148 @@ class Room {
         return parseInt(setting);
     }
 
-    isConnected(username) {
-        return this.users.has(username);
+    /**
+     * @returns {number} The number of connected player
+     */
+    playerCount() {
+        return this.player_count;
     }
 
-    addUser(username) {
+    /**
+     * @returns {boolean} True if the room is full
+     */
+    isFull() {
+        return this.player_count >= this.max_player;
+    }
+
+    /**
+     * @returns {boolean} True if the room is empty
+     */
+    isEmpty() {
+        return this.player_count < 1;
+    }
+
+    /**
+     * Connect a new client to the room
+     * @param {SocketIO.Socket} socket The client socket
+     */
+    addUser(socket) {
+        const username = this.getUsername(socket);
+
         // Ensure room not full and user not already connected
-        if (!this.hasEmptySlot() || this.isConnected(username)) {
+        if (this.isFull() || this.isConnected(socket)) {
             return false;
         }
 
-        this.users.set(username, 0);
-        return true;
+        this.player_count += 1;
+        this.socketToUser.set(socket, username);
+        this.socketToScore.set(socket, 0);
+
+        socket.join(this.id);
+        socket.emit('draw_instr', this.getDrawInstructions());
+
+        socket.on('guess', message => this.submitGuess(socket, message));
+        socket.on('draw_instr', draw_intr => this.addDrawInstr(socket, draw_intr));
+
+        if (this.player_count >= this.min_player_start) {
+            this.startNewRound();
+        }
     }
 
-    hasEmptySlot() {
-        return this.users.size < this.max_player;
-    }
-
-    isEmpty() {
-        return this.users.size < 1;
-    }
-
-    playerCount() {
-        return this.users.size;
-    }
-
-    removeUser(username) {
+    /**
+     * Disconnect a client to the room
+     * @param {SocketIO.Socket} socket The client socket
+     */
+    removeUser(socket) {
         // If the user was the boss reset the boss
-        if (this.isBoss(username)) {
+        if (this.isBoss(socket)) {
             this.boss = undefined;
         }
-        return this.users.delete(username);
+
+        this.playerCount -= 1;
+        this.socketToUser.delete(socket);
+        this.socketToScore.delete(socket);
+        this.socketGuessed.delete(socket);
+        if (this.socketGuessed.size >= this.socketToScore.size) {
+            this.prematureEndRound();
+        }
+    }
+
+    isConnected(socket) {
+        return this.socketToUser.has(socket);
+    }
+
+    getUsername(socket) {
+        return socket.request.session.user.username;;
     }
 
     /**
      * Test a user guess against the solution
-     * @param {string} username
-     * @param {string} word
+     * @param {SocketIO.Socket} socket
+     * @param {string} message
      */
-    tryGuess(username, word) {
-        // If already guessed return true
-        if (this.users_guessed.has(username)) {
-            return true;
+    submitGuess(socket, message) {
+        console.log(`${this.getUsername(socket)} proposed: ${message}`);
+
+        // If already guessed ignore
+        if (this.socketGuessed.has(socket)) {
+            return;
         }
 
         // Boss shoul not guess !
-        if (this.isBoss(username)) {
-            return false;
+        if (this.isBoss(socket)) {
+            return;
         }
 
-        let valid_guess = (word === this.guess_word);
-        // If the user guessed right, save his username
-        if (valid_guess) {
-            this.users_guessed.push(username);
+        // If the user guessed right return success else broadcast as message
+        console.log(`'${message}' ?== '${this.guess_word}'`);
+
+        if (message === this.guess_word) {
+            this.socketGuessed.add(socket);
+            socket.emit('guess_succes');
+            const data = {
+                username: '',
+                message: `${this.getUsername(socket)} guessed the word !`
+            }
+            this.sendFrom(socket, 'user_msg', data);
+            // if last one to guess, end the round
+            if (this.socketGuessed.size >= this.socketToScore.size-1) {
+                this.prematureEndRound();
+            }
+        } else {
+            const data = {
+                username: this.getUsername(socket),
+                message: message
+            }
+            this.broadcast('user_msg', data);
         }
-
-        return valid_guess;
     }
 
-    isBoss(username) {
-        return this.boss === username;
-    }
-
-    setBoss(username) {
-        if (!this.isConnected(username)) {
-            return false;
-        }
-
-        this.boss = username;
-        return true;
-    }
-
-    getDrawInstructions() {
-        return this.draw_instr_history;
-    }
-
-    addDrawInstructions(instr) {
+    addDrawInstr(socket, draw_instr) {
+        if (!this.isBoss(socket)) return;
         /*
         TODO: when the draw instr struct will be defined: clear history when
         The instruction is to clear/fill the whole canvas
         **/
-        this.draw_instr_history.push(instr);
+        this.draw_instr_history.push(draw_instr);
     }
 
     /**
-     * Start a new round with fresh values
+     * @returns {[]} All the draw instructions of the current round
      */
-    startNewRound() {
-        // Ensure the round is not started
-        if (this.round_started) {
-            return;
-        } else {
-            this.round_started = true;
-        }
-
-        // Get a new random wor different from the last one
-        let index = Math.random() * words_list.length;
-        while (words_list[index] === this.guess_word) {
-            index = Math.random() * words_list.length;
-        }
-        this.guess_word = words_list[index];
-
-        // Get a new boss which is different from the last one
-        let new_boss = this.boss;
-        while (new_boss === this.boss) {
-            let items = Array.from(this.users.keys());
-            new_boss = items[Math.random() * items.length]
-        }
-        this.boss = new_boss;
-
-        // Reset the drawing history
-        this.draw_instr_history = [];
-        // Reset the users who found the word
-        this.users_guessed = new Set();
+    getDrawInstructions() {
+        return this.draw_instr_history;
     }
 
-    /**
-     * End the current round
-     */
-    endRound() {
-        // Ensure the round is started
-        if (!this.round_started) {
-            return;
-        } else {
-            this.round_started = false;
-        }
-
-        // Each user who guessed see is score being increased
-        // The chart in a decrease order: first get 100, second get 80, etc
-        // and the rest will get the last score in the chart
-        const chart = [100, 80, 60, 50];
-        const max_i = chart.length-1;
-        let i = 0;
-        for (let username of this.users_guessed) {
-            let score = this.users.get(username);
-            this.users.set(username, score + chart[i]);
-            if (i < max_i) ++i;
-        }
-
-        // The boss will win 10 points per user who guessed
-        const point_per_guess = 10;
-        let boss_score = this.users.get(this.boss) + this.users_guessed.length * point_per_guess;
-        this.users.set(this.boss, boss_score);
+    isBoss(socket) {
+        return this.boss === socket;
     }
 }
+
+/**
+ * Static instance of a socket.io server used for communication.
+ * @type {SocketIO.Server}
+ */
+Room._io = undefined;
 
 module.exports = Room;

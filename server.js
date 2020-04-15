@@ -81,6 +81,21 @@ const server = app.listen(PORT, () => {
 
 // Link socket.io to the http server create by express
 const io = require('socket.io')(server);
+// Configure the Room class instances to use this IO server
+const Room = require('./server/rewrite/room');
+Room.setIO(io);
+const RoomHandler = require('./server/model/roomHandler');
+
+// Mock room, TODO: remove
+RoomHandler.addRoom(
+    new Room('mock_id', {
+        max_player: 8,
+        min_player_start: 2,
+        round_duration: 120,
+        round_count: 10,
+    })
+);
+
 // socket.io use the sessions middleware to store session infos in request.session
 io.use(function(socket, next) {
     sessionMiddleware(socket.request, socket.request.res, next);
@@ -95,4 +110,4 @@ io.use((socket, next) => {
     }
 });
 // Set the handler for socket connetion
-io.sockets.on('connection', socketHandler);
+io.sockets.on('connection', RoomHandler.getSocketHandler());
