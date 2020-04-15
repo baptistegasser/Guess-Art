@@ -81,7 +81,7 @@ class GameHandler {
         };
 
         // If the user guessed right tell him and adapt the message seen by other player
-        if (this._roundStarted && message === this._mysteryWord) {
+        if (this._roundStarted && message.toLowerCase() === this._mysteryWord) {
             this._userWhoGuessed.push(socket);
             socket.emit('guess_succes');
 
@@ -122,7 +122,7 @@ class GameHandler {
         while (words_list[index] === this._mysteryWord) {
             index = Math.round(Math.random() * words_list.length);
         }
-        this._mysteryWord = words_list[index];
+        this._mysteryWord = words_list[index].toLowerCase();
         this.log(`The mystery word is: '${this._mysteryWord}'`)
 
         this._userWhoGuessed = [];
