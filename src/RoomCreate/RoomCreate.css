@@ -1,0 +1,16 @@
+.room-list {
+    padding: 50px 50px 0 50px;
+    border-radius: 8px;
+}
+
+.table-container {
+    max-height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+hr {
+    border: 2px dashed var(--secondary);
+    border-radius: 5px;
+    margin: 20px 5%;
+}
