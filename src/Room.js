@@ -110,22 +110,20 @@ class Room extends React.Component {
 
 
     render(){
-        console.log("test")
         let boss = false;
         let tabPlayers = {1:{pseudo:"ben",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
-
-        console.log(this.state.boss+ '    '+ this.props.user)
 
         if (this.state.boss === this.props.user)
         {
             boss = true;
         }
 
+        console.log("BOSS ="+boss )
+
         let players = Object.entries(tabPlayers).map(([key,val])=>{
             return (<Player key={val.pseudo} pseudo={val.pseudo} score={val.score} boss={val.boss}/>)
         });
 
-        console.log(boss)
 
         let tabColors = ['rgb(255, 0, 0)','rgb(0, 0, 255)','rgb(0, 255, 0)','rgb(102, 51, 0)','rgb(255, 255, 0)','rgb(255, 102, 204)','rgb(0,0,0)','rgb(255, 255, 255)','rgb(255, 102, 0)','rgb(204, 0, 153)','rgb(113, 113, 113)']
         let selectorColor = tabColors.map(col=>{
