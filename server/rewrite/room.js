@@ -108,6 +108,7 @@ class Room {
         if (this.isFull()) throw new Error('Too much clients !');
         if (this.isConnected(socket)) throw new Error('Client already connected !');
 
+        this.log(`${this.getUsername(socket)} connected`)
         for (let i = 0, l = this._connectedClient.length; i < l; ++i) {
             if (this._connectedClient[i] === undefined) {
                 this._connectedClient[i] = socket;
@@ -119,16 +120,15 @@ class Room {
         socket.emit('draw_instr', this._gameHandler._drawingInstrHistory);
         this.broadcastFrom(socket, 'user_joined', this.getUsername(socket));
         this._gameHandler.addUser(socket);
-        this.log(`${this.getUsername(socket)} connected`)
     }
 
     removeClient(socket) {
+        this.log(`${this.getUsername(socket)} disconnected`)
         if (!this.isConnected(socket)) throw new Error('Client not connected !');
 
         this.playerCount -= 1;
         delete this._connectedClient[this._connectedClient.indexOf(socket)];
         this._gameHandler.removeUser(socket);
-        this.log(`${this.getUsername(socket)} disconnected`)
     }
 
     getDrawInstr() {
