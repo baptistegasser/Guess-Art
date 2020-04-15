@@ -31,8 +31,12 @@ class App extends React.Component {
         const json = await response.json()
 
         if (response.ok) {
-            this.props.signIn();
-            this.props.setUsername(json.user.username);
+            if (json.logged === true)
+            {
+                this.props.signIn();
+                this.props.setUsername(json.user.username);
+            }
+
         }
 
         this.setState({loading: false})

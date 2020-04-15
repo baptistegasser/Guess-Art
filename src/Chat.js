@@ -42,10 +42,16 @@ class Chat extends React.Component
     }
 
     render() {
-        return<div>
-            <div id="chat"></div>
-            <input id="input-msg" placeholder="Ecrire ici" onChange={this.handleChange} onKeyPress={this.writeMessage}/>
-        </div>
+        if (this.props.boss === false)
+        {
+            return<div>
+                <div id="chat"></div>
+                <input id="input-msg" placeholder="Ecrire ici" onChange={this.handleChange} onKeyPress={this.writeMessage}/>
+            </div>
+        }
+        else
+            return <div id="chat"/>
+
     }
 }
 
