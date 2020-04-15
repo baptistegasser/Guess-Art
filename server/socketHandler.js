@@ -1,8 +1,11 @@
-const Room = require('./model/room');
-const RoomList = require('./roomList');
+return;
+throw new Error('sod off')
+
+const Room = require('./rewrite/room');
+const RoomHandler = require('./model/roomHandler');
 
 // Mock room, TODO: remove
-RoomList.addRoom(
+RoomHandler.addRoom(
     new Room('mock_id', {
         max_player: 8,
         min_player_start: 2,
@@ -18,20 +21,20 @@ RoomList.addRoom(
  */
 function join_room(socket, room_id) {
     // Remove the user from the old room
-    const old_room = RoomList.getRoomFromSocket(socket);
+    const old_room = RoomHandler.getRoomFromSocket(socket);
     if (old_room !== undefined) {
-        RoomList.removeSocketFromIsRoom(socket);
+        RoomHandler.removeSocketFromIsRoom(socket);
     }
 
     // Add the user to the room, the socket.io room and him the draw instr
-    RoomList.addSocketToRoom(socket, room_id);
+    RoomHandler.addSocketToRoom(socket, room_id);
 }
 
 /**
  * @param {SocketIO.socket} socket
  */
 function leave_room(socket) {
-    RoomList.removeSocketFromIsRoom(socket);
+    RoomHandler.removeSocketFromIsRoom(socket);
 }
 
 /**
