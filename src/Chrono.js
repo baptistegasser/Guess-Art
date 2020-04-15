@@ -5,7 +5,7 @@ class Chrono extends React.Component
     constructor(props) {
         super(props);
         this.state = {second : 30}
-        this.props.socket.on('chrono_instr',(data) => this.updateChrono(data))
+        this.props.socket.on('start_round',(data) => this.updateChrono(data))
         this.updateChrono = this.updateChrono.bind(this)
         this.launchChrono = this.launchChrono.bind(this)
     }

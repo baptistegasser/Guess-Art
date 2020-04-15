@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {signIn} from './store/actions'
+import {signIn, setUsername} from './store/actions'
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import Room from "./Room";
@@ -8,9 +8,10 @@ import Home from "./Home/Home";
 import RoomCreate from "./RoomCreate/RoomCreate";
 import { Signin, Signup, PrivateRoute } from './Connection';
 
+
 const mapDispatchToProps = () => {
     return {
-        signIn
+        signIn, setUsername
     };
 };
 
@@ -26,10 +27,12 @@ class App extends React.Component {
     }
 
     async getLoggedStatus() {
-        const response = await fetch('/api/v1/user/isLogged');
+        const response = await fetch('/api/v1/user/user');
+        const json = await response.json()
 
         if (response.ok) {
             this.props.signIn();
+            this.props.setUsername(json.user.username);
         }
 
         this.setState({loading: false})

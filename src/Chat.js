@@ -7,7 +7,7 @@ class Chat extends React.Component
     constructor(props) {
         super(props);
         this.props.socket.on('user_msg',(data) => this.updateChat(data))
-        this.props.socket.on('guess_success',(data) => this.successGuess(data))
+        this.props.socket.on('guess_success',() => this.successGuess())
         this.writeMessage = this.writeMessage.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.updateChat = this.updateChat.bind(this)
@@ -25,7 +25,6 @@ class Chat extends React.Component
             var inp = document.getElementById('input-msg')
             console.log(inp.value)
             this.props.socket.emit("guess",inp.value);
-            this.updateChat(inp.value);
             inp.value = "";
 
         }
@@ -34,10 +33,10 @@ class Chat extends React.Component
 
     updateChat(data)
     {
-        document.getElementById("chat").innerHTML = document.getElementById("chat").innerHTML + "<p style='margin-bottom: 0'>" +data+ "</p>"
+        document.getElementById("chat").innerHTML = document.getElementById("chat").innerHTML + "<p style='margin-bottom: 0'>" +data.username+">"+data.message +" </p>"
     }
 
-    successGuess(data)
+    successGuess()
     {
         document.getElementById("chat").innerHTML = document.getElementById("chat").innerHTML + "<p style='margin-bottom: 0;color: green'> Tu as trouvé le mot! Bravo!</p>"
     }

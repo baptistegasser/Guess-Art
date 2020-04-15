@@ -7,14 +7,28 @@ import {Container} from "react-bootstrap";
 import {Col} from "react-bootstrap";
 import {Row} from "react-bootstrap";
 import Chat from "./Chat";
+import {getUsername} from './store/actions'
+import {connect} from "react-redux";
 const socketIo = require("socket.io-client");
+
+const mapStateToProps = state => (
+    {
+        user: state.user
+    }
+)
+
+const mapDispatchToProps = () => {
+    return {
+        getUsername
+    };
+};
 
 
 
 
 class Room extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.socket = socketIo()
         const room_id = window.location.pathname.replace('/room/','');
         this.socket.on("connect",()=>{this.socket.emit("join_room", room_id)})
@@ -95,12 +109,21 @@ class Room extends React.Component {
 
 
     render(){
-        let boss = true;
-        let tapPlayers = {1:{pseudo:"laTeuteu",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
+        let boss = false;
+        let tabPlayers = {1:{pseudo:"laTeuTeu",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
 
-        let players = Object.entries(tapPlayers).map(([key,val])=>{
+        let players = Object.entries(tabPlayers).map(([key,val])=>{
+            if (val.pseudo === this.props.user)
+            {
+                if (val.boss === true)
+                {
+                    boss = true;
+                }
+            }
             return (<Player key={val.pseudo} pseudo={val.pseudo} score={val.score} boss={val.boss}/>)
         });
+
+        console.log(boss)
 
         let tabColors = ['rgb(255, 0, 0)','rgb(0, 0, 255)','rgb(0, 255, 0)','rgb(102, 51, 0)','rgb(255, 255, 0)','rgb(255, 102, 204)','rgb(0,0,0)','rgb(255, 255, 255)','rgb(255, 102, 0)','rgb(204, 0, 153)','rgb(113, 113, 113)']
         let selectorColor = tabColors.map(col=>{
@@ -160,4 +183,8 @@ class Room extends React.Component {
 
 }
 
-export default Room;
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps(),
+)(Room);
