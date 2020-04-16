@@ -1,7 +1,8 @@
 import React from 'react';
-import { Form, Container, Row, Col } from "react-bootstrap";
+import { Form, Container, Row, Col, Table } from "react-bootstrap";
 import { Link, Redirect } from 'react-router-dom';
 import ConnectForm from '../Connection/ConnectForm';
+import './RoomCreate.css';
 
 class RoomCreate extends React.Component {
     constructor(props) {
@@ -89,70 +90,86 @@ class RoomCreate extends React.Component {
         }
     }
 
+    createRoomTable() {
+        let room_table = []
+        for (let i = 0; i < this.state.room_list.length; ) {
+            let element;
+            if (i + 1 < this.state.room_list.length) {
+                element = <tr><td>{this.createRoomLink(this.state.room_list[i])}</td><td>{this.createRoomLink(this.state.room_list[i+1])}</td></tr>;
+            } else {
+                element = <tr><td>{this.createRoomLink(this.state.room_list[i])}</td><td></td></tr>;
+            }
+
+            room_table.push(element);
+            i+=2;
+        }
+
+        return room_table;
+    }
+
+    createRoomLink(val) {
+        return <p><Link to={'/room/'+val.id}>{val.id}</Link>: {val.playerCount}/{val.maxPlayerCount} players</p>
+    }
+
     render() {
         // If the login was successfull, redirect
         if (this.state.success) {
             return <Redirect to={ '/room/'+this.state.room_id } />
         }
 
-        const room_list = this.state.room_list.map(val => {
-            return (
-            <li key={val.id}>
-                <p><Link to={'/room/'+val.id}>{val.id}</Link>: {val.playerCount}/{val.maxPlayerCount} players</p>
-            </li>
-            );
-        });
-
         return (
-            <>
-                <Container className="h-100">
-                    <Row xs={1}>
-                        <Col>
-                            {room_list}
-                        </Col>
-                        <Col>
-                            <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Create room' error_msg={this.state.error_msg}>
-                                <Form.Group controlId="max_player">
-                                    <Form.Label>Max Players: <b>{this.state.max_player}</b></Form.Label>
-                                    <Form.Control
+            <Container fluid className="h-100">
+                <Row className="h-100">
+                    <Col className="h-100">
+                        <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Create room' error_msg={this.state.error_msg}>
+                            {this.state.room_list.length > 0 ?
+                            <div className="table-container">
+                                <Table>
+                                    {this.createRoomTable()}
+                                </Table>
+                                <hr/>
+                            </div>
+                            :''}
+                            <Form.Group controlId="max_player">
+                                <Form.Label>Max Players: <b>{this.state.max_player}</b></Form.Label>
+                                <Form.Control
+                                type="range"
+                                min="2"
+                                max="10"
+                                value={this.state.max_player}
+                                onChange={this.handleChange}/>
+                            </Form.Group>
+                            <Form.Group controlId="min_player_start">
+                                <Form.Label>Min player count to start a round: <b>{this.state.min_player_start}</b></Form.Label>
+                                <Form.Control
+                                type="range"
+                                min="2"
+                                max={this.state.max_player}
+                                value={this.state.min_player_start}
+                                onChange={this.handleChange}/>
+                            </Form.Group>
+                            <Form.Group controlId="round_duration">
+                                <Form.Label>Round duration (in seconds): <b>{this.state.round_duration}</b></Form.Label>
+                                <Form.Control
+                                type="range"
+                                min="30"
+                                max="180"
+                                value={this.state.round_duration}
+                                onChange={this.handleChange}/>
+                            </Form.Group>
+                            <Form.Group controlId="round_count">
+                                <Form.Label>Round count: <b>{this.state.round_count}</b></Form.Label>
+                                <Form.Control
                                     type="range"
-                                    min="2"
-                                    max="10"
-                                    value={this.state.max_player}
+                                    min="1"
+                                    max="50"
+                                    value={this.state.round_count}
                                     onChange={this.handleChange}/>
-                                </Form.Group>
-                                <Form.Group controlId="min_player_start">
-                                    <Form.Label>Min player count to start a round: <b>{this.state.min_player_start}</b></Form.Label>
-                                    <Form.Control
-                                    type="range"
-                                    min="2"
-                                    max={this.state.max_player}
-                                    value={this.state.min_player_start}
-                                    onChange={this.handleChange}/>
-                                </Form.Group>
-                                <Form.Group controlId="round_duration">
-                                    <Form.Label>Round duration (in seconds): <b>{this.state.round_duration}</b></Form.Label>
-                                    <Form.Control
-                                    type="range"
-                                    min="30"
-                                    max="180"
-                                    value={this.state.round_duration}
-                                    onChange={this.handleChange}/>
-                                </Form.Group>
-                                <Form.Group controlId="round_count">
-                                    <Form.Label>Round count: <b>{this.state.round_count}</b></Form.Label>
-                                    <Form.Control
-                                        type="range"
-                                        min="1"
-                                        max="50"
-                                        value={this.state.round_count}
-                                        onChange={this.handleChange}/>
-                                </Form.Group>
-                            </ConnectForm>
-                        </Col>
-                    </Row>
-                </Container>
-            </>
+                            </Form.Group>
+                        </ConnectForm>
+                    </Col>
+                </Row>
+            </Container>
         )
     }
 }
