@@ -25,7 +25,7 @@ class GameHandler {
     setBoss(socket) {
         for (let client of this._socketToUser.keys()) {
             if (client === socket) {
-                client.on('draw_instr', () => {this.addDrawInstr()})
+                client.on('draw_instr', (draw_instr) => {this.addDrawInstr(socket, draw_instr)})
             } else {
                 client.on('draw_instr', () => {})
             }
@@ -97,8 +97,9 @@ class GameHandler {
         }
     }
 
-    addDrawInstr(draw_intr) {
-        this._drawingInstrHistory.push(draw_intr);
+    addDrawInstr(socket, draw_instr) {
+        this._drawingInstrHistory.push(draw_instr);
+        this._room.broadcastFrom(socket, 'draw_instr', draw_instr);
     }
 
     getDrawInstr() {
