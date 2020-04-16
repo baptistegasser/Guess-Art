@@ -123,12 +123,14 @@ class RoomCreate extends React.Component {
                     <Row className="h-100">
                         <Col className="h-100">
                             <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Create room' error_msg={this.state.error_msg}>
+                                {this.state.room_list.length > 0 ?
                                 <div className="table-container">
                                     <Table>
                                         {this.createRoomTable()}
                                     </Table>
+                                    <hr/>
                                 </div>
-                                <hr/>
+                                :''}
                                 <Form.Group controlId="max_player">
                                     <Form.Label>Max Players: <b>{this.state.max_player}</b></Form.Label>
                                     <Form.Control
