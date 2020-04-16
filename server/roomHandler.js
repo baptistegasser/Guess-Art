@@ -7,7 +7,7 @@ class RoomHandler {
     /**
      * Default cleaning interval set to be every 30min
      */
-    DEFAULT_INTERVAL = 30 * 60 * 1000;
+    DEFAULT_INTERVAL = 15 * 60 * 1000;
 
     constructor() {
         /**
@@ -20,6 +20,31 @@ class RoomHandler {
          * @type {Map.<SocketIO.Socket, string>}
          */
         this._socketToRoomMap = new Map();
+        // Set the interval at which the unused room shall be cleaned
+        this._cleaningIntervalID = undefined;
+        this.setRoomCleaningInterval(this.DEFAULT_INTERVAL)
+    }
+    /**
+     * Set a new interval between the cleaning of the rooms
+     * @param {number} time The new cleaning intervarl in ms
+     */
+    setRoomCleaningInterval(time) {
+        if (this._cleaningIntervalID !== undefined) {
+            clearInterval(this._cleaningIntervalID);
+        }
+        this._cleaningIntervalID = setInterval(() => {this.cleanRooms()}, time);
+    }
+
+    /**
+     * Clean unused rooms
+     */
+    cleanRooms() {
+        const ids = this._rooms.keys();
+        for (let id of ids) {
+            if (this._rooms.get(id).isEmpty()) {
+                this._rooms.delete(id);
+            }
+        }
     }
 
     /**
