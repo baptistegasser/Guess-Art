@@ -40,7 +40,7 @@ class GameHandler {
         this._socketToUser.delete(socket);
 
         // If the user was the boss handle it
-        if (this.isBoss(socket)) {
+        if (this.isBoss(socket) && this._roundStarted) {
             this.prematureEndRound(true);
         }
 
@@ -49,7 +49,7 @@ class GameHandler {
             this._userWhoGuessed.splice(this._userWhoGuessed.indexOf(socket), 1);
         } else {
             // The user didn't guess, check if there is still users who didn't guessed
-            if (this._userWhoGuessed.length >= this._room.playerCount - 1) {
+            if (this._userWhoGuessed.length >= this._room.playerCount - 1 && this._roundStarted) {
                 this.prematureEndRound();
             }
         }
