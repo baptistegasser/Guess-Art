@@ -30,9 +30,6 @@ class Room extends React.Component {
     constructor(props) {
         super(props);
         this.socket = socketIo()
-        const room_id = window.location.pathname.replace('/room/','');
-        this.socket.on("connect",()=>{this.socket.emit("join_room", room_id)})
-        this.socket.on("boss",(data)=>this.setState({boss : data}))
         this.state = {color:"",tool:"",width:"",boss:""}
         this.clickColor =this.clickColor.bind(this)
         this.clickWidth =this.clickWidth.bind(this)
@@ -106,8 +103,14 @@ class Room extends React.Component {
         this.socket.emit("leave_room");
     }
 
-
-
+    /**
+     * Once the component is mounted we can start to listen for event
+     */
+    componentDidMount() {
+        const room_id = window.location.pathname.replace('/room/','');
+        this.socket.on("connect",()=>{this.socket.emit("join_room", room_id)})
+        this.socket.on("boss",(data)=>this.setState({boss : data}))
+    }
 
     render(){
         let boss = false;
