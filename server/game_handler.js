@@ -111,17 +111,19 @@ class GameHandler {
      */
     initRound() {
         // Get a new boss
-        let newBoss = this._boss;
-        let candidat = Array.from(this._socketToUser.keys());
-        while (newBoss === this._boss) {
-            newBoss = candidat[Math.round(Math.random() * candidat.length)]
+        const candidat = Array.from(this._socketToUser.keys());
+        const l = candidat.length - 1;
+        let i = Math.round(Math.random() * l);
+        while (candidat[i] === this._boss) {
+            i = Math.round(Math.random() * l);
         }
-        this.setBoss(newBoss);
+        this.setBoss(candidat[i]);
 
         // Get a new word
-        let index = Math.round(Math.random() * words_list.length);
+        const wl = words_list.length - 1;
+        let index = Math.round(Math.random() * wl);
         while (words_list[index] === this._mysteryWord) {
-            index = Math.round(Math.random() * words_list.length);
+            index = Math.round(Math.random() * wl);
         }
         this._mysteryWord = words_list[index].toLowerCase();
         this.log(`The mystery word is: '${this._mysteryWord}'`)
