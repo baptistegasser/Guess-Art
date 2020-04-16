@@ -125,7 +125,9 @@ class RoomCreate extends React.Component {
                             {this.state.room_list.length > 0 ?
                             <div className="table-container">
                                 <Table>
-                                    {this.createRoomTable()}
+                                    <tbody>
+                                        {this.createRoomTable()}
+                                    </tbody>
                                 </Table>
                                 <hr/>
                             </div>
