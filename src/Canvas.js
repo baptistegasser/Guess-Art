@@ -38,6 +38,8 @@ class Canvas extends React.Component {
     }
 
     handler(event) {
+        if (!this.props.boss) return;
+
         var x = Math.trunc(event.offsetX)
         var y = Math.trunc(event.offsetY)
 
@@ -67,16 +69,11 @@ class Canvas extends React.Component {
     }
 
     componentDidMount() {
-            var canvas = document.getElementById("canvas")
-            this.g = canvas.getContext('2d')
-            if (this.props.boss === true) {
-                console.log("salut")
-                canvas.addEventListener("mousedown", this.handler)
-                canvas.addEventListener("mouseup", this.handler)
-                canvas.addEventListener("mousemove", this.handler)
-        }
-
-
+        var canvas = document.getElementById("canvas")
+        this.g = canvas.getContext('2d')
+        canvas.addEventListener("mousedown", event => this.handler(event))
+        canvas.addEventListener("mouseup",   event => this.handler(event))
+        canvas.addEventListener("mousemove", event => this.handler(event))
     }
 
     render() {
