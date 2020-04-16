@@ -66,23 +66,20 @@ class Canvas extends React.Component {
 
     }
 
-
     componentDidMount() {
-
-        var canvas = document.querySelector('canvas')
-        this.g = canvas.getContext('2d')
-        //this.g.miterLimit = 1;
-        console.log(this.props.boss)
-        if (this.props.boss === true) {
-            canvas.addEventListener("mousedown", this.handler)
-            canvas.addEventListener("mouseup", this.handler)
-            canvas.addEventListener("mousemove", this.handler)
+            var canvas = document.getElementById("canvas")
+            this.g = canvas.getContext('2d')
+            if (this.props.boss === true) {
+                console.log("salut")
+                canvas.addEventListener("mousedown", this.handler)
+                canvas.addEventListener("mouseup", this.handler)
+                canvas.addEventListener("mousemove", this.handler)
         }
+
 
     }
 
     render() {
-        console.log(this.props.boss)
         return this.canvas
     }
 
