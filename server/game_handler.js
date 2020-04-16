@@ -25,7 +25,7 @@ class GameHandler {
     setBoss(socket) {
         for (let client of this._socketToUser.keys()) {
             if (client === socket) {
-                client.on('draw_instr', this.addDrawInstr)
+                client.on('draw_instr', () => {this.addDrawInstr()})
             } else {
                 client.on('draw_instr', () => {})
             }
