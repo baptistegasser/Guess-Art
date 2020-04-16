@@ -111,7 +111,7 @@ class Room extends React.Component {
 
     render(){
         let boss = false;
-        let tabPlayers = {1:{pseudo:"ben",score:1500,boss:true},2:{pseudo:"Darsk",score:1800,boss:false}}
+        let tabPlayers = {1:{pseudo:"ben",score:1500,boss:true},2:{pseudo:"baptiste",score:1800,boss:false}}
 
         console.log("boss cuurent " + this.state.boss+ " joueurs co "+this.props.user)
 
