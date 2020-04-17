@@ -109,7 +109,7 @@ class Room extends React.Component {
     componentDidMount() {
         const room_id = window.location.pathname.replace('/room/','');
         this.socket.on("connect",()=>{this.socket.emit("join_room", room_id)})
-        this.socket.on("boss",(data)=>this.setState({boss : data}))
+        this.socket.on("boss",(data)=>{this.setState({boss : data})})
     }
 
     render(){
