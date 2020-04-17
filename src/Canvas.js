@@ -5,7 +5,6 @@ class Canvas extends React.Component {
     constructor(props) {
         super(props);
         this.props.socket.on('draw_instr', (data) => this.updateDraw(data))
-        this.canvas = <canvas id="canvas" width="700" height="600"/>
         this.ctx = null;
         this.clicked = false;
         this.last_x = 0;
@@ -78,7 +77,9 @@ class Canvas extends React.Component {
     }
 
     render() {
-        return this.canvas
+        return (
+            <canvas id="canvas" width="700" height="600"/>
+        );
     }
 
 }
