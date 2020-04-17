@@ -6,6 +6,9 @@ import ConnectForm from './ConnectForm';
 import Verification from '../Verification';
 import { signIn } from '../store/actions';
 
+const mapStateToProps = state => ({
+    isLogged: state.isLogged
+});
 /**
  * Map allowing to use the redux action to sign in
  */
@@ -35,6 +38,11 @@ class SigninForm extends React.Component{
 
         this.handleChange = this.handleChange.bind(this);
         this.checkAndSubmit = this.checkAndSubmit.bind(this);
+
+        // Check if already logged
+        if (this.props.isLogged === true) {
+            this.state.success = true;
+        }
     }
 
     /**
@@ -149,6 +157,6 @@ class SigninForm extends React.Component{
 }
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps()
 )(SigninForm);
