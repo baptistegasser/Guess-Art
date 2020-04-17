@@ -103,6 +103,11 @@ class Room extends React.Component {
         this.socket.emit("leave_room");
     }
 
+    clearCanvas()
+    {
+        //TODO reformater draw-instr pour clear canvas
+    }
+
     /**
      * Once the component is mounted we can start to listen for event
      */
@@ -117,8 +122,7 @@ class Room extends React.Component {
         let tabPlayers = {1:{pseudo:"ben",score:1500,boss:true},2:{pseudo:"baptiste",score:1800,boss:false}}
 
         console.log(this.state.boss)
-
-        console.log("boss cuurent " + this.state.boss+ " joueurs co "+this.props.user)
+        console.log(this.props.user)
 
         if (this.state.boss === this.props.user)
         {
@@ -153,11 +157,18 @@ class Room extends React.Component {
             return(<button className="width " key={val} id={val}  onClick={this.clickWidth} style={{backgroundImage: 'url(' + picture + ')'}}/>)
         });
 
-        let tabTool = ['eraser','bucket'];
+        let tabTool = ['eraser','bucket','trash'];
         let selectorTool = tabTool.map(val=>{
             let picture = process.env.PUBLIC_URL + '/tool/'+val+'.png';
-            return(<button className="tool"  key={val} id={val} onClick={this.clickTool} style={{backgroundImage: 'url('+picture+')'}}/>)
+            if (val === 'trash')
+            {
+                return (<button className="trash"  onClick={this.clearCanvas} style={{backgroundImage: 'url('+picture+')'}}/>)
+            }
+            else
+                return(<button className="tool"  key={val} id={val} onClick={this.clickTool} style={{backgroundImage: 'url('+picture+')'}}/>)
         });
+
+
 
         if (boss === false)
         {

@@ -6,7 +6,6 @@ class Canvas extends React.Component {
         super(props);
         this.props.socket.on('draw_instr', (data) => this.updateDraw(data))
         this.canvasRef = React.createRef();
-
         this.ctx = null;
         this.clicked = false;
         this.last_x = 0;
@@ -20,6 +19,13 @@ class Canvas extends React.Component {
         for (let instr of data) {
             this.draw_line(instr.coordinates[0], instr.coordinates[1], instr.coordinates[2], instr.coordinates[3], instr.color, instr.width, instr.tool)
         }
+    }
+
+    clearCanvas()
+    {
+        const canvas = this.canvasRef.current
+        this.ctx = canvas.getContext('2d')
+        this.ctx.clearRect(0,0,700,600)
     }
 
     draw_line(last_x, last_y, x, y, color, width, tool) {
