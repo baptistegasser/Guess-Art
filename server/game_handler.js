@@ -24,7 +24,7 @@ class GameHandler {
 
     setBoss(socket) {
         this._boss = socket;
-        this._room.broadcast('boss', this._room.getUsername(socket))
+        this._room.broadcast('boss', this._socketToUser.get(socket).username)
         this.log(`${this._room.getUsername(socket)} is the new boss !`);
     }
 
@@ -69,7 +69,7 @@ class GameHandler {
 
         // Message to broadcast to other players
         let data = {
-            username: this._room.getUsername(socket),
+            username: this._socketToUser.get(socket).username,
             message: message
         };
 
@@ -79,7 +79,7 @@ class GameHandler {
             socket.emit('guess_succes');
 
             data.username = '';
-            data.message = `${this._room.getUsername(socket)} guessed the word !`;
+            data.message = `${this._socketToUser.get(socket).username} guessed the word !`;
         }
         // Send the message
         this._room.broadcast('user_msg', data);
