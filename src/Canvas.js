@@ -57,14 +57,14 @@ class Canvas extends React.Component {
             case "mousemove":
                 if (!this.clicked) break;
                 this.draw_line(this.last_x, this.last_y, x, y, this.props.color, this.props.width, this.props.tool)
-                this.last_x = x;
-                this.last_y = y;
                 this.props.socket.emit("draw_instr", {
                     coordinates: [this.last_x, this.last_y, x, y],
                     color:  this.props.color,
                     tool:   this.props.tool,
                     width:  this.props.width
-                })
+                });
+                this.last_x = x;
+                this.last_y = y;
                 break;
             case "mouseup":
             case "mouseout":

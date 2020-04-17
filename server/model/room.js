@@ -13,7 +13,7 @@ class Room {
         /**
          * @type {SocketIO.Socket[]}
          */
-        this._connectedClient = new Array(this.max_player);
+        this._connectedClient = new Array(this.maxPlayerCount).fill(undefined);
         this.playerCount = 0;
 
         this._gameHandler = new GameHandler(this);
@@ -112,14 +112,16 @@ class Room {
         for (let i = 0, l = this._connectedClient.length; i < l; ++i) {
             if (this._connectedClient[i] === undefined) {
                 this._connectedClient[i] = socket;
+                break;
             }
         }
 
         this.playerCount += 1;
         socket.join(this._id);
-        socket.emit('draw_instr', this._gameHandler._drawingInstrHistory);
-        this.broadcastFrom(socket, 'user_joined', this.getUsername(socket));
-        this._gameHandler.addUser(socket);
+        socket.emit('draw_instr', this._gameHandler.getDrawInstr());
+        socket.emit('game_info', { draw_instr: this._gameHandler.getDrawInstr(), players: this._gameHandler.getAllPlayers() });
+        this._gameHandler.addUser(socket, this.getUsername(socket));
+        this.broadcast('user_joined', this._gameHandler.getPlayer(socket));
     }
 
     removeClient(socket) {
@@ -127,6 +129,7 @@ class Room {
         if (!this.isConnected(socket)) throw new Error('Client not connected !');
 
         this.playerCount -= 1;
+        this.broadcastFrom(socket, 'user_leaved', this._gameHandler.getPlayer(socket));
         delete this._connectedClient[this._connectedClient.indexOf(socket)];
         this._gameHandler.removeUser(socket);
     }
