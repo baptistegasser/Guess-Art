@@ -68,17 +68,17 @@ class Canvas extends React.Component {
     }
 
     componentDidMount() {
-        var canvas = document.getElementById("canvas")
+        const canvas = this.refs.canvas
         this.ctx = canvas.getContext('2d')
         canvas.addEventListener("mousedown", event => this.handler(event))
         canvas.addEventListener("mouseup",   event => this.handler(event))
-        canvas.addEventListener("mouseout",   event => this.handler(event))
+        canvas.addEventListener("mouseout",  event => this.handler(event))
         canvas.addEventListener("mousemove", event => this.handler(event))
     }
 
     render() {
         return (
-            <canvas id="canvas" width="700" height="600"/>
+            <canvas ref="canvas" width="700" height="600"/>
         );
     }
 
