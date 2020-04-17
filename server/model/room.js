@@ -117,9 +117,9 @@ class Room {
 
         this.playerCount += 1;
         socket.join(this._id);
+        this.broadcastFrom(socket, 'user_joined', this._gameHandler.getPlayer(socket));
         socket.emit('draw_instr', this._gameHandler.getDrawInstr());
-        socket.emit('game_info', { draw_instr: this._gameHandler.getDrawInstr(), players: this._gameHandler.getPlayerScores() })
-        this.broadcastFrom(socket, 'user_joined', this.getUsername(socket));
+        socket.emit('game_info', { draw_instr: this._gameHandler.getDrawInstr(), players: this._gameHandler.getAllPlayers() });
         this._gameHandler.addUser(socket);
     }
 
@@ -128,6 +128,7 @@ class Room {
         if (!this.isConnected(socket)) throw new Error('Client not connected !');
 
         this.playerCount -= 1;
+        this.broadcastFrom(socket, 'user_leaved', this._gameHandler.getPlayer(socket));
         delete this._connectedClient[this._connectedClient.indexOf(socket)];
         this._gameHandler.removeUser(socket);
     }
