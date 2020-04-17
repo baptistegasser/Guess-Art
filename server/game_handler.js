@@ -23,14 +23,6 @@ class GameHandler {
     }
 
     setBoss(socket) {
-        for (let client of this._socketToUser.keys()) {
-            if (client === socket) {
-                client.on('draw_instr', (draw_instr) => {this.addDrawInstr(socket, draw_instr)})
-            } else {
-                client.on('draw_instr', () => {})
-            }
-        }
-
         this._boss = socket;
         this._room.broadcast('boss', this._room.getUsername(socket))
         this.log(`${this._room.getUsername(socket)} is the new boss !`);
@@ -62,6 +54,7 @@ class GameHandler {
         });
 
         socket.on('guess', message => this.submitGuess(socket, message));
+        socket.on('draw_instr', (draw_instr) => {this.addDrawInstr(socket, draw_instr)});
 
         if (!this._gameStarted && this._room.playerCount >= this._room.minPlayerToStart) {
             this.startGame();
@@ -98,6 +91,8 @@ class GameHandler {
     }
 
     addDrawInstr(socket, draw_instr) {
+        if (!this.isBoss(socket)) return;
+
         this._drawingInstrHistory.push(draw_instr);
         this._room.broadcastFrom(socket, 'draw_instr', draw_instr);
     }
