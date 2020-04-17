@@ -117,7 +117,8 @@ class Room {
 
         this.playerCount += 1;
         socket.join(this._id);
-        socket.emit('draw_instr', this._gameHandler._drawingInstrHistory);
+        socket.emit('draw_instr', this._gameHandler.getDrawInstr());
+        socket.emit('game_info', { draw_instr: this._gameHandler.getDrawInstr(), players: this._gameHandler.getPlayerScores() })
         this.broadcastFrom(socket, 'user_joined', this.getUsername(socket));
         this._gameHandler.addUser(socket);
     }

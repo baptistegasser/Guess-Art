@@ -94,7 +94,7 @@ class GameHandler {
         if (!this.isBoss(socket)) return;
 
         this._drawingInstrHistory.push(draw_instr);
-        this._room.broadcastFrom(socket, 'draw_instr', draw_instr);
+        this._room.broadcastFrom(socket, 'draw_instr', [draw_instr]);
     }
 
     getDrawInstr() {
@@ -230,6 +230,14 @@ class GameHandler {
 
         this._room.broadcast('game_end', final_scores);
         setTimeout(this.startRound, 10 * 1000);
+    }
+
+    /**
+     * Return the players and there score
+     * @returns {{username: string, score: number}[]}
+     */
+    getPlayerScores() {
+        return this._socketToUser.values();
     }
 
     log(message) {
