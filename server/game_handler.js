@@ -229,7 +229,7 @@ class GameHandler {
         });
 
         this._room.broadcast('game_end', final_scores);
-        setTimeout(this.startRound, 10 * 1000);
+        setTimeout(() => { this.startRound() }, 10 * 1000);
     }
 
     /**
