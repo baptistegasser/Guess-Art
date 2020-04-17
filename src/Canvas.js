@@ -61,7 +61,7 @@ class Canvas extends React.Component {
                 this.last_y = y;
             }
         }
-        if (event.type === "mouseup") {
+        if (event.type === "mouseup" || event.type === "mouseout") {
             this.clicked = false;
         }
 
@@ -73,6 +73,7 @@ class Canvas extends React.Component {
         this.g = canvas.getContext('2d')
         canvas.addEventListener("mousedown", event => this.handler(event))
         canvas.addEventListener("mouseup",   event => this.handler(event))
+        canvas.addEventListener("mouseout",   event => this.handler(event))
         canvas.addEventListener("mousemove", event => this.handler(event))
     }
 
