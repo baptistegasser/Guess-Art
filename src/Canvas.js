@@ -18,8 +18,6 @@ class Canvas extends React.Component {
         for (let instr of data) {
             this.draw_line(instr.coordinates[0], instr.coordinates[1], instr.coordinates[2], instr.coordinates[3], instr.color, instr.width, instr.tool)
         }
-
-
     }
 
     draw_line(last_x, last_y, x, y, color, width, tool) {
@@ -39,32 +37,34 @@ class Canvas extends React.Component {
     handler(event) {
         if (!this.props.boss) return;
 
-        var x = Math.trunc(event.offsetX)
-        var y = Math.trunc(event.offsetY)
+        const x = Math.trunc(event.offsetX)
+        const y = Math.trunc(event.offsetY)
 
-        if (event.type === "mousedown") {
-            this.clicked = true;
-            this.last_x = x;
-            this.last_y = y;
-        }
-        if (event.type === "mousemove") {
-            if (this.clicked === true) {
-                this.draw_line(this.last_x, this.last_y, x, y, this.props.color, this.props.width, this.props.tool)
-                this.props.socket.emit("draw_instr", [{
-                    coordinates: [this.last_x, this.last_y, x, y],
-                    color: this.props.color,
-                    tool: this.props.tool,
-                    width: this.props.width
-                }])
+        switch(event.type) {
+            case "mousedown":
                 this.last_x = x;
                 this.last_y = y;
-            }
+                this.clicked = true;
+                break;
+            case "mousemove":
+                if (!this.clicked) break;
+                this.draw_line(this.last_x, this.last_y, x, y, this.props.color, this.props.width, this.props.tool)
+                this.last_x = x;
+                this.last_y = y;
+                this.props.socket.emit("draw_instr", {
+                    coordinates: [this.last_x, this.last_y, x, y],
+                    color:  this.props.color,
+                    tool:   this.props.tool,
+                    width:  this.props.width
+                })
+                break;
+            case "mouseup":
+            case "mouseout":
+                this.clicked = false;
+                break;
+            default:
+                console.error('Unknown canvas event !');
         }
-        if (event.type === "mouseup" || event.type === "mouseout") {
-            this.clicked = false;
-        }
-
-
     }
 
     componentDidMount() {
