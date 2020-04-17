@@ -237,7 +237,7 @@ class GameHandler {
      * @returns {{username: string, score: number}[]}
      */
     getAllPlayers() {
-        return this._socketToUser.values();
+        return Array.from(this._socketToUser.values());
     }
 
     getPlayer(socket) {
