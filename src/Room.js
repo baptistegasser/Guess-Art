@@ -1,7 +1,7 @@
 import React from 'react';
 import './Room.css';
 import Canvas from "./Canvas.js";
-import Player from "./Player";
+import PlayerList from './Room/Players/PlayerList'
 import Chrono from "./Chrono";
 import {Container} from "react-bootstrap";
 import {Col} from "react-bootstrap";
@@ -127,10 +127,6 @@ class Room extends React.Component {
 
         console.log("BOSS ="+boss )
 
-        let players = Object.entries(tabPlayers).map(([key,val])=>{
-            return (<Player key={val.pseudo} pseudo={val.pseudo} score={val.score} boss={val.boss}/>)
-        });
-
 
         let tabColors = ['rgb(255, 0, 0)','rgb(0, 0, 255)','rgb(0, 255, 0)','rgb(102, 51, 0)','rgb(255, 255, 0)','rgb(255, 102, 204)','rgb(0,0,0)','rgb(255, 255, 255)','rgb(255, 102, 0)','rgb(204, 0, 153)','rgb(113, 113, 113)']
         let selectorColor = tabColors.map(col=>{
@@ -172,7 +168,7 @@ class Room extends React.Component {
                     <Col><button onClick={this.leaveRoom}>Quitter le salon</button></Col>
                 </Row>
                 <Row style={{margin:0}}>
-                    <Col xs={3}><div id="HboxPlayer">{players}</div></Col>
+                    <Col xs={3}><PlayerList socket={this.socket}/></Col>
                     <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={boss} socket={this.socket}/></div></Col>
                     <Col xs={2}><Chat socket={this.socket} boss={boss}/></Col>
                 </Row>
