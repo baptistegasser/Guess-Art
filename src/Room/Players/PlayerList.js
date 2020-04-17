@@ -38,7 +38,7 @@ class PlayerList extends React.Component {
 
     render() {
         const players = this.state.players.map(val => {
-            return <Player key={val.username} pseudo={val.username} score={val.score} boss={this.props.user === this.state.boss}/>;
+            return <Player key={val.username} pseudo={val.username} score={val.score} boss={val.username === this.state.boss}/>;
         });
 
         return (
