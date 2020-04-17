@@ -13,7 +13,7 @@ class Room {
         /**
          * @type {SocketIO.Socket[]}
          */
-        this._connectedClient = new Array(this.max_player);
+        this._connectedClient = new Array(this.maxPlayerCount).fill(undefined);
         this.playerCount = 0;
 
         this._gameHandler = new GameHandler(this);
@@ -112,6 +112,7 @@ class Room {
         for (let i = 0, l = this._connectedClient.length; i < l; ++i) {
             if (this._connectedClient[i] === undefined) {
                 this._connectedClient[i] = socket;
+                break;
             }
         }
 
@@ -120,7 +121,7 @@ class Room {
         socket.emit('draw_instr', this._gameHandler.getDrawInstr());
         socket.emit('game_info', { draw_instr: this._gameHandler.getDrawInstr(), players: this._gameHandler.getAllPlayers() });
         this._gameHandler.addUser(socket, this.getUsername(socket));
-        this.broadcastFrom(socket, 'user_joined', this._gameHandler.getPlayer(socket));
+        this.broadcast('user_joined', this._gameHandler.getPlayer(socket));
     }
 
     removeClient(socket) {
