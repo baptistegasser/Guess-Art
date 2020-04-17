@@ -5,6 +5,8 @@ class Canvas extends React.Component {
     constructor(props) {
         super(props);
         this.props.socket.on('draw_instr', (data) => this.updateDraw(data))
+        this.canvasRef = React.createRef();
+
         this.ctx = null;
         this.clicked = false;
         this.last_x = 0;
@@ -68,7 +70,7 @@ class Canvas extends React.Component {
     }
 
     componentDidMount() {
-        const canvas = this.refs.canvas
+        const canvas = this.canvasRef.current
         this.ctx = canvas.getContext('2d')
         canvas.addEventListener("mousedown", event => this.handler(event))
         canvas.addEventListener("mouseup",   event => this.handler(event))
@@ -78,7 +80,7 @@ class Canvas extends React.Component {
 
     render() {
         return (
-            <canvas ref="canvas" width="700" height="600"/>
+            <canvas ref={this.canvasRef} id="canvas" width="700" height="600"/>
         );
     }
 
