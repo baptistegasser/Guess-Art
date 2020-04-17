@@ -6,7 +6,7 @@ class Canvas extends React.Component {
         super(props);
         this.props.socket.on('draw_instr', (data) => this.updateDraw(data))
         this.canvas = <canvas id="canvas" width="700" height="600"/>
-        this.g = null;
+        this.ctx = null;
         this.clicked = false;
         this.last_x = 0;
         this.last_y = 0;
@@ -24,17 +24,17 @@ class Canvas extends React.Component {
     }
 
     draw_line(last_x, last_y, x, y, color, width, tool) {
-        this.g.beginPath()
-        this.g.moveTo(last_x, last_y)
-        this.g.lineTo(x, y)
+        this.ctx.beginPath()
+        this.ctx.moveTo(last_x, last_y)
+        this.ctx.lineTo(x, y)
         if (tool === "eraser") {
-            this.g.strokeStyle = 'white';
+            this.ctx.strokeStyle = 'white';
         } else {
-            this.g.strokeStyle = color
+            this.ctx.strokeStyle = color
         }
-        this.g.lineCap = 'round';
-        this.g.lineWidth = width
-        this.g.stroke()
+        this.ctx.lineCap = 'round';
+        this.ctx.lineWidth = width
+        this.ctx.stroke()
     }
 
     handler(event) {
@@ -70,7 +70,7 @@ class Canvas extends React.Component {
 
     componentDidMount() {
         var canvas = document.getElementById("canvas")
-        this.g = canvas.getContext('2d')
+        this.ctx = canvas.getContext('2d')
         canvas.addEventListener("mousedown", event => this.handler(event))
         canvas.addEventListener("mouseup",   event => this.handler(event))
         canvas.addEventListener("mouseout",   event => this.handler(event))
