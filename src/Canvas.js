@@ -75,6 +75,31 @@ class Canvas extends React.Component {
         }
     }
 
+    setOverlay(text)
+    {
+        let canvas = document.getElementById('canvas');
+        canvas.style.width= '0px'
+        canvas.style.height ='0px'
+        let overlay  = document.getElementById('overlay');
+        overlay.style.width = '700px'
+        overlay.style.height = '600px'
+        let overlayText  = document.getElementById('text-overlay');
+        overlayText.innerText = text
+
+    }
+
+    setCanvas()
+    {
+        let canvas = document.getElementById('canvas');
+        canvas.style.width= '700px'
+        canvas.style.height ='600px'
+        let overlay  = document.getElementById('overlay');
+        overlay.style.width = '0px'
+        overlay.style.height = '0px'
+        let overlayText  = document.getElementById('text-overlay');
+        overlayText.innerHTML = ""
+    }
+
     componentDidMount() {
         const canvas = this.canvasRef.current
         this.ctx = canvas.getContext('2d')
@@ -84,9 +109,14 @@ class Canvas extends React.Component {
         canvas.addEventListener("mousemove", event => this.handler(event))
     }
 
+
+
     render() {
         return (
-            <canvas ref={this.canvasRef} id="canvas" width="700" height="600"/>
+            <div>
+                <div id="overlay" ><p id="text-overlay" style={{ textAlign: 'center',fontSize: '30px'}}></p></div>
+                <canvas ref={this.canvasRef} id="canvas" width="700" height="600"/>
+            </div>
         );
     }
 
