@@ -1,7 +1,12 @@
 const RoomInfoReducer = (state = {
     players: [],
     boss: "",
-    isBoss: false
+    isBoss: false,
+    tool: {
+        type: '',
+        width: 0,
+        color: 'rgb(255, 255, 255)'
+    }
 }, action) => {
     const listContainPlayer = player => {
         for(let i = 0, l = state.players.length; i < l; ++i) {
@@ -51,6 +56,31 @@ const RoomInfoReducer = (state = {
             }
             // Normaly netheir reached, fallback is player not found in for loop
             return state;
+
+        case 'SET_TOOL_TYPE':
+            return {
+                ...state,
+                tool: {
+                    ...state.tool,
+                    type: action.toolType
+                }
+            }
+        case 'SET_TOOL_WIDTH':
+            return {
+                ...state,
+                tool: {
+                    ...state.tool,
+                    width: action.width
+                }
+            }
+        case 'SET_TOOL_COLOR':
+            return {
+                ...state,
+                tool: {
+                    ...state.tool,
+                    color: action.color
+                }
+            }
 
         default:
             return state;
