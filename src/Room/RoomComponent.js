@@ -18,7 +18,7 @@ const mapDispatchToProps = () => {
     };
 };
 
-class RoomComponent extends React.Component {
+export class RoomComponent extends React.Component {
     setBoss(...args) {
         this.props.setBoss(...args);
     }
@@ -48,7 +48,11 @@ class RoomComponent extends React.Component {
     }
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps(),
-)(RoomComponent);
+export function connectRoomComponent(component){
+    return connect(
+        mapStateToProps,
+        mapDispatchToProps(),
+    )(component);
+}
+
+export default connectRoomComponent(RoomComponent);
