@@ -19,32 +19,32 @@ const mapDispatchToProps = () => {
 };
 
 class RoomComponent extends React.Component {
-    setBoss() {
-        this.props.setBoss();
+    setBoss(...args) {
+        this.props.setBoss(...args);
     }
 
-    setIsBoss() {
-        this.props.setIsBoss();
+    setIsBoss(...args) {
+        this.props.setIsBoss(...args);
     }
 
-    addPlayer() {
-        this.props.addPlayer();
+    addPlayer(...args) {
+        this.props.addPlayer(...args);
     }
 
-    removePlayer() {
-        this.props.removePlayer();
+    removePlayer(...args) {
+        this.props.removePlayer(...args);
     }
 
-    setTool() {
-        this.props.setTool();
+    setTool(...args) {
+        this.props.setTool(...args);
     }
 
-    setWidth() {
-        this.props.setWidth();
+    setWidth(...args) {
+        this.props.setWidth(...args);
     }
 
-    setColor() {
-        this.props.setColor();
+    setColor(...args) {
+        this.props.setColor(...args);
     }
 }
 
