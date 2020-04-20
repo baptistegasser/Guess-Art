@@ -3,56 +3,50 @@ import {RoomComponent, connectRoomComponent} from '../RoomComponent';
 
 
 
-class Chat extends RoomComponent
-{
+class Chat extends RoomComponent {
     constructor(props) {
         super(props);
-        this.props.socket.on('user_msg',(data) => this.updateChat(data))
-        this.props.socket.on('guess_success',() => this.successGuess())
-        this.writeMessage = this.writeMessage.bind(this)
-        this.handleChange = this.handleChange.bind(this)
-        this.updateChat = this.updateChat.bind(this)
-        this.successGuess = this.successGuess.bind(this)
+        this.props.socket.on('user_msg', (data) => this.displayMessage(data));
+        this.props.socket.on('guess_success', () => this.displayGuessSuccess());
+
+        this.onSubmit = this.onSubmit.bind(this);
+        this.displayMessage = this.displayMessage.bind(this);
+        this.displayGuessSuccess = this.displayGuessSuccess.bind(this);
+
+        this.chatRef = React.createRef();
+        this.inputRef = React.createRef();
     }
 
-    handleChange(event){
+    displayMessage(data) {
+        this.chatRef.current.innerHTML += "<p style='margin-bottom: 0'>" +data.username+">"+data.message +" </p>"
     }
 
-    writeMessage(event)
-    {
-        if (event.key === "Enter")
-        {
-            event.preventDefault();
-            var inp = document.getElementById('input-msg')
-            console.log(inp.value)
-            this.props.socket.emit("guess",inp.value);
-            inp.value = "";
-
-        }
-
+    displayGuessSuccess() {
+        this.chatRef.current.innerHTML += "<p style='margin-bottom: 0;color: green'> Tu as trouvé le mot! Bravo!</p>"
     }
 
-    updateChat(data)
-    {
-        document.getElementById("chat").innerHTML = document.getElementById("chat").innerHTML + "<p style='margin-bottom: 0'>" +data.username+">"+data.message +" </p>"
-    }
-
-    successGuess()
-    {
-        document.getElementById("chat").innerHTML = document.getElementById("chat").innerHTML + "<p style='margin-bottom: 0;color: green'> Tu as trouvé le mot! Bravo!</p>"
+    onSubmit(event) {
+        event.preventDefault();
+        this.props.socket.emit("guess", this.inputRef.current.value);
+        this.inputRef.current.value = ''
     }
 
     render() {
-        if (this.props.roomInfo.isBoss === false)
-        {
-            return<div>
-                <div id="chat"></div>
-                <input id="input-msg" placeholder="Ecrire ici" onChange={this.handleChange} onKeyPress={this.writeMessage}/>
-            </div>
+        let inputForm = '';
+        if (this.props.roomInfo.isBoss === true) {
+            inputForm = (
+                <form onSubmit={this.onSubmit} >
+                    <input ref={this.inputRef} id="input-msg" placeholder="Write here"/>
+                </form>
+            );
         }
-        else
-            return <div id="chat"/>
 
+        return (
+            <div>
+                <div ref={this.chatRef} id="chat" />
+                {inputForm}
+            </div>
+        );
     }
 }
 
