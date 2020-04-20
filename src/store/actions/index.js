@@ -2,3 +2,4 @@
 // So we can use later "import { f1, f2 } from './actions'"
 export * from './isLogged';
 export * from './user';
+export * from './room';
