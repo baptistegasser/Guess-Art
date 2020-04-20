@@ -6,7 +6,7 @@ import Chrono from "./Chrono";
 import {Container} from "react-bootstrap";
 import {Col} from "react-bootstrap";
 import {Row} from "react-bootstrap";
-import Chat from "./Chat";
+import Chat from "./Room/Chat/Chat";
 import {getUsername} from './store/actions'
 import {connect} from "react-redux";
 const socketIo = require("socket.io-client");
