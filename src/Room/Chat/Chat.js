@@ -1,8 +1,9 @@
 import React from "react";
+import {RoomComponent, connectRoomComponent} from '../RoomComponent';
 
 
 
-class Chat extends React.Component
+class Chat extends RoomComponent
 {
     constructor(props) {
         super(props);
@@ -42,7 +43,7 @@ class Chat extends React.Component
     }
 
     render() {
-        if (this.props.boss === false)
+        if (this.props.roomInfo.isBoss === false)
         {
             return<div>
                 <div id="chat"></div>
@@ -55,4 +56,4 @@ class Chat extends React.Component
     }
 }
 
-export default Chat
+export default connectRoomComponent(Chat);
