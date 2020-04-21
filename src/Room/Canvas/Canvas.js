@@ -151,8 +151,16 @@ class Canvas extends RoomComponent {
             this.setOverlay("En attente de joueurs")
         else
         {
-            this.clearCanvas()
-            this.updateDraw(infos.draw_inst)
+            if (infos.roundStarted)
+            {
+                this.clearCanvas()
+                this.updateDraw(infos.draw_inst)
+            }
+            else
+            {
+                this.setOverlay("Le prochain round va bientôt commencer !")
+            }
+
 
         }
     }
