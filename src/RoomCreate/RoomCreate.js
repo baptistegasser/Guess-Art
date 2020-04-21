@@ -95,9 +95,9 @@ class RoomCreate extends React.Component {
         for (let i = 0; i < this.state.room_list.length; ) {
             let element;
             if (i + 1 < this.state.room_list.length) {
-                element = <tr><td>{this.createRoomLink(this.state.room_list[i])}</td><td>{this.createRoomLink(this.state.room_list[i+1])}</td></tr>;
+                element = <tr key={i}><td>{this.createRoomLink(this.state.room_list[i])}</td><td>{this.createRoomLink(this.state.room_list[i+1])}</td></tr>;
             } else {
-                element = <tr><td>{this.createRoomLink(this.state.room_list[i])}</td><td></td></tr>;
+                element = <tr key={i}><td>{this.createRoomLink(this.state.room_list[i])}</td><td></td></tr>;
             }
 
             room_table.push(element);
