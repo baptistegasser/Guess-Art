@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {signIn, setUsername} from './store/actions'
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import Room from "./Room";
+import Room from "./Room/Room";
 import Home from "./Home/Home";
 import RoomCreate from "./RoomCreate/RoomCreate";
 import { Signin, Signup, PrivateRoute } from './Connection';

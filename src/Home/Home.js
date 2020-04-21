@@ -19,7 +19,7 @@ class Home extends React.Component {
             </Row>
             <Row>
                 <Col className='text-center'>
-                    <Link to="/room">
+                    <Link to="/signin">
                         <Button size="lg" className="bg-secondary">Start playing</Button>
                     </Link>
                 </Col>
