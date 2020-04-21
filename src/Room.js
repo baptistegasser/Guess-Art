@@ -1,6 +1,6 @@
 import React from 'react';
 import './Room.css';
-import Canvas from "./Canvas.js";
+import Canvas from "./Room/Canvas/Canvas.js";
 import PlayerList from './Room/Players/PlayerList'
 import Chrono from "./Room/Chrono/Chrono";
 import { Container, Row, Col } from "react-bootstrap";
