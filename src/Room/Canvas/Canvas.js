@@ -115,9 +115,9 @@ class Canvas extends RoomComponent {
     roundEnd(infos)
     {
         let scores = "";
-        for (let player in infos.players)
+        for (let player of infos.players)
         {
-            scores += player.username + ' +' + player.score_gained + '<b>';
+            scores += player.username + ' +' + player.score_gained + '<br/>';
         }
         this.setOverlay(scores)
         this.clearCanvas()
@@ -142,7 +142,7 @@ class Canvas extends RoomComponent {
         infos.players.sort(compare)
         let textFinal = ""
         let rank = 1;
-        for(let player in infos.players)
+        for(let player of infos.players)
         {
             textFinal += rank + " " + player.username + " : " + player.score
             rank ++
@@ -160,7 +160,7 @@ class Canvas extends RoomComponent {
             if (infos.roundStarted)
             {
                 this.clearCanvas()
-                this.updateDraw(infos.draw_inst)
+                this.updateDraw(infos.draw_instr)
             }
             else
             {
