@@ -4,6 +4,9 @@
     height: 50px;
 }
 
+.row {
+    margin: 0;
+}
 
 #Canvas{
     width: 50%;

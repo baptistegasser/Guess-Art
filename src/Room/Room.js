@@ -95,17 +95,29 @@ class Room extends RoomComponent {
     render() {
         return (
             <Container fluid>
-                <Row style={{margin:0}}>
-                    <Col xs={4}><Chrono socket = {this.socket} /></Col>
-                    <Col xs={6}> <h2>_ _ _ _ _ _ _ </h2></Col>
-                    <Col><button onClick={this.leaveRoom}>Quitter le salon</button></Col>
+                <Row>
+                    <Col xs={4}>
+                        <Chrono socket = {this.socket} />
+                    </Col>
+                    <Col xs={6}>
+                        <h2>_ _ _ _ _ _ _ </h2>
+                    </Col>
+                    <Col>
+                        <button onClick={this.leaveRoom}>Quitter le salon</button>
+                    </Col>
                 </Row>
-                <Row style={{margin:0}}>
-                    <Col xs={3}><PlayerList socket={this.socket}/></Col>
-                    <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={this.props.roomInfo.isBoss} socket={this.socket}/></div></Col>
-                    <Col xs={2}><Chat socket={this.socket} boss={this.props.roomInfo.isBoss}/></Col>
+                <Row>
+                    <Col xs={3}>
+                        <PlayerList socket={this.socket}/>
+                    </Col>
+                    <Col xs={7}>
+                        <Canvas socket={this.socket}/>
+                    </Col>
+                    <Col xs={2}>
+                        <Chat socket={this.socket}/>
+                    </Col>
                 </Row>
-                <Row style={{margin:0}}>
+                <Row>
                     <Col xs={{ span: 7, offset: 3 }}>
                         {this.props.roomInfo.isBoss ? <ToolBar></ToolBar> : '' }
                     </Col>
