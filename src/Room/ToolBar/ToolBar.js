@@ -59,7 +59,7 @@ class ToolBar extends RoomComponent {
     }
 
     clearCanvas() {
-        //TODO reformater draw-instr pour clear canvas
+        this.props.socket.emit("draw_instr",{type:'trash'})
     }
 
     render() {

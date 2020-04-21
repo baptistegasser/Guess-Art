@@ -22,7 +22,10 @@ class Canvas extends RoomComponent {
 
     updateDraw(data) {
         for (let instr of data) {
-            this.draw_line(instr.coordinates[0], instr.coordinates[1], instr.coordinates[2], instr.coordinates[3], instr.color, instr.width, instr.tool)
+            if (instr.type === 'line')
+                this.draw_line(instr.data.coordinates[0], instr.data.coordinates[1], instr.data.coordinates[2], instr.data.coordinates[3], instr.data.color, instr.data.width, instr.data.tool)
+            else if (instr.type ==='trash')
+                this.clearCanvas()
         }
     }
 
@@ -63,10 +66,12 @@ class Canvas extends RoomComponent {
                 if (!this.clicked) break;
                 this.draw_line(this.last_x, this.last_y, x, y, this.props.roomInfo.tool.color, this.props.roomInfo.tool.width, this.props.roomInfo.tool.type)
                 this.props.socket.emit("draw_instr", {
-                    coordinates: [this.last_x, this.last_y, x, y],
-                    color:  this.props.roomInfo.tool.color,
-                    tool:   this.props.roomInfo.tool.type,
-                    width:  this.props.roomInfo.tool.width
+                    type : 'line',
+                    data:{  coordinates: [this.last_x, this.last_y, x, y],
+                            color:  this.props.roomInfo.tool.color,
+                            tool:   this.props.roomInfo.tool.type,
+                            width:  this.props.roomInfo.tool.width
+                    }
                 });
                 this.last_x = x;
                 this.last_y = y;

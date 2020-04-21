@@ -119,7 +119,7 @@ class Room extends RoomComponent {
                 </Row>
                 <Row>
                     <Col xs={{ span: 7, offset: 3 }}>
-                        {this.props.roomInfo.isBoss ? <ToolBar></ToolBar> : '' }
+                        {this.props.roomInfo.isBoss ? <ToolBar socket={this.socket}></ToolBar> : '' }
                     </Col>
                 </Row>
             </Container>
