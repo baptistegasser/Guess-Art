@@ -1,13 +1,13 @@
 import React from 'react';
 import './Room.css';
-import Canvas from "./Room/Canvas/Canvas.js";
-import PlayerList from './Room/Players/PlayerList'
-import Chrono from "./Room/Chrono/Chrono";
+import Canvas from "./Canvas/Canvas.js";
+import PlayerList from './Players/PlayerList'
+import Chrono from "./Chrono/Chrono";
 import { Container, Row, Col } from "react-bootstrap";
-import Chat from "./Room/Chat/Chat";
-import {getUsername} from './store/actions'
+import Chat from "./Chat/Chat";
+import {getUsername} from '../store/actions'
 import {connect} from "react-redux";
-import ToolBar from './Room/ToolBar/ToolBar'
+import ToolBar from './ToolBar/ToolBar'
 const socketIo = require("socket.io-client");
 
 const mapStateToProps = state => (
