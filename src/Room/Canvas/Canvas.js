@@ -1,7 +1,7 @@
 import React from "react";
+import { RoomComponent, connectRoomComponent } from '../RoomComponent';
 
-
-class Canvas extends React.Component {
+class Canvas extends RoomComponent {
     constructor(props) {
         super(props);
         this.props.socket.on('draw_instr', (data) => this.updateDraw(data))
@@ -43,7 +43,7 @@ class Canvas extends React.Component {
     }
 
     handler(event) {
-        if (!this.props.boss) return;
+        if (!this.props.roomInfo.isBoss) return;
 
         const x = Math.trunc(event.offsetX)
         const y = Math.trunc(event.offsetY)
@@ -56,12 +56,12 @@ class Canvas extends React.Component {
                 break;
             case "mousemove":
                 if (!this.clicked) break;
-                this.draw_line(this.last_x, this.last_y, x, y, this.props.color, this.props.width, this.props.tool)
+                this.draw_line(this.last_x, this.last_y, x, y, this.props.roomInfo.tool.color, this.props.roomInfo.tool.width, this.props.roomInfo.tool.type)
                 this.props.socket.emit("draw_instr", {
                     coordinates: [this.last_x, this.last_y, x, y],
-                    color:  this.props.color,
-                    tool:   this.props.tool,
-                    width:  this.props.width
+                    color:  this.props.roomInfo.tool.color,
+                    tool:   this.props.roomInfo.tool.type,
+                    width:  this.props.roomInfo.tool.width
                 });
                 this.last_x = x;
                 this.last_y = y;
@@ -122,4 +122,4 @@ class Canvas extends React.Component {
 
 }
 
-export default Canvas
+export default connectRoomComponent(Canvas);
