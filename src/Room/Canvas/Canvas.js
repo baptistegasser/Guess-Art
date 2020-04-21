@@ -5,6 +5,11 @@ class Canvas extends RoomComponent {
     constructor(props) {
         super(props);
         this.props.socket.on('draw_instr', (data) => this.updateDraw(data))
+        this.props.socket.on('round_start',(infos)=>this.roundStart(infos))
+        this.props.socket.on('round_end',(infos)=>this.roundEnd(infos))
+        this.props.socket.on('game_start',(infos)=>this.gameStart(infos))
+        this.props.socket.on('game_end',(infos)=>this.gameEnd(infos))
+        this.props.socket.on('game_info',(infos)=>this.gameInfo(infos))
         this.canvasRef = React.createRef();
         this.ctx = null;
         this.clicked = false;
@@ -94,6 +99,62 @@ class Canvas extends RoomComponent {
         overlay.style.display = 'none'
         let overlayText  = document.getElementById('text-overlay');
         overlayText.innerHTML = ""
+    }
+
+    roundStart(infos)
+    {
+        this.setCanvas();
+    }
+
+    roundEnd(infos)
+    {
+        let scores = "";
+        for (let player in infos.players)
+        {
+            scores += player.username + ' +' + player.score_gained + '<b>';
+        }
+        this.setOverlay(scores)
+        this.clearCanvas()
+    }
+
+    gameStart(infos)
+    {
+        this.setOverlay("La partie va commencer dans " + infos.delay + " secondes")
+    }
+
+    gameEnd(infos)
+    {
+        function compare(a,b) {
+            if (a.score > b.score)
+                return 1;
+            else if (a.score < b.score)
+                return -1;
+            else
+                return 0;
+        }
+
+        infos.players.sort(compare)
+        let textFinal = ""
+        let rank = 1;
+        for(let player in infos.players)
+        {
+            textFinal += rank + " " + player.username + " : " + player.score
+            rank ++
+        }
+        this.setOverlay(textFinal);
+
+    }
+
+    gameInfo(infos)
+    {
+        if (infos.gameStarted === false)
+            this.setOverlay("En attente de joueurs")
+        else
+        {
+            this.clearCanvas()
+            this.updateDraw(infos.draw_inst)
+
+        }
     }
 
     componentDidMount() {
