@@ -25,37 +25,76 @@ const mapDispatchToProps = () => {
 class Room extends RoomComponent {
     constructor(props) {
         super(props);
-        this.socket = socketIo()
+        this.socket = socketIo();
         this.state = {color:"",tool:"",width:"",boss:""}
-        this.leaveRoom = this.leaveRoom.bind(this)
+        this.leaveRoom    = this.leaveRoom.bind(this);
+        this.onRoundStart = this.onRoundStart.bind(this);
+        this.onRoundEnd   = this.onRoundEnd.bind(this);
+        this.onGameInfo   = this.onGameInfo.bind(this);
+        this.onGameStart  = this.onGameStart.bind(this);
+        this.onGameEnd    = this.onGameEnd.bind(this);
     }
 
-    leaveRoom()
-    {
+    leaveRoom() {
         this.socket.emit("leave_room");
     }
 
+    onRoundStart(infos) {
+        this.setBoss(infos.boss);
+        this.setIsBoss(infos.boss === this.props.user);
+        // TODO si isBoss : infos.mystery_word -> contient le mot a dessiner
+        // TODO : start chronos et tout
+        //TODO caché overlay
+    }
+
+    onRoundEnd(infos) {
+        // TODO stop chornos et tout
+        // TODO afficher l'overlay avec les cores gagné pour "infos.delay" secondes
+        // TODO increment score des joueurs
+    }
+
+    onGameInfo(infos) {
+        // Add all the player to the list
+        infos.players.map(player => this.addPlayer(player));
+
+        // Actions if the game started
+        if (infos.gameStarted === true) {
+            this.setBoss(infos.boss);
+            this.setIsBoss(infos.boss === this.props.user);
+            // TODO afficher l'historique de dessins sur le canvas : infos.draw_instr
+            // TODO : start chronos : infos.timeRemaining -> temps restant en secondes
+        }
+    }
+
+    onGameStart(infos) {
+        // TODO stocké le temps du chrono pour chaque round : infos.roundDuration
+        // TODO affiché overlay "game start in x secondes" avec : info.delay -> delay avant start round
+    }
+
+    onGameEnd(infos) {
+        // TODO Stop tout ?
+        // TODO afficher scores finaux : infos.players
+    }
+
     /**
-     * Once the component is mounted we can start to listen for event
+     * Once the component is mounted we can start to listen for events
      */
     componentDidMount() {
         const room_id = window.location.pathname.replace('/room/','');
         this.socket.on("connect",()=>{this.socket.emit("join_room", room_id)})
-        this.socket.on("boss",(data)=>{this.setState({boss : data})})
+
+        this.socket.on('user_joined', (player) => this.addPlayer(player));
+        this.socket.on('user_leaved', (player) => this.removePlayer(player));
+        this.socket.on('round_start', (infos) => this.onRoundStart(infos));
+        this.socket.on('round_end',   (infos) => this.onRoundEnd(infos));
+        this.socket.on('game_info',   (infos) => this.onGameInfo(infos));
+        this.socket.on('game_start',  (infos) => this.onGameStart(infos));
+        this.socket.on('game_end',    (infos) => this.onGameEnd(infos));
     }
 
-    render(){
-        let boss = false;
-        console.log(this.state.boss)
-        console.log(this.props.user)
-
-        if (this.state.boss === this.props.user)
-        {
-            boss = true;
-        }
-
-        console.log("BOSS ="+boss )
-        return (<Container fluid>
+    render() {
+        return (
+            <Container fluid>
                 <Row style={{margin:0}}>
                     <Col xs={4}><Chrono socket = {this.socket} /></Col>
                     <Col xs={6}> <h2>_ _ _ _ _ _ _ </h2></Col>
@@ -63,18 +102,17 @@ class Room extends RoomComponent {
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={3}><PlayerList socket={this.socket}/></Col>
-                    <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={boss} socket={this.socket}/></div></Col>
-                    <Col xs={2}><Chat socket={this.socket} boss={boss}/></Col>
+                    <Col xs={7}><div id="Canvas"><Canvas id="canvas" color={this.state.color} width={this.state.width} tool={this.state.tool} boss={this.props.roomInfo.isBoss} socket={this.socket}/></div></Col>
+                    <Col xs={2}><Chat socket={this.socket} boss={this.props.roomInfo.isBoss}/></Col>
                 </Row>
                 <Row style={{margin:0}}>
                     <Col xs={{ span: 7, offset: 3 }}>
-                        {boss ? <ToolBar></ToolBar> : '' }
+                        {this.props.roomInfo.isBoss ? <ToolBar></ToolBar> : '' }
                     </Col>
                 </Row>
-
-            </Container>)
-        }
-
+            </Container>
+        );
+    }
 }
 
 export default extendedRoomConnect(mapStateToProps, mapDispatchToProps(), Room);
