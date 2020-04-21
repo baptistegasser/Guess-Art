@@ -26,7 +26,7 @@ class Room extends RoomComponent {
     constructor(props) {
         super(props);
         this.socket = socketIo();
-        this.state = {color:"",tool:"",width:"",boss:""}
+        this.state = { mysteryWord: '' };
         this.leaveRoom    = this.leaveRoom.bind(this);
         this.onRoundStart = this.onRoundStart.bind(this);
         this.onRoundEnd   = this.onRoundEnd.bind(this);
@@ -42,6 +42,7 @@ class Room extends RoomComponent {
     onRoundStart(infos) {
         this.setBoss(infos.boss);
         this.setIsBoss(infos.boss === this.props.user);
+        this.setState({ mysteryWord: infos.mysteryWord });
         // TODO si isBoss : infos.mystery_word -> contient le mot a dessiner
         // TODO : start chronos et tout
         //TODO caché overlay
@@ -100,7 +101,7 @@ class Room extends RoomComponent {
                         <Chrono socket = {this.socket} />
                     </Col>
                     <Col xs={6}>
-                        <h2>_ _ _ _ _ _ _ </h2>
+                        <h2>{this.state.mysteryWord} </h2>
                     </Col>
                     <Col>
                         <button onClick={this.leaveRoom}>Quitter le salon</button>
