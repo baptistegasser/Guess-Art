@@ -16,6 +16,10 @@ class GameHandler {
         this._gameStarted = false;
         this._roundStarted = false;
         this._roundTimeout = undefined;
+
+        this.delayBetweenRound = 5;
+        this.delayBetweenGames = 10;
+        this.delayBeforeFirstRound = 3;
     }
 
     isBoss(socket) {
@@ -167,8 +171,12 @@ class GameHandler {
         if (this._gameStarted) return;
 
         this._gameStarted = true;
-        this._room.broadcast('game_start', 3);
-        setTimeout(() => { this.startRound() }, 3 * 1000);
+        this._room.broadcast('game_start', {
+            delay: this.delayBeforeFirstRound,
+            roundDuration: this._room.roundDuration
+        });
+
+        setTimeout(() => { this.startRound() }, this.delayBeforeFirstRound * 1000);
         this.log('Starting game');
     }
 
@@ -179,7 +187,13 @@ class GameHandler {
         this._remainingRounds -= 1;
         this.initRound();
 
-        this._room.broadcast('round_start', this._room.roundDuration);
+        const roundStartData = {
+            boss: this._socketToUser(this._boss).username
+        };
+
+        this._room.broadcastFrom(this._boss, 'round_start', roundStartData);
+        this._boss.emit('round_start', { ...roundStartData, mysteryWord: this._mysteryWord });
+
         setTimeout(() => { this.endRound() }, this._room.roundDuration * 1000);
         this.log(`Starting round ${this._remainingRounds}`);
     }
@@ -213,7 +227,7 @@ class GameHandler {
 
         // Schedule next round
         if (this._remainingRounds > 0) {
-            setTimeout(() => { this.startRound() }, 5 * 1000);
+            setTimeout(() => { this.startRound() }, this.delayBetweenRound * 1000);
         } else {
             this.endGame();
         }
@@ -223,13 +237,12 @@ class GameHandler {
         this.log('Game ended');
 
         this._gameStarted = false;
-        let final_scores = [];
-        this._socketToUser.forEach((user, socket, map) => {
-            final_scores.push(user);
-        });
+        const gameEndData = {
+            players: this.getAllPlayers()
+        }
+        this._room.broadcast('game_end', gameEndData);
 
-        this._room.broadcast('game_end', final_scores);
-        setTimeout(() => { this.startRound() }, 10 * 1000);
+        setTimeout(() => { this.startGame() }, this.delayBetweenGames * 1000);
     }
 
     /**
