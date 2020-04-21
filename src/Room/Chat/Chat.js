@@ -32,13 +32,14 @@ class Chat extends RoomComponent {
     }
 
     render() {
-        let inputForm = '';
+        let inputForm = (
+            <form onSubmit={this.onSubmit} >
+                <input ref={this.inputRef} id="input-msg" placeholder="Write here"/>
+            </form>
+        );
+        // if  we are the boss remove the chat form
         if (this.props.roomInfo.isBoss === true) {
-            inputForm = (
-                <form onSubmit={this.onSubmit} >
-                    <input ref={this.inputRef} id="input-msg" placeholder="Write here"/>
-                </form>
-            );
+            inputForm = '';
         }
 
         return (
