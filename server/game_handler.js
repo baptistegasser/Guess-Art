@@ -195,7 +195,7 @@ class GameHandler {
             map.set(socket, user);
         });
 
-        this._room.broadcast('end_round', {
+        this._room.broadcast('round_end', {
             players: players
         });
 
