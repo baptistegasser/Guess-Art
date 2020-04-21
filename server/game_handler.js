@@ -16,6 +16,7 @@ class GameHandler {
         this._gameStarted = false;
         this._roundStarted = false;
         this._roundTimeout = undefined;
+        this._roundTimestamp = undefined;
 
         this.delayBetweenRound = 5;
         this.delayBetweenGames = 10;
@@ -101,10 +102,6 @@ class GameHandler {
         this._room.broadcastFrom(socket, 'draw_instr', [draw_instr]);
     }
 
-    getDrawInstr() {
-        return this._drawingInstrHistory;
-    }
-
     /**
      * Init the values for a new round
      */
@@ -147,13 +144,15 @@ class GameHandler {
     startRound() {
         if (this._roundStarted) return;
 
-        this._roundStarted = true;
-        this._remainingRounds -= 1;
         this.initRound();
 
         const roundStartData = {
-            boss: this._socketToUser(this._boss).username
+            boss: this._socketToUser.get(this._boss).username
         };
+
+        this._roundStarted = true;
+        this._remainingRounds -= 1;
+        this._roundTimestamp = (new Date()).getTime();
 
         this._room.broadcastFrom(this._boss, 'round_start', roundStartData);
         this._boss.emit('round_start', { ...roundStartData, mysteryWord: this._mysteryWord });
@@ -166,6 +165,9 @@ class GameHandler {
         this.log('Ending round before timeout');
         if (this._roundTimeout !== undefined) {
             clearInterval(this._roundTimeout);
+            this._roundStarted = false;
+            this._roundTimeout = undefined;
+            this._roundTimestamp = undefined;
         }
 
         // If the premature end is due to boss leaving handle it,
@@ -183,6 +185,7 @@ class GameHandler {
 
         this._roundStarted = false;
         this._roundTimeout = undefined;
+        this._roundTimestamp = undefined;
 
         let players = [];
         this._socketToUser.forEach((user, socket, map) => {
@@ -242,6 +245,23 @@ class GameHandler {
 
     getPlayer(socket) {
         return this._socketToUser.get(socket);
+    }
+
+    getGameInfo() {
+        let infos = {
+            draw_instr: this._drawingInstrHistory,
+            players: this.getAllPlayers(),
+            gameStarted: this._gameStarted,
+            roundStarted: this._roundStarted
+        }
+
+        // If round is still playing, send current boss
+        if (this._gameStarted && this._roundStarted) {
+            infos.boss = this._socketToUser.get(this._boss).username;
+            infos.timeRemaining = ((new Date()).getTime() - this._roundTimestamp) * 1000;
+        }
+
+        return infos;
     }
 
     log(message) {
