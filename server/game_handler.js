@@ -131,42 +131,6 @@ class GameHandler {
         this._drawingInstrHistory = [];
     }
 
-    /**
-     * Calculate the score gained for each players
-     * @returns {[Object]} A array of username and the points gained
-     */
-    calcAndSetScores() {
-        // Each user who guessed see is score being increased
-        // The chart in a decrease order: first get 100, second get 80, etc
-        // and the rest will get the last score in the chart
-        const chart = [100, 80, 60, 50];
-        let guessed = 0;
-        const max_guessed = chart.length-1;
-        // The boss will win 10 points per user who guessed
-        const bossScore = this._userWhoGuessed.length * 10;
-
-        let i = 0;
-        const scores = new Array(this._socketToUser.size);
-        this._socketToUser.forEach((user, socket, map) => {
-            if (this.isBoss(socket)) {
-                user.score += bossScore;
-                scores[i] = bossScore;
-                map.set(socket, user);
-            } else if (this._userWhoGuessed.includes(socket)) {
-                user.score += chart[guessed];
-                scores[i] = chart[guessed];
-                map.set(socket, user);
-                if (guessed < max_guessed) guessed += 1;
-            } else {
-                scores[i] = 0;
-            }
-
-            i += 1;
-        });
-
-        return Object.freeze(scores);
-    }
-
     startGame() {
         if (this._gameStarted) return;
 
@@ -220,10 +184,17 @@ class GameHandler {
         this._roundStarted = false;
         this._roundTimeout = undefined;
 
-        // Get the new scores
-        const scores = this.calcAndSetScores();
-        // Return the scores as end of round datas
-        this._room.broadcast('end_round', scores);
+        let players = [];
+        this._socketToUser.forEach((user, socket, map) => {
+            const score_gained = this.calclScoreGain(socket);
+            user.score += score_gained;
+            players.push({ ...user, score_gained: score_gained });
+            map.set(socket, user);
+        });
+
+        this._room.broadcast('end_round', {
+            players: players
+        });
 
         // Schedule next round
         if (this._remainingRounds > 0) {
@@ -231,6 +202,22 @@ class GameHandler {
         } else {
             this.endGame();
         }
+    }
+
+    calclScoreGain(socket) {
+        const chart = [100, 80, 60, 50];
+        const chart_boss = 10;
+
+        if (this.isBoss(socket)) {
+            return chart_boss * this._userWhoGuessed.length;
+        }
+        if (!this._userWhoGuessed.includes(socket)) {
+            return 0;
+        }
+
+        let index = this._userWhoGuessed[socket];
+        if (index >= chart.length) index = chart.length - 1;
+        return chart[index];
     }
 
     endGame() {
