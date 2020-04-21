@@ -78,11 +78,9 @@ class Canvas extends RoomComponent {
     setOverlay(text)
     {
         let canvas = document.getElementById('canvas');
-        canvas.style.width= '0px'
-        canvas.style.height ='0px'
+        canvas.style.display = 'none'
         let overlay  = document.getElementById('overlay');
-        overlay.style.width = '700px'
-        overlay.style.height = '600px'
+        overlay.style.display = 'block'
         let overlayText  = document.getElementById('text-overlay');
         overlayText.innerText = text
 
@@ -91,11 +89,9 @@ class Canvas extends RoomComponent {
     setCanvas()
     {
         let canvas = document.getElementById('canvas');
-        canvas.style.width= '700px'
-        canvas.style.height ='600px'
+        canvas.style.display = 'block'
         let overlay  = document.getElementById('overlay');
-        overlay.style.width = '0px'
-        overlay.style.height = '0px'
+        overlay.style.display = 'none'
         let overlayText  = document.getElementById('text-overlay');
         overlayText.innerHTML = ""
     }
