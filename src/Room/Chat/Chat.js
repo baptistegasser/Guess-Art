@@ -1,7 +1,6 @@
 import React from "react";
 import {RoomComponent, connectRoomComponent} from '../RoomComponent';
-
-
+import './Chat.css';
 
 class Chat extends RoomComponent {
     constructor(props) {
