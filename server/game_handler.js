@@ -16,6 +16,11 @@ class GameHandler {
         this._gameStarted = false;
         this._roundStarted = false;
         this._roundTimeout = undefined;
+        this._roundTimestamp = undefined;
+
+        this.delayBetweenRound = 5;
+        this.delayBetweenGames = 10;
+        this.delayBeforeFirstRound = 3;
     }
 
     isBoss(socket) {
@@ -97,10 +102,6 @@ class GameHandler {
         this._room.broadcastFrom(socket, 'draw_instr', [draw_instr]);
     }
 
-    getDrawInstr() {
-        return this._drawingInstrHistory;
-    }
-
     /**
      * Init the values for a new round
      */
@@ -127,59 +128,35 @@ class GameHandler {
         this._drawingInstrHistory = [];
     }
 
-    /**
-     * Calculate the score gained for each players
-     * @returns {[Object]} A array of username and the points gained
-     */
-    calcAndSetScores() {
-        // Each user who guessed see is score being increased
-        // The chart in a decrease order: first get 100, second get 80, etc
-        // and the rest will get the last score in the chart
-        const chart = [100, 80, 60, 50];
-        let guessed = 0;
-        const max_guessed = chart.length-1;
-        // The boss will win 10 points per user who guessed
-        const bossScore = this._userWhoGuessed.length * 10;
-
-        let i = 0;
-        const scores = new Array(this._socketToUser.size);
-        this._socketToUser.forEach((user, socket, map) => {
-            if (this.isBoss(socket)) {
-                user.score += bossScore;
-                scores[i] = bossScore;
-                map.set(socket, user);
-            } else if (this._userWhoGuessed.includes(socket)) {
-                user.score += chart[guessed];
-                scores[i] = chart[guessed];
-                map.set(socket, user);
-                if (guessed < max_guessed) guessed += 1;
-            } else {
-                scores[i] = 0;
-            }
-
-            i += 1;
-        });
-
-        return Object.freeze(scores);
-    }
-
     startGame() {
         if (this._gameStarted) return;
 
         this._gameStarted = true;
-        this._room.broadcast('game_start', 3);
-        setTimeout(() => { this.startRound() }, 3 * 1000);
+        this._room.broadcast('game_start', {
+            delay: this.delayBeforeFirstRound,
+            roundDuration: this._room.roundDuration
+        });
+
+        setTimeout(() => { this.startRound() }, this.delayBeforeFirstRound * 1000);
         this.log('Starting game');
     }
 
     startRound() {
         if (this._roundStarted) return;
 
-        this._roundStarted = true;
-        this._remainingRounds -= 1;
         this.initRound();
 
-        this._room.broadcast('round_start', this._room.roundDuration);
+        const roundStartData = {
+            boss: this._socketToUser.get(this._boss).username
+        };
+
+        this._roundStarted = true;
+        this._remainingRounds -= 1;
+        this._roundTimestamp = (new Date()).getTime();
+
+        this._room.broadcastFrom(this._boss, 'round_start', roundStartData);
+        this._boss.emit('round_start', { ...roundStartData, mysteryWord: this._mysteryWord });
+
         setTimeout(() => { this.endRound() }, this._room.roundDuration * 1000);
         this.log(`Starting round ${this._remainingRounds}`);
     }
@@ -188,6 +165,9 @@ class GameHandler {
         this.log('Ending round before timeout');
         if (this._roundTimeout !== undefined) {
             clearInterval(this._roundTimeout);
+            this._roundStarted = false;
+            this._roundTimeout = undefined;
+            this._roundTimestamp = undefined;
         }
 
         // If the premature end is due to boss leaving handle it,
@@ -205,31 +185,54 @@ class GameHandler {
 
         this._roundStarted = false;
         this._roundTimeout = undefined;
+        this._roundTimestamp = undefined;
 
-        // Get the new scores
-        const scores = this.calcAndSetScores();
-        // Return the scores as end of round datas
-        this._room.broadcast('end_round', scores);
+        let players = [];
+        this._socketToUser.forEach((user, socket, map) => {
+            const score_gained = this.calclScoreGain(socket);
+            user.score += score_gained;
+            players.push({ ...user, score_gained: score_gained });
+            map.set(socket, user);
+        });
+
+        this._room.broadcast('end_round', {
+            players: players
+        });
 
         // Schedule next round
         if (this._remainingRounds > 0) {
-            setTimeout(() => { this.startRound() }, 5 * 1000);
+            setTimeout(() => { this.startRound() }, this.delayBetweenRound * 1000);
         } else {
             this.endGame();
         }
+    }
+
+    calclScoreGain(socket) {
+        const chart = [100, 80, 60, 50];
+        const chart_boss = 10;
+
+        if (this.isBoss(socket)) {
+            return chart_boss * this._userWhoGuessed.length;
+        }
+        if (!this._userWhoGuessed.includes(socket)) {
+            return 0;
+        }
+
+        let index = this._userWhoGuessed[socket];
+        if (index >= chart.length) index = chart.length - 1;
+        return chart[index];
     }
 
     endGame() {
         this.log('Game ended');
 
         this._gameStarted = false;
-        let final_scores = [];
-        this._socketToUser.forEach((user, socket, map) => {
-            final_scores.push(user);
-        });
+        const gameEndData = {
+            players: this.getAllPlayers()
+        }
+        this._room.broadcast('game_end', gameEndData);
 
-        this._room.broadcast('game_end', final_scores);
-        setTimeout(() => { this.startRound() }, 10 * 1000);
+        setTimeout(() => { this.startGame() }, this.delayBetweenGames * 1000);
     }
 
     /**
@@ -242,6 +245,23 @@ class GameHandler {
 
     getPlayer(socket) {
         return this._socketToUser.get(socket);
+    }
+
+    getGameInfo() {
+        let infos = {
+            draw_instr: this._drawingInstrHistory,
+            players: this.getAllPlayers(),
+            gameStarted: this._gameStarted,
+            roundStarted: this._roundStarted
+        }
+
+        // If round is still playing, send current boss
+        if (this._gameStarted && this._roundStarted) {
+            infos.boss = this._socketToUser.get(this._boss).username;
+            infos.timeRemaining = ((new Date()).getTime() - this._roundTimestamp) * 1000;
+        }
+
+        return infos;
     }
 
     log(message) {

@@ -118,8 +118,7 @@ class Room {
 
         this.playerCount += 1;
         socket.join(this._id);
-        socket.emit('draw_instr', this._gameHandler.getDrawInstr());
-        socket.emit('game_info', { draw_instr: this._gameHandler.getDrawInstr(), players: this._gameHandler.getAllPlayers() });
+        socket.emit('game_info', this._gameHandler.getGameInfo());
         this._gameHandler.addUser(socket, this.getUsername(socket));
         this.broadcast('user_joined', this._gameHandler.getPlayer(socket));
     }
@@ -132,10 +131,6 @@ class Room {
         this.broadcastFrom(socket, 'user_leaved', this._gameHandler.getPlayer(socket));
         delete this._connectedClient[this._connectedClient.indexOf(socket)];
         this._gameHandler.removeUser(socket);
-    }
-
-    getDrawInstr() {
-        return this._gameHandler.getDrawInstr();
     }
 
     log(message) {
