@@ -218,7 +218,7 @@ class GameHandler {
             return 0;
         }
 
-        let index = this._userWhoGuessed[socket];
+        let index = this._userWhoGuessed.indexOf(socket);
         if (index >= chart.length) index = chart.length - 1;
         return chart[index];
     }
