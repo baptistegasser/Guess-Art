@@ -6,8 +6,8 @@ import Chrono from "./Chrono/Chrono";
 import { Container, Row, Col } from "react-bootstrap";
 import Chat from "./Chat/Chat";
 import {getUsername} from '../store/actions'
-import {connect} from "react-redux";
 import ToolBar from './ToolBar/ToolBar'
+import { RoomComponent, extendedRoomConnect } from './RoomComponent';
 const socketIo = require("socket.io-client");
 
 const mapStateToProps = state => (
@@ -22,7 +22,7 @@ const mapDispatchToProps = () => {
     };
 };
 
-class Room extends React.Component {
+class Room extends RoomComponent {
     constructor(props) {
         super(props);
         this.socket = socketIo()
@@ -77,7 +77,4 @@ class Room extends React.Component {
 
 }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps(),
-)(Room);
+export default extendedRoomConnect(mapStateToProps, mapDispatchToProps(), Room);
