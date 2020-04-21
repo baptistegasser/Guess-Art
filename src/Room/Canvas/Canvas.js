@@ -1,5 +1,6 @@
 import React from "react";
 import { RoomComponent, connectRoomComponent } from '../RoomComponent';
+import './Canvas.css';
 
 class Canvas extends RoomComponent {
     constructor(props) {

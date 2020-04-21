@@ -1,0 +1,16 @@
+#canvas {
+    border: solid 1px;
+}
+
+#overlay {
+    width: 0px;
+    height: 0px;
+    background-color: black;
+    opacity: 0.8;
+    display: flex;
+    /* contexte sur le parent */
+    flex-direction: column;
+    /* direction d'affichage verticale */
+    justify-content: center;
+    /* alignement vertical */
+}
