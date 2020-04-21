@@ -96,18 +96,16 @@ class Room extends RoomComponent {
     render() {
         return (
             <Container fluid>
-                <Row>
+                <Row id='main'>
                     <Col xs={4}>
                         <Chrono socket = {this.socket} />
                     </Col>
                     <Col xs={6}>
                         <h2>{this.state.mysteryWord} </h2>
                     </Col>
-                    <Col>
+                    <Col xs={2}>
                         <button onClick={this.leaveRoom}>Quitter le salon</button>
                     </Col>
-                </Row>
-                <Row>
                     <Col xs={3}>
                         <PlayerList socket={this.socket}/>
                     </Col>
@@ -117,10 +115,8 @@ class Room extends RoomComponent {
                     <Col xs={2}>
                         <Chat socket={this.socket}/>
                     </Col>
-                </Row>
-                <Row>
                     <Col xs={{ span: 7, offset: 3 }}>
-                        {this.props.roomInfo.isBoss ? <ToolBar socket={this.socket}></ToolBar> : '' }
+                        {this.props.roomInfo.isBoss ? <ToolBar socket={this.socket}/> : '' }
                     </Col>
                 </Row>
             </Container>
