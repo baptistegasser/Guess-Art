@@ -1,3 +1,5 @@
+const GameScheduler = require('./gameScheduler');
+
 const words_list = ['Box', 'Brush', 'Calendar', 'CD Player', 'Comb', 'Computer', 'Roll of Film', 'Folder', 'Lipstick', 'Mirror', 'Notebook', 'Notepad', 'Pencil', 'Perfume', 'Radio cassette player']
 
 class GameHandler {
@@ -8,14 +10,13 @@ class GameHandler {
         /** @type {Map.<SocketIO.socket, { username: string, score: number }>} */
         this._socketToUser = new Map();
 
+        this._scheduler = new GameScheduler(this);
+
         this._boss = undefined;
         this._userWhoGuessed = [];
         this._mysteryWord = undefined;
         this._drawingInstrHistory = [];
         this._remainingRounds = this._room.roundCount;
-        this._gameStarted = false;
-        this._roundStarted = false;
-        this._roundTimeout = undefined;
         this._roundTimestamp = undefined;
 
         this.delayBetweenRound = 5;
@@ -37,7 +38,7 @@ class GameHandler {
         this._socketToUser.delete(socket);
 
         // If the user was the boss handle it
-        if (this._roundStarted) {
+        if (this._scheduler.isRoundStarted()) {
             if (this.isBoss(socket)) {
                 this.prematureEndRound(true);
             }
@@ -47,7 +48,7 @@ class GameHandler {
                 this._userWhoGuessed.splice(this._userWhoGuessed.indexOf(socket), 1);
             } else {
                 // The user didn't guess, check if there is still users who didn't guessed
-                if (this._userWhoGuessed.length >= this._room.playerCount - 1 && this._roundStarted) {
+                if (this._userWhoGuessed.length >= this._room.playerCount - 1) {
                     this.prematureEndRound();
                 }
             }
@@ -63,8 +64,8 @@ class GameHandler {
         socket.on('guess', message => this.submitGuess(socket, message));
         socket.on('draw_instr', (draw_instr) => {this.addDrawInstr(socket, draw_instr)});
 
-        if (!this._gameStarted && this._room.playerCount >= this._room.minPlayerToStart) {
-            this.startGame();
+        if (!this._scheduler.isGameStarted() && this._room.playerCount >= this._room.minPlayerToStart) {
+            this._scheduler.startGameNow();
         }
     }
 
@@ -81,7 +82,7 @@ class GameHandler {
         };
 
         // If the user guessed right tell him and adapt the message seen by other player
-        if (this._roundStarted && message.toLowerCase() === this._mysteryWord) {
+        if (this._scheduler.isRoundStarted() && message.toLowerCase() === this._mysteryWord) {
             this._userWhoGuessed.push(socket);
             socket.emit('guess_succes');
 
@@ -137,46 +138,34 @@ class GameHandler {
     }
 
     startGame() {
-        if (this._gameStarted) return;
-
-        this._gameStarted = true;
         this._room.broadcast('game_start', {
             delay: this.delayBeforeFirstRound,
             roundDuration: this._room.roundDuration
         });
 
-        setTimeout(() => { this.startRound() }, this.delayBeforeFirstRound * 1000);
+        this._scheduler.scheduleRoundStart(this.delayBeforeFirstRound);
         this.log('Starting game');
     }
 
     startRound() {
-        if (this._roundStarted) return;
-
         this.initRound();
 
         const roundStartData = {
             boss: this._socketToUser.get(this._boss).username
         };
 
-        this._roundStarted = true;
         this._remainingRounds -= 1;
         this._roundTimestamp = (new Date()).getTime();
 
         this._room.broadcastFrom(this._boss, 'round_start', roundStartData);
         this._boss.emit('round_start', { ...roundStartData, mysteryWord: this._mysteryWord });
 
-        setTimeout(() => { this.endRound() }, this._room.roundDuration * 1000);
+        this._scheduler.scheduleRoundEnd(this._room.roundDuration);
         this.log(`Starting round ${this._remainingRounds}`);
     }
 
     prematureEndRound(bossLeft) {
         this.log('Ending round before timeout');
-        if (this._roundTimeout !== undefined) {
-            clearInterval(this._roundTimeout);
-            this._roundStarted = false;
-            this._roundTimeout = undefined;
-            this._roundTimestamp = undefined;
-        }
 
         // If the premature end is due to boss leaving handle it,
         // as this create a trouble for all players.
@@ -185,14 +174,13 @@ class GameHandler {
             this._userWhoGuessed = []; // consider it like nobody found the word and give 0 points
         }
 
-        this.endRound();
+        this._scheduler.cancelRoundEnd();
+        this._scheduler.endRoundNow();
     }
 
     endRound() {
         this.log(`Round ${this._remainingRounds} ended`);
 
-        this._roundStarted = false;
-        this._roundTimeout = undefined;
         this._roundTimestamp = undefined;
 
         let players = [];
@@ -209,9 +197,9 @@ class GameHandler {
 
         // Schedule next round
         if (this._remainingRounds > 0) {
-            setTimeout(() => { this.startRound() }, this.delayBetweenRound * 1000);
+            this._scheduler.scheduleRoundStart(this.delayBetweenRound);
         } else {
-            this.endGame();
+            this._scheduler.scheduleGameEnd(2);
         }
     }
 
@@ -234,13 +222,12 @@ class GameHandler {
     endGame() {
         this.log('Game ended');
 
-        this._gameStarted = false;
         const gameEndData = {
             players: this.getAllPlayers()
         }
         this._room.broadcast('game_end', gameEndData);
 
-        setTimeout(() => { this.startGame() }, this.delayBetweenGames * 1000);
+        this._scheduler.scheduleGameStart(this.delayBetweenGames);
     }
 
     /**
@@ -259,13 +246,13 @@ class GameHandler {
         let infos = {
             draw_instr: this._drawingInstrHistory,
             players: this.getAllPlayers(),
-            gameStarted: this._gameStarted,
-            roundStarted: this._roundStarted,
+            gameStarted: this._scheduler.isGameStarted(),
+            roundStarted: this._scheduler.isRoundStarted(),
             roundDuration: this._room.roundDuration
         }
 
         // If round is still playing, send current boss
-        if (this._gameStarted && this._roundStarted) {
+        if (this._scheduler.isRoundStarted()) {
             infos.boss = this._socketToUser.get(this._boss).username;
             infos.timeRemaining = ((new Date()).getTime() - this._roundTimestamp) * 1000;
         }
