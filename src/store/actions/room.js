@@ -26,6 +26,14 @@ export const removePlayer = (player) => {
     }
 }
 
+export const setPlayerScore = (username, score) => {
+    return {
+        type: 'SET_PLAYER_SCORE',
+        username: username,
+        score: score
+    };
+}
+
 export const setTool = (toolType) => {
     return {
         type: 'SET_TOOL_TYPE',

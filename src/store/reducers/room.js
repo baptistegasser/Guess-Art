@@ -56,6 +56,18 @@ const RoomInfoReducer = (state = {
             }
             // Normaly netheir reached, fallback is player not found in for loop
             return state;
+        case 'SET_PLAYER_SCORE':
+            let updatedPlayers = state.players;
+            for (let i = 0, l = updatedPlayers.length; i < l; ++i) {
+                if (updatedPlayers[i].username === action.username) {
+                    updatedPlayers[i].score = action.score;
+                    break;
+                }
+            }
+            return {
+                ...state,
+                players: updatedPlayers
+            };
 
         case 'SET_TOOL_TYPE':
             return {

@@ -49,6 +49,9 @@ class Room extends RoomComponent {
     }
 
     onRoundEnd(infos) {
+        for (let player of infos.players) {
+            this.setPlayerScore(player.username, player.score);
+        }
         // TODO stop chornos et tout
         // TODO afficher l'overlay avec les cores gagné pour "infos.delay" secondes
         // TODO increment score des joueurs
