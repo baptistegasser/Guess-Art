@@ -37,17 +37,19 @@ class GameHandler {
         this._socketToUser.delete(socket);
 
         // If the user was the boss handle it
-        if (this.isBoss(socket) && this._roundStarted) {
-            this.prematureEndRound(true);
-        }
+        if (this._roundStarted) {
+            if (this.isBoss(socket)) {
+                this.prematureEndRound(true);
+            }
 
-        // If the user guessed before leaving just remove him from the list of user who guessed
-        if (this._userWhoGuessed.includes(socket)) {
-            this._userWhoGuessed.splice(this._userWhoGuessed.indexOf(socket), 1);
-        } else {
-            // The user didn't guess, check if there is still users who didn't guessed
-            if (this._userWhoGuessed.length >= this._room.playerCount - 1 && this._roundStarted) {
-                this.prematureEndRound();
+            // If the user guessed before leaving just remove him from the list of user who guessed
+            if (this._userWhoGuessed.includes(socket)) {
+                this._userWhoGuessed.splice(this._userWhoGuessed.indexOf(socket), 1);
+            } else {
+                // The user didn't guess, check if there is still users who didn't guessed
+                if (this._userWhoGuessed.length >= this._room.playerCount - 1 && this._roundStarted) {
+                    this.prematureEndRound();
+                }
             }
         }
     }
@@ -85,13 +87,15 @@ class GameHandler {
 
             data.username = '';
             data.message = `${this._socketToUser.get(socket).username} guessed the word !`;
-        }
-        // Send the message
-        this._room.broadcast('user_msg', data);
+            this._room.broadcastFrom(socket, 'user_msg', data);
 
-        // If everybody guessed the word
-        if (this._userWhoGuessed.length >= this._room.playerCount - 1) {
-            this.prematureEndRound();
+            // If everybody guessed the word
+            if (this._userWhoGuessed.length >= this._room.playerCount - 1) {
+                this.prematureEndRound();
+            }
+        } else {
+            // Send the message
+            this._room.broadcast('user_msg', data);
         }
     }
 
