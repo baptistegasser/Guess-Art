@@ -11,6 +11,7 @@ class Canvas extends RoomComponent {
         this.props.socket.on('game_start',(infos)=>this.gameStart(infos))
         this.props.socket.on('game_end',(infos)=>this.gameEnd(infos))
         this.props.socket.on('game_info',(infos)=>this.gameInfo(infos))
+        this.state = {displayOverlay : false,overlay:null}
         this.canvasRef = React.createRef();
         this.ctx = null;
         this.clicked = false;
@@ -20,6 +21,8 @@ class Canvas extends RoomComponent {
         this.updateDraw = this.updateDraw.bind(this)
 
     }
+
+
 
     updateDraw(data) {
         for (let instr of data) {
@@ -86,46 +89,26 @@ class Canvas extends RoomComponent {
         }
     }
 
-    setOverlay(text)
-    {
-        let canvas = document.getElementById('canvas');
-        canvas.style.display = 'none'
-        let overlay  = document.getElementById('overlay');
-        overlay.style.display = 'block'
-        let overlayText  = document.getElementById('text-overlay');
-        overlayText.innerText = text
-
-    }
-
-    setCanvas()
-    {
-        let canvas = document.getElementById('canvas');
-        canvas.style.display = 'block'
-        let overlay  = document.getElementById('overlay');
-        overlay.style.display = 'none'
-        let overlayText  = document.getElementById('text-overlay');
-        overlayText.innerHTML = ""
-    }
-
     roundStart(infos)
     {
-        this.setCanvas();
+        this.setState({displayOverlay:false})
     }
 
     roundEnd(infos)
     {
-        let scores = "";
-        for (let player of infos.players)
+        let overlay = "";
+        for(let player of infos.players)
         {
-            scores += player.username + ' +' + player.score_gained + '<br/>';
+            console.log(player.username + player.score_gained)
+            overlay += <p className="text_overlay">{player.username} + {player.score_gained} </p>;
         }
-        this.setOverlay(scores)
-        this.clearCanvas()
+        this.setState({displayOverlay : true,overlay:overlay})
     }
 
     gameStart(infos)
     {
-        this.setOverlay("La partie va commencer dans " + infos.delay + " secondes")
+        let overlay = <p className="text_overlay">La partie va commencer dans  {infos.delay}  secondes</p>
+        this.setState({displayOverlay : true,overlay:overlay})
     }
 
     gameEnd(infos)
@@ -140,21 +123,25 @@ class Canvas extends RoomComponent {
         }
 
         infos.players.sort(compare)
-        let textFinal = ""
+        let overlay = ""
         let rank = 1;
         for(let player of infos.players)
         {
-            textFinal += rank + " " + player.username + " : " + player.score
+            overlay += <p className="text_overlay">{rank}  {player.username}  :  {player.score}</p>
             rank ++
         }
-        this.setOverlay(textFinal);
+        this.setState({displayOverlay : true,overlay:overlay})
 
     }
 
     gameInfo(infos)
     {
+        let overlay = "";
         if (infos.gameStarted === false)
-            this.setOverlay("En attente de joueurs")
+        {
+            overlay = <p className="text_overlay">En attente de joueurs</p>
+            this.setState({displayOverlay : true,overlay:overlay})
+        }
         else
         {
             if (infos.roundStarted)
@@ -164,7 +151,8 @@ class Canvas extends RoomComponent {
             }
             else
             {
-                this.setOverlay("Le prochain round va bientôt commencer !")
+                overlay = <p className="text_overlay">Le prochain round va bientôt commencer ! </p>
+                this.setState({displayOverlay : true,overlay:overlay})
             }
 
 
@@ -183,12 +171,10 @@ class Canvas extends RoomComponent {
 
 
     render() {
-        return (
-            <div>
-                <div id="overlay" ><p id="text-overlay" style={{ textAlign: 'center',fontSize: '30px'}}></p></div>
-                <canvas ref={this.canvasRef} id="canvas" width="700" height="600"/>
-            </div>
-        );
+        if (this.state.displayOverlay)
+            return (<div id="overlay" >{this.state.overlay}</div>);
+        else
+            return (<div><canvas ref={this.canvasRef} id="canvas" width="700" height="600"/></div>);
     }
 
 }

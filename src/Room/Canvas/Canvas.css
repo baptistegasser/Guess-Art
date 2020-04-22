@@ -9,5 +9,10 @@
     height: 600px;
     background-color: black;
     opacity: 0.8;
-    display: none;
+}
+
+.text_overlay
+{
+    text-align: center;
+    font-size: 30px;
 }
