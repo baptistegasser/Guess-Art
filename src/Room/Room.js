@@ -8,6 +8,7 @@ import Chat from "./Chat/Chat";
 import {getUsername} from '../store/actions'
 import ToolBar from './ToolBar/ToolBar'
 import { RoomComponent, extendedRoomConnect } from './RoomComponent';
+import { Redirect } from 'react-router-dom';
 const socketIo = require("socket.io-client");
 
 const mapStateToProps = state => (
@@ -26,7 +27,12 @@ class Room extends RoomComponent {
     constructor(props) {
         super(props);
         this.socket = socketIo();
-        this.state = { mysteryWord: '' };
+        this.state = {
+            mysteryWord: '',
+            leaving: false,
+            errorMessage: undefined
+        };
+
         this.leaveRoom    = this.leaveRoom.bind(this);
         this.onRoundStart = this.onRoundStart.bind(this);
         this.onRoundEnd   = this.onRoundEnd.bind(this);
@@ -37,6 +43,12 @@ class Room extends RoomComponent {
 
     leaveRoom() {
         this.socket.emit("leave_room");
+        this.setState({ leaving: true });
+    }
+
+    leaveOnError(errorMessage) {
+        this.socket.emit("leave_room");
+        this.setState({ leaving: true, errorMessage: errorMessage });
     }
 
     onRoundStart(infos) {
@@ -85,7 +97,8 @@ class Room extends RoomComponent {
      */
     componentDidMount() {
         const room_id = window.location.pathname.replace('/room/','');
-        this.socket.on("connect",()=>{this.socket.emit("join_room", room_id)})
+        this.socket.on("connect",()=>{this.socket.emit("join_room", room_id)});
+        this.socket.on('game_error', (msg) => this.leaveOnError(msg));
 
         this.socket.on('user_joined', (player) => this.addPlayer(player));
         this.socket.on('user_leaved', (player) => this.removePlayer(player));
@@ -97,11 +110,20 @@ class Room extends RoomComponent {
     }
 
     render() {
+        if (this.state.leaving === true) {
+            return <Redirect to={{
+                pathname: '/room',
+                state: {
+                    errorMessage: this.state.errorMessage
+                }
+            }}/>
+        }
+
         return (
             <Container fluid>
                 <Row id='main'>
                     <Col xs={4}>
-                        <Chrono socket = {this.socket} />
+                        <Chrono/>
                     </Col>
                     <Col xs={6}>
                         <h2>{this.state.mysteryWord} </h2>

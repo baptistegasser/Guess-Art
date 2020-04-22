@@ -15,7 +15,7 @@ class RoomCreate extends React.Component {
             room_list: [],
             room_id: null,
             success: false,
-            error_msg: '',
+            errorMessage: this.props.location.state.errorMessage || '',
         }
 
         this.getRoomList = this.getRoomList.bind(this);
@@ -121,7 +121,7 @@ class RoomCreate extends React.Component {
             <Container fluid className="h-100">
                 <Row className="h-100">
                     <Col className="h-100">
-                        <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Create room' error_msg={this.state.error_msg}>
+                        <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Create room' error_msg={this.state.errorMessage}>
                             {this.state.room_list.length > 0 ?
                             <div className="table-container">
                                 <Table>
