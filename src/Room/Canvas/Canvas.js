@@ -96,12 +96,9 @@ class Canvas extends RoomComponent {
 
     roundEnd(infos)
     {
-        let overlay = "";
-        for(let player of infos.players)
-        {
-            console.log(player.username + player.score_gained)
-            overlay += <p className="text_overlay">{player.username} + {player.score_gained} </p>;
-        }
+        const overlay = infos.players.map(player => {
+            return <p className="text_overlay" key={player.username}>{player.username} + {player.score_gained} </p>;
+        })
         this.setState({displayOverlay : true,overlay:overlay})
     }
 
