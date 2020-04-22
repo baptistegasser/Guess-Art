@@ -5,9 +5,13 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import Room from "./Room/Room";
 import Home from "./Home/Home";
+import Loader from './Loader/Loader';
 import RoomCreate from "./RoomCreate/RoomCreate";
 import { Signin, Signup, PrivateRoute } from './Connection';
 
+const mapStateToProps = state => ({
+    isLogged: state.isLogged
+});
 
 const mapDispatchToProps = () => {
     return {
@@ -16,14 +20,17 @@ const mapDispatchToProps = () => {
 };
 
 class App extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             loading: true
         }
 
-        this.getLoggedStatus = this.getLoggedStatus.bind(this);
-        this.getLoggedStatus();
+        if (props.isLogged !== true) {
+            this.getLoggedStatus.bind(this)();
+        } else {
+            this.state.loading = false;
+        }
     }
 
     async getLoggedStatus() {
@@ -45,7 +52,7 @@ class App extends React.Component {
 
     render () {
         if (this.state.loading) {
-            return(<div><p>loading</p></div>);
+            return <Loader></Loader>;
         } else {
             return (
                 <BrowserRouter>
@@ -64,6 +71,6 @@ class App extends React.Component {
 };
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps()
 )(App);
