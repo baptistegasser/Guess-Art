@@ -68,6 +68,15 @@ const RoomInfoReducer = (state = {
                 ...state,
                 players: updatedPlayers
             };
+        case 'RESET_PLAYERS_SCORES':
+            let resetedPlayers = state.players;
+            for (let i = 0, l = resetedPlayers.length; i < l; ++i) {
+                resetedPlayers[i].score = 0;
+            }
+            return {
+                ...state,
+                players: resetedPlayers
+            };
 
         case 'SET_TOOL_TYPE':
             return {

@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from "react-redux";
-import {setBoss, setIsBoss, addPlayer, removePlayer, setTool, setWidth, setColor, setPlayerScore} from '../store/actions/room';
+import {setBoss, setIsBoss, addPlayer, removePlayer, setPlayerScore, resetPlayersScores, setTool, setWidth, setColor} from '../store/actions/room';
 
 const mapStateToProps = state => ({
     roomInfo: state.roomInfo
@@ -13,6 +13,7 @@ const mapDispatchToProps = () => {
         addPlayer,
         removePlayer,
         setPlayerScore,
+        resetPlayersScores,
         setTool,
         setWidth,
         setColor
@@ -54,6 +55,10 @@ export class RoomComponent extends React.Component {
 
     setColor(...args) {
         this.props.setColor(...args);
+    }
+
+    resetPlayersScores(...args) {
+        this.props.resetPlayersScores(...args);
     }
 }
 

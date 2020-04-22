@@ -83,6 +83,7 @@ class Room extends RoomComponent {
     }
 
     onGameStart(infos) {
+        this.resetPlayersScores();
         // TODO stocké le temps du chrono pour chaque round : infos.roundDuration
         // TODO affiché overlay "game start in x secondes" avec : info.delay -> delay avant start round
     }

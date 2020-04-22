@@ -34,6 +34,12 @@ export const setPlayerScore = (username, score) => {
     };
 }
 
+export const resetPlayersScores = () => {
+    return {
+        type: 'RESET_PLAYERS_SCORES'
+    };
+}
+
 export const setTool = (toolType) => {
     return {
         type: 'SET_TOOL_TYPE',
