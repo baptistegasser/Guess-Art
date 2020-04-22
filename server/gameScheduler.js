@@ -47,7 +47,7 @@ class GameScheduler {
         this.scheduleGameStart(-1);
     }
 
-    scheduleGameEnd(delay) {
+    scheduleGameEnd(delay, launchAnotherGame) {
         if (!this._game.started || this._game.endScheduled) {
             throw new Error("Can't schedule a game end multiple times");
         }
@@ -57,13 +57,29 @@ class GameScheduler {
             this._game.started      = false;
             this._game.endScheduled = false;
             this._game.endTimeout   = undefined;
-            this._gameHandler.endGame();
+            this._gameHandler.endGame(launchAnotherGame);
         };
         if (delay <= 0) {
             callback();
         } else {
             this._game.endTimeout = setTimeout(callback, delay * 1000);
         }
+    }
+
+    /**
+     * Special function to force a game end, will cancel all timeout
+     */
+    endGameNow() {
+        const old_gameStarted = this._game.started;
+
+        if (this._game.startScheduled)  this.cancelGameStart();
+        if (this._round.startScheduled) this.cancelRoundStart();
+        if (this._round.endScheduled)   this.cancelRoundEnd();
+        if (this._game.endScheduled)    this.cancelGameEnd();
+
+        // Manual round ending
+        this._round.started = false;
+        if (old_gameStarted)  this.scheduleGameEnd(-1, false);
     }
 
     scheduleRoundStart(delay) {
@@ -152,6 +168,10 @@ class GameScheduler {
 
     isGameStarted() {
         return this._game.started;
+    }
+
+    isGameStarting() {
+        return this._game.startScheduled;
     }
 
     isRoundStarted() {

@@ -96,6 +96,7 @@ class RoomHandler {
             }
         } catch (e) {
             console.error(e.message);
+            console.log(e.stack)
             socket.emit('game_error', e.message);
         }
     }

@@ -128,6 +128,7 @@ class Room {
         if (!this.isConnected(socket)) throw new Error('Client not connected !');
 
         this.playerCount -= 1;
+        socket.leave(this._id);
         this.broadcastFrom(socket, 'user_leaved', this._gameHandler.getPlayer(socket));
         delete this._connectedClient[this._connectedClient.indexOf(socket)];
         this._gameHandler.removeUser(socket);

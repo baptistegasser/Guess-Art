@@ -37,10 +37,19 @@ class GameHandler {
     removeUser(socket) {
         this._socketToUser.delete(socket);
 
-        // If the user was the boss handle it
+        // First, is there enought player to keep playing ?
+        if ((this._scheduler.isGameStarted() || this._scheduler.isGameStarting()) && this._room.playerCount < this._room.minPlayerToStart) {
+            this._scheduler.endGameNow();
+            this._room.broadcastFrom(socket, 'game_info', this.getGameInfo());
+            return
+        }
+
+        // Handling is important when a round started
         if (this._scheduler.isRoundStarted()) {
+
+            // If the user was the boss handle it
             if (this.isBoss(socket)) {
-                this.prematureEndRound(true);
+                return this.prematureEndRound(true);
             }
 
             // If the user guessed before leaving just remove him from the list of user who guessed
@@ -113,10 +122,6 @@ class GameHandler {
     initRound() {
         // Get a new boss
         const candidat = Array.from(this._socketToUser.keys());
-        if (candidat.length < this._room.minPlayerToStart) {
-            throw new Error('Not enought player to start the round !')
-        }
-
         const l = candidat.length - 1;
         let i = Math.round(Math.random() * l);
         while (candidat[i] === this._boss) {
@@ -219,7 +224,7 @@ class GameHandler {
         return chart[index];
     }
 
-    endGame() {
+    endGame(launchAnotherGame) {
         this.log('Game ended');
 
         const gameEndData = {
@@ -227,7 +232,9 @@ class GameHandler {
         }
         this._room.broadcast('game_end', gameEndData);
 
-        this._scheduler.scheduleGameStart(this.delayBetweenGames);
+        if (launchAnotherGame !== false) {
+            this._scheduler.scheduleGameStart(this.delayBetweenGames);
+        }
     }
 
     /**

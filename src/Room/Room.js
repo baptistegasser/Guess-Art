@@ -45,11 +45,13 @@ class Room extends RoomComponent {
 
     leaveRoom() {
         this.socket.emit("leave_room");
+        this.socket.disconnect();
         this.setState({ leaving: true });
     }
 
     leaveOnError(errorMessage) {
         this.socket.emit("leave_room");
+        this.socket.disconnect();
         this.setState({ leaving: true, errorMessage: errorMessage });
     }
 
