@@ -1,6 +1,7 @@
 import React from "react";
 import {RoomComponent, connectRoomComponent} from '../RoomComponent';
 import './Chat.css';
+import { Form } from "react-bootstrap";
 
 class Chat extends RoomComponent {
     constructor(props) {
@@ -33,7 +34,7 @@ class Chat extends RoomComponent {
     render() {
         let inputForm = (
             <form onSubmit={this.onSubmit} >
-                <input ref={this.inputRef} id="input-msg" placeholder="Write here"/>
+                <Form.Control ref={this.inputRef} type="text" id="input-msg" placeholder="Write here"/>
             </form>
         );
         // if  we are the boss remove the chat form

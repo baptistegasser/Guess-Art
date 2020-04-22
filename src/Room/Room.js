@@ -3,7 +3,7 @@ import './Room.css';
 import Canvas from "./Canvas/Canvas.js";
 import PlayerList from './Players/PlayerList'
 import Chrono from "./Chrono/Chrono";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import Chat from "./Chat/Chat";
 import {getUsername} from '../store/actions'
 import ToolBar from './ToolBar/ToolBar'
@@ -129,8 +129,8 @@ class Room extends RoomComponent {
                     <Col xs={6}>
                         <h2>{this.state.mysteryWord} </h2>
                     </Col>
-                    <Col xs={2}>
-                        <button onClick={this.leaveRoom}>Quitter le salon</button>
+                    <Col xs={2} style={{ textAlign: 'right' }}>
+                        <Button onClick={this.leaveRoom}>Quitter le salon</Button>
                     </Col>
                     <Col xs={3}>
                         <PlayerList socket={this.socket}/>
