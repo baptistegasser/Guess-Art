@@ -256,7 +256,8 @@ class GameHandler {
             draw_instr: this._drawingInstrHistory,
             players: this.getAllPlayers(),
             gameStarted: this._gameStarted,
-            roundStarted: this._roundStarted
+            roundStarted: this._roundStarted,
+            roundDuration: this._room.roundDuration
         }
 
         // If round is still playing, send current boss
