@@ -130,7 +130,7 @@ class Room extends RoomComponent {
                         <h2>{this.state.mysteryWord} </h2>
                     </Col>
                     <Col xs={2} style={{ textAlign: 'right' }}>
-                        <Button onClick={this.leaveRoom}>Quitter le salon</Button>
+                        <Button onClick={this.leaveRoom} className="bg-secondary">Quitter le salon</Button>
                     </Col>
                     <Col xs={3}>
                         <PlayerList socket={this.socket}/>
