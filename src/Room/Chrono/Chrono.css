@@ -1,0 +1,11 @@
+.chrono {
+    width:"60px";
+    height:"50px";
+}
+
+.chrono p {
+    height: 60px;
+    background-size: 60px;
+    background-repeat: no-repeat;
+    background-image: url('https://media.giphy.com/media/YWmGm0UFfYnQs/giphy.gif');
+}
