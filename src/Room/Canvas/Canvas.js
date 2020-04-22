@@ -120,13 +120,11 @@ class Canvas extends RoomComponent {
         }
 
         infos.players.sort(compare)
-        let overlay = ""
-        let rank = 1;
-        for(let player of infos.players)
-        {
-            overlay += <p className="text_overlay">{rank}  {player.username}  :  {player.score}</p>
-            rank ++
-        }
+        let rank = 0;
+        const overlay = infos.players.map(player => {
+            rank++;
+            return <p className="text_overlay" key={player.username}>{rank}) {player.username} : {player.score_gained} </p>;
+        })
         this.setState({displayOverlay : true,overlay:overlay})
 
     }
