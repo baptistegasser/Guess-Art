@@ -17,9 +17,9 @@ class ConnectForm extends React.Component {
         }
 
         return (
-            <Container className="h-100">
+            <Container fluid className="h-100">
                 <Row xs="1">
-                    <Col lg={{span: 6, offset: 3}} sm={{span: 8, offset: 2}} className="bg-primary form-background">
+                    <Col xl={{span:4, offset: 4}} lg={{span: 6, offset: 3}} xs={{span: 8, offset: 2}} className="bg-primary form-background">
                         <Form onSubmit={this.props.onSubmit}>
                             <Form.Group>
                                 {error_alert}
