@@ -112,6 +112,10 @@ class GameHandler {
     initRound() {
         // Get a new boss
         const candidat = Array.from(this._socketToUser.keys());
+        if (candidat.length < this._room.minPlayerToStart) {
+            throw new Error('Not enought player to start the round !')
+        }
+
         const l = candidat.length - 1;
         let i = Math.round(Math.random() * l);
         while (candidat[i] === this._boss) {
