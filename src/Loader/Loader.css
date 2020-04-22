@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&display=swap');
+
+.loader-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader-container h1 {
+    background-color: none;
+    font-family: 'Montserrat Alternates', sans-serif;
+}
+
+.rectangle {
+    width: 30px;
+    height: 30px;
+    --duration: 2.5s
+}
+
+#rect-1 {
+    background-color: tomato;
+    border-radius: 20px;
+    animation: rect-1 var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+}
+
+#rect-2 {
+    background-color: yellow;
+    border-radius: 20px;
+    animation: rect-2 var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+}
+
+#rect-3 {
+    background-color: lightgreen;
+    border-radius: 20px;
+    animation: rect-3 var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+}
+
+#rect-4 {
+    background-color: cyan;
+    border-radius: 20px;
+    animation: rect-4 var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+}
+
+@keyframes rect-1 {
+    25% {
+        transform: translate(50px, 0) rotate(90deg);
+    }
+    50% {
+        transform: translate(50px, 50px) rotate(180deg);
+    }
+    75% {
+        transform: translate(0, 50px) rotate(270deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+
+@keyframes rect-2 {
+    25% {
+        transform: translate(0, 50px) rotate(90deg);
+    }
+    50% {
+        transform: translate(-50px, 50px) rotate(180deg);
+    }
+    75% {
+        transform: translate(-50px, 0) rotate(270deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+
+@keyframes rect-3 {
+    25% {
+        transform: translate(0, -50px) rotate(90deg);
+    }
+    50% {
+        transform: translate(50px, -50px) rotate(180deg);
+    }
+    75% {
+        transform: translate(50px, 0) rotate(270deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+
+@keyframes rect-4 {
+    25% {
+        transform: translate(-50px, 0) rotate(90deg);
+    }
+    50% {
+        transform: translate(-50px, -50px) rotate(180deg);
+    }
+    75% {
+        transform: translate(0, -50px) rotate(270deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
