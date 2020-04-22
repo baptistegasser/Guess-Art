@@ -30,7 +30,9 @@ class Room extends RoomComponent {
         this.state = {
             mysteryWord: '',
             leaving: false,
-            errorMessage: undefined
+            errorMessage: undefined,
+            roundStarted: false,
+            roundDuration: -1
         };
 
         this.leaveRoom    = this.leaveRoom.bind(this);
@@ -54,16 +56,18 @@ class Room extends RoomComponent {
     onRoundStart(infos) {
         this.setBoss(infos.boss);
         this.setIsBoss(infos.boss === this.props.user);
-        this.setState({ mysteryWord: infos.mysteryWord });
+        this.setState({ roundStarted: true, mysteryWord: infos.mysteryWord});
         // TODO si isBoss : infos.mystery_word -> contient le mot a dessiner
         // TODO : start chronos et tout
         //TODO caché overlay
     }
 
     onRoundEnd(infos) {
+        this.setState({ mysteryWord: undefined, roundStarted: false });
         for (let player of infos.players) {
             this.setPlayerScore(player.username, player.score);
         }
+        console.log(infos)
         // TODO stop chornos et tout
         // TODO afficher l'overlay avec les cores gagné pour "infos.delay" secondes
         // TODO increment score des joueurs
@@ -72,6 +76,7 @@ class Room extends RoomComponent {
     onGameInfo(infos) {
         // Add all the player to the list
         infos.players.map(player => this.addPlayer(player));
+        this.setState({ roundDuration: infos.roundDuration });
 
         // Actions if the game started
         if (infos.gameStarted === true) {
@@ -124,7 +129,7 @@ class Room extends RoomComponent {
             <Container fluid>
                 <Row id='main'>
                     <Col xs={4}>
-                        <Chrono/>
+                        {this.state.roundStarted ? <Chrono duration={this.state.roundDuration}/> : ''}
                     </Col>
                     <Col xs={6}>
                         <h2>{this.state.mysteryWord} </h2>
