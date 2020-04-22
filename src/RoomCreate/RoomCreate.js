@@ -15,7 +15,11 @@ class RoomCreate extends React.Component {
             room_list: [],
             room_id: null,
             success: false,
-            errorMessage: this.props.location.state.errorMessage || '',
+            errorMessage: '',
+        }
+
+        if (props.location.state !== undefined && props.location.state.errorMessage !== undefined) {
+            this.state.errorMessage = props.location.state.errorMessage;
         }
 
         this.getRoomList = this.getRoomList.bind(this);
