@@ -147,6 +147,7 @@ class GameHandler {
             delay: this.delayBeforeFirstRound,
             roundDuration: this._room.roundDuration
         });
+        this._remainingRounds = this._room.roundCount;
 
         this._scheduler.scheduleRoundStart(this.delayBeforeFirstRound);
         this.log('Starting game');
