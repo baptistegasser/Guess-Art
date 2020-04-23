@@ -68,7 +68,6 @@ class Canvas extends RoomComponent {
                 break;
             case "mousemove":
                 if (!this.clicked) break;
-                this.draw_line(this.last_x, this.last_y, x, y, this.props.roomInfo.tool.color, this.props.roomInfo.tool.width, this.props.roomInfo.tool.type)
                 this.props.socket.emit("draw_instr", {
                     type : 'line',
                     data:{  coordinates: [this.last_x, this.last_y, x, y],
