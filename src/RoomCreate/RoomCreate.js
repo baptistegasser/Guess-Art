@@ -33,15 +33,21 @@ class RoomCreate extends React.Component {
     }
 
     componentWillUnmount() {
-        clearInterval(this.pingInterval);
+        if (this.pingInterval !== undefined) {
+            clearInterval(this.pingInterval);
+            this.pingInterval = undefined;
+        }
     }
 
     async getRoomList() {
         const response = await fetch('/api/v1/room');
 
-        if (response.ok) {
+        if (response.ok && this.pingInterval !== undefined) {
             const room_list = await response.json();
-            this.setState({ room_list: room_list });
+
+            if (this.pingInterval !== undefined) {
+                this.setState({ room_list: room_list });
+            }
         }
     }
 
