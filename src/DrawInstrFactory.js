@@ -21,8 +21,8 @@ class DrawInstrFactory {
     }
 
     static _assertInstrType(type) {
-        for (let [key, val] of Object.entries(DrawInstrFactory.types)) {
-            if (val === type) return;
+        for (let val of Object.entries(DrawInstrFactory.types)) {
+            if (val[1] === type) return;
         }
         throw new TypeError(`'${type}' is not a valid DrawInstr type.`);
     }
