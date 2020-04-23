@@ -1,6 +1,7 @@
 import React from 'react';
 import {RoomComponent, connectRoomComponent} from '../RoomComponent';
 import { Container, Row, Col } from 'react-bootstrap';
+import DrawInstrFactory from '../../DrawInstrFactory';
 
 import './ToolBar.css';
 
@@ -13,7 +14,8 @@ class ToolBar extends RoomComponent {
         this.clearCanvas = this.clearCanvas.bind(this);
     }
 
-    switchTool(type) {
+    switchTool(event, type) {
+        event.preventDefault();
         if (this.props.roomInfo.tool.type === type) return;
 
         // Set the tool's TYPE in redux
@@ -25,17 +27,21 @@ class ToolBar extends RoomComponent {
         }
 
         // Set the new selected tool
-        document.getElementById(type).classList.add('selected');
+        event.target.classList.add('selected');
     }
 
     switchColor(color) {
         if (this.props.roomInfo.tool.color === color) return;
 
         // Set the tool's COLOR in redux
+        this.setTool(DrawInstrFactory.types.pencil);
         this.setColor(color);
 
         // Clear the style from the current selected color
         for (let e of document.getElementsByClassName('color selected')) {
+            e.classList.remove('selected');
+        }
+        for (let e of document.getElementsByClassName('tool selected')) {
             e.classList.remove('selected');
         }
 
@@ -59,7 +65,13 @@ class ToolBar extends RoomComponent {
     }
 
     clearCanvas() {
-        this.props.socket.emit("draw_instr",{type:'trash'})
+        this.props.socket.emit("draw_instr", DrawInstrFactory.newInstrTrash());
+    }
+
+    componentDidMount() {
+        // Set the default value : draw with pencil in black
+        this.switchColor('rgb(0,0,0)');
+        this.switchWidth(10);
     }
 
     render() {
@@ -81,9 +93,9 @@ class ToolBar extends RoomComponent {
                     </Col>
                     <Col>
                         {widthSelector}
-                        <button className="tool" id="eraser" onClick={() => this.switchTool('eraser')}/>
-                        <button className="tool" id="bucket" onClick={() => this.switchTool('bucket')}/>
-                        <button className="tool" id="trash"  onClick={() => this.clearCanvas()}/>
+                        <button className="tool" id="eraser" onClick={(event) => this.switchTool(event, DrawInstrFactory.types.eraser)}/>
+                        <button className="tool" id="bucket" onClick={(event) => this.switchTool(event, DrawInstrFactory.types.bucket)}/>
+                        <button className="tool" id="trash"  onClick={(event) => this.clearCanvas()}/>
                     </Col>
                 </Row>
             </Container>
