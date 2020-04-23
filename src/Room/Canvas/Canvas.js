@@ -123,7 +123,7 @@ class Canvas extends RoomComponent {
         let rank = 0;
         const overlay = infos.players.map(player => {
             rank++;
-            return <p className="text_overlay" key={player.username}>{rank}) {player.username} : {player.score_gained} </p>;
+            return <p className="text_overlay" key={player.username}>{rank} {player.username} : {player.score_gained} </p>;
         })
         this.setState({displayOverlay : true,overlay:overlay})
 
@@ -166,10 +166,12 @@ class Canvas extends RoomComponent {
 
 
     render() {
-        if (this.state.displayOverlay)
-            return (<div id="overlay" >{this.state.overlay}</div>);
-        else
-            return (<div><canvas ref={this.canvasRef} id="canvas" width="700" height="600"/></div>);
+        return (
+            <div>
+                {this.state.displayOverlay ? <div id="overlay" >{this.state.overlay}</div> : ''}
+                <canvas ref={this.canvasRef} id="canvas" width="700" height="600"/>
+            </div>
+        )
     }
 
 }

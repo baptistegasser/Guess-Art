@@ -3,8 +3,8 @@
     background-color: white;
 }
 
-#overlay
-{
+#overlay {
+    position: absolute;
     width: 700px;
     height: 600px;
     background-color: black;
