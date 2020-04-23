@@ -22,13 +22,18 @@ class RoomCreate extends React.Component {
             this.state.errorMessage = props.location.state.errorMessage;
         }
 
+        this.pingInterval = undefined;
         this.getRoomList = this.getRoomList.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.checkAndSubmit = this.checkAndSubmit.bind(this);
     }
 
     componentDidMount() {
-        this.getRoomList();
+        this.pingInterval = setInterval(() => this.getRoomList(), 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.pingInterval);
     }
 
     async getRoomList() {
