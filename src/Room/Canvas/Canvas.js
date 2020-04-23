@@ -1,5 +1,6 @@
 import React from "react";
 import { RoomComponent, connectRoomComponent } from '../RoomComponent';
+import DrawInstrFactory from '../../DrawInstrFactory';
 import './Canvas.css';
 
 class Canvas extends RoomComponent {
@@ -26,10 +27,11 @@ class Canvas extends RoomComponent {
 
     updateDraw(data) {
         for (let instr of data) {
-            if (instr.type === 'line')
-                this.draw_line(instr.data.coordinates[0], instr.data.coordinates[1], instr.data.coordinates[2], instr.data.coordinates[3], instr.data.color, instr.data.width, instr.data.tool)
-            else if (instr.type ==='trash')
-                this.clearCanvas()
+            if (instr.type === DrawInstrFactory.types.trash) {
+                this.clearCanvas();
+            } else {
+                this.draw_instr(instr.type, instr.options);
+            }
         }
     }
 
@@ -40,15 +42,23 @@ class Canvas extends RoomComponent {
         this.ctx.clearRect(0,0,700,600)
     }
 
-    draw_line(last_x, last_y, x, y, color, width, tool) {
+    draw_instr(type, options) {
+        const pos = options.pos;
+        switch(type) {
+            case DrawInstrFactory.types.pencil:
+                return this.draw_line(pos[0], pos[1], pos[2], pos[3], options.color, options.width);
+            case DrawInstrFactory.types.eraser:
+                return this.draw_line(pos[0], pos[1], pos[2], pos[3], 'white', options.width);
+            default:
+                return console.error('Unsupported drawing instruction');
+        }
+    }
+
+    draw_line(last_x, last_y, x, y, color, width) {
         this.ctx.beginPath()
         this.ctx.moveTo(last_x, last_y)
         this.ctx.lineTo(x, y)
-        if (tool === "eraser") {
-            this.ctx.strokeStyle = 'white';
-        } else {
-            this.ctx.strokeStyle = color
-        }
+        this.ctx.strokeStyle = color
         this.ctx.lineCap = 'round';
         this.ctx.lineWidth = width
         this.ctx.stroke()
@@ -68,14 +78,9 @@ class Canvas extends RoomComponent {
                 break;
             case "mousemove":
                 if (!this.clicked) break;
-                this.props.socket.emit("draw_instr", {
-                    type : 'line',
-                    data:{  coordinates: [this.last_x, this.last_y, x, y],
-                            color:  this.props.roomInfo.tool.color,
-                            tool:   this.props.roomInfo.tool.type,
-                            width:  this.props.roomInfo.tool.width
-                    }
-                });
+                const tool = this.props.roomInfo.tool;
+                const pos = [this.last_x, this.last_y, x, y];
+                this.props.socket.emit("draw_instr", DrawInstrFactory.newInstr(tool.type, pos, tool.color, tool.width));
                 this.last_x = x;
                 this.last_y = y;
                 break;
