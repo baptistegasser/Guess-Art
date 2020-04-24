@@ -4,7 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ConnectForm from './ConnectForm';
 import Verification from '../Verification';
-import { signIn } from '../store/actions';
+import {signIn, setUsername} from '../store/actions';
 
 const mapStateToProps = state => ({
     isLogged: state.isLogged
@@ -14,7 +14,7 @@ const mapStateToProps = state => ({
  */
 const mapDispatchToProps = () => {
     return {
-        signIn
+        signIn, setUsername
     };
 };
 
@@ -142,6 +142,7 @@ class SigninForm extends React.Component{
         // If response is ok set success and signIn (Redux)
         if (response.ok) {
             this.props.signIn();
+            this.props.setUsername(username);
             this.setState({ success: true });
         } else {
             let message = 'Unknown error while sign in. If it keep happening, please contact an admin.';
