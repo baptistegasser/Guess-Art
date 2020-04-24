@@ -6,8 +6,6 @@ canvas {
 
 #overlay {
     position: absolute;
-    width: 700px;
-    height: 600px;
     background-color: black;
     opacity: 0.8;
 }
@@ -16,4 +14,19 @@ canvas {
 {
     text-align: center;
     font-size: 30px;
+}
+
+@media (min-width: 500px) {
+    #canvas,#overlay{
+        width: 700px;
+        height: 600px;
+    }
+
+}
+
+@media (min-width: 1500px) {
+    #canvas,#overlay{
+        width: 1000px;
+        height: 600px;
+    }
 }

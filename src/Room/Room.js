@@ -136,16 +136,18 @@ class Room extends RoomComponent {
 
         return (
             <Container fluid>
-                <Row id='main'>
+                <Row className='main' id="topBar" >
                     <Col xs={4}>
                         {this.state.roundStarted ? <Chrono duration={this.state.roundDuration}/> : ''}
                     </Col>
                     <Col xs={6}>
-                        <h2>{this.state.mysteryWord} </h2>
+                        <h2 style={{paddingLeft:"20%"}}>{this.state.mysteryWord} </h2>
                     </Col>
                     <Col xs={2} style={{ textAlign: 'right' }}>
                         <Button onClick={this.leaveRoom} className="bg-secondary">Quitter le salon</Button>
                     </Col>
+                </Row>
+                <Row className='main'>
                     <Col xs={3}>
                         <PlayerList socket={this.socket}/>
                     </Col>
