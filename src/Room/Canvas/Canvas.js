@@ -38,10 +38,7 @@ class Canvas extends RoomComponent {
         }
     }
 
-    clearCanvas()
-    {
-        const canvas = this.canvasRef.current
-        this.ctx = canvas.getContext('2d')
+    clearCanvas() {
         this.ctx.clearRect(0,0,this.canvasRef.current.width,this.canvasRef.current.height)
     }
 
@@ -168,6 +165,7 @@ class Canvas extends RoomComponent {
     roundStart(infos)
     {
         this.setState({displayOverlay:false})
+        this.clearCanvas();
     }
 
     roundEnd(infos)
