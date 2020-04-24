@@ -7,6 +7,7 @@ import Room from "./Room/Room";
 import Home from "./Home/Home";
 import Loader from './Loader/Loader';
 import RoomCreate from "./RoomCreate/RoomCreate";
+import Page404 from './Errors/404';
 import { Signin, Signup, PrivateRoute } from './Connection';
 
 const mapStateToProps = state => ({
@@ -62,7 +63,7 @@ class App extends React.Component {
                         <PrivateRoute path='/room/:id' exact component={ Room }/>
                         <Route path='/signin' exact component={ Signin }/>
                         <Route path='/signup' exact component={ Signup }/>
-                        <Route path='/' render={() => <div>404 eror page</div> } />
+                        <Route path='/' component={ Page404 } />
                     </Switch>
                 </BrowserRouter>
             );

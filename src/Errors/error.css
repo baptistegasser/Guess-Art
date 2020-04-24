@@ -1,0 +1,20 @@
+.error {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.error h1 {
+    font-size: 5rem;
+}
+
+.error h2 {
+    font-size: 3rem;
+}
+
+.error404 {
+    margin-left: -40px;
+}
