@@ -36,10 +36,10 @@ class DrawInstrFactory {
 }
 
 DrawInstrFactory.types = Object.freeze({
-    trash: 'TRASH',
-    bucket: 'BUCKET',
-    eraser: 'ERASER',
-    pencil: 'PENCIL'
+    trash: 'trash',
+    bucket: 'bucket',
+    eraser: 'eraser',
+    pencil: 'pencil'
 });
 
 export default DrawInstrFactory

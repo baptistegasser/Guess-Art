@@ -14,8 +14,7 @@ class ToolBar extends RoomComponent {
         this.clearCanvas = this.clearCanvas.bind(this);
     }
 
-    switchTool(event, type) {
-        event.preventDefault();
+    switchTool(type) {
         if (this.props.roomInfo.tool.type === type) return;
 
         // Set the tool's TYPE in redux
@@ -27,7 +26,7 @@ class ToolBar extends RoomComponent {
         }
 
         // Set the new selected tool
-        event.target.classList.add('selected');
+        document.getElementById(type).classList.add('selected');
     }
 
     switchColor(color) {
@@ -68,6 +67,7 @@ class ToolBar extends RoomComponent {
         // Set the default value : draw with pencil in black
         this.switchColor('rgb(0,0,0)');
         this.switchWidth(10);
+        this.switchTool(DrawInstrFactory.types.pencil);
     }
 
     render() {
@@ -81,6 +81,11 @@ class ToolBar extends RoomComponent {
             return(<button className={`width width-${width}`} key={width} id={width} onClick={() => this.switchWidth(width)}/>)
         });
 
+        let tabTools = [DrawInstrFactory.types.pencil, DrawInstrFactory.types.bucket, DrawInstrFactory.types.eraser];
+        let toolsSelector = tabTools.map(type => {
+            return <button className="tool" id={type} onClick={() => this.switchTool(type)}/>;
+        });
+
         return (
             <Container>
                 <Row xs={1}>
@@ -89,9 +94,7 @@ class ToolBar extends RoomComponent {
                     </Col>
                     <Col>
                         {widthSelector}
-                        <button className="tool" id="eraser" onClick={(event) => this.switchTool(event, DrawInstrFactory.types.eraser)}/>
-                        <button className="tool" id="bucket" onClick={(event) => this.switchTool(event, DrawInstrFactory.types.bucket)}/>
-                        <button className="tool" id="pencil" onClick={(event) => this.switchTool(event, DrawInstrFactory.types.pencil)}/>
+                        {toolsSelector}
                         <button className="tool" id="trash"  onClick={(event) => this.clearCanvas()}/>
                     </Col>
                 </Row>
