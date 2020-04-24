@@ -113,7 +113,11 @@ class GameHandler {
         if (!this.isBoss(socket)) return;
 
         this._drawingInstrHistory.push(draw_instr);
-        this._room.broadcast('draw_instr', [draw_instr]);
+        if (draw_instr._flagged === true) {
+            this._room.broadcast('draw_instr', [draw_instr]);
+        } else {
+            this._room.broadcastFrom(socket, 'draw_instr', [draw_instr]);
+        }
     }
 
     /**

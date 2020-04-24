@@ -1,6 +1,6 @@
 class DrawInstrFactory {
     static newInstrTrash() {
-        return this._newInstr(DrawInstrFactory.types.trash);
+        return this._flag(this._newInstr(DrawInstrFactory.types.trash));
     }
 
     static newInstr(type, pos, color, width) {
@@ -9,6 +9,13 @@ class DrawInstrFactory {
             color: color,
             width: width
         });
+    }
+
+    static _flag(instr) {
+        return {
+            ...instr,
+            _flagged: true
+        };
     }
 
     static _newInstr(type, options) {

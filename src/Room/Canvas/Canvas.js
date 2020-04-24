@@ -33,7 +33,7 @@ class Canvas extends RoomComponent {
                 case DrawInstrFactory.types.trash:
                     return this.clearCanvas();
                 default:
-                    return this.draw_instr(instr.type, instr.options);
+                    return this.draw_instr(instr);
             }
         }
     }
@@ -101,7 +101,9 @@ class Canvas extends RoomComponent {
         console.log('finished filling');
     }
 
-    draw_instr(type, options) {
+    draw_instr(instr) {
+        const type = instr.type;
+        const options = instr.options;
         const pos = options.pos;
         switch(type) {
             case DrawInstrFactory.types.pencil:
@@ -139,14 +141,18 @@ class Canvas extends RoomComponent {
                 this.last_x = x;
                 this.last_y = y;
                 if (this.props.roomInfo.tool.type === DrawInstrFactory.types.bucket) {
-                    this.props.socket.emit('draw_instr', DrawInstrFactory.newInstr(tool.type, pos, tool.color))
+                    const instr = DrawInstrFactory.newInstr(tool.type, pos, tool.color);
+                    this.props.socket.emit('draw_instr', instr);
+                    this.draw_instr(instr);
                 } else {
                     this.clicked = true;
                 }
                 break;
             case "mousemove":
                 if (!this.clicked) break;
-                this.props.socket.emit("draw_instr", DrawInstrFactory.newInstr(tool.type, pos, tool.color, tool.width));
+                const instr = DrawInstrFactory.newInstr(tool.type, pos, tool.color, tool.width);
+                this.props.socket.emit("draw_instr", instr);
+                this.draw_instr(instr);
                 this.last_x = x;
                 this.last_y = y;
                 break;
