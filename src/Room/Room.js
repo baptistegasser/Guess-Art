@@ -135,16 +135,20 @@ class Room extends RoomComponent {
         }
 
         return (
-            <Container fluid className="h-100">
-                <Row className='main' id="topBar" >
-                    <Col xs={4}>
-                        {this.state.roundStarted ? <Chrono duration={this.state.roundDuration}/> : ''}
-                    </Col>
-                    <Col xs={6}>
-                        <h2 style={{paddingLeft:"20%"}}>{this.state.mysteryWord} </h2>
-                    </Col>
-                    <Col xs={2} style={{ textAlign: 'right' }}>
-                        <Button onClick={this.leaveRoom} className="bg-secondary">Quitter le salon</Button>
+            <Container fluid className="h-100 p-0">
+                <Row className='main' id='topBar-wrapper'>
+                    <Col>
+                        <Row id="topBar">
+                            <Col xs={4}>
+                                {this.state.roundStarted ? <Chrono duration={this.state.roundDuration}/> : ''}
+                            </Col>
+                            <Col xs={6}>
+                                <h2 style={{paddingLeft:"20%"}}>{this.state.mysteryWord} </h2>
+                            </Col>
+                            <Col xs={2} style={{ textAlign: 'right' }}>
+                                <Button onClick={this.leaveRoom} className="bg-secondary">Quitter le salon</Button>
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
                 <Row className='main h-100'>
@@ -158,7 +162,7 @@ class Room extends RoomComponent {
                         <Chat socket={this.socket}/>
                     </Col>
                     <Col xs={{ span: 7, offset: 3 }} style={{height: '20%'}}>
-                        {true ? <ToolBar socket={this.socket}/> : '' }
+                        {this.props.roomInfo.isBoss ? <ToolBar socket={this.socket}/> : '' }
                     </Col>
                 </Row>
             </Container>
