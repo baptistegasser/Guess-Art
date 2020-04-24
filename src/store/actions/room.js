@@ -1,3 +1,9 @@
+export const resetRoomInfos = () => {
+    return {
+        type: 'RESET_INFOS'
+    };
+}
+
 export const setBoss = (username) => {
     return {
         type: 'SET_BOSS',

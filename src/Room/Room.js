@@ -99,10 +99,18 @@ class Room extends RoomComponent {
         // TODO afficher scores finaux : infos.players
     }
 
+    componentWillUnmount() {
+        // Clear the room infos stored in redux
+        this.resetRoomInfos();
+    }
+
     /**
      * Once the component is mounted we can start to listen for events
      */
     componentDidMount() {
+        // Clear the room infos stored in redux
+        this.resetRoomInfos();
+
         const room_id = window.location.pathname.replace('/room/','');
         this.socket.on("connect",()=>{this.socket.emit("join_room", room_id)});
         this.socket.on('game_error', (msg) => this.leaveOnError(msg));

@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from "react-redux";
-import {setBoss, setIsBoss, addPlayer, removePlayer, setPlayerScore, resetPlayersScores, setTool, setWidth, setColor} from '../store/actions/room';
+import {resetRoomInfos, setBoss, setIsBoss, addPlayer, removePlayer, setPlayerScore, resetPlayersScores, setTool, setWidth, setColor} from '../store/actions/room';
 
 const mapStateToProps = state => ({
     roomInfo: state.roomInfo
@@ -8,6 +8,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = () => {
     return {
+        resetRoomInfos,
         setBoss,
         setIsBoss,
         addPlayer,
@@ -25,6 +26,10 @@ const mapDispatchToProps = () => {
  * the state of a room which is stored in Redux.
  */
 export class RoomComponent extends React.Component {
+    resetRoomInfos(...args) {
+        this.props.resetRoomInfos(...args);
+    }
+
     setBoss(...args) {
         this.props.setBoss(...args);
     }

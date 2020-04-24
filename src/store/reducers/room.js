@@ -1,13 +1,15 @@
-const RoomInfoReducer = (state = {
+const defaultState = {
     players: [],
     boss: "",
     isBoss: false,
     tool: {
         type: '',
         width: 0,
-        color: 'rgb(255, 255, 255)'
+        color: ''
     }
-}, action) => {
+};
+
+const RoomInfoReducer = (state = defaultState, action) => {
     const listContainPlayer = player => {
         for(let i = 0, l = state.players.length; i < l; ++i) {
             if (state.players[i].username === player.username) {
@@ -18,6 +20,8 @@ const RoomInfoReducer = (state = {
     }
 
     switch (action.type) {
+        case 'RESET_INFOS':
+            return defaultState;
         case 'SET_BOSS':
             return {
                 ...state,
