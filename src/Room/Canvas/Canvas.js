@@ -240,7 +240,7 @@ class Canvas extends RoomComponent {
 
     render() {
         return (
-            <div>
+            <div id="canvas-wrap">
                 {this.state.displayOverlay ? <div id="overlay" >{this.state.overlay}</div> : ''}
                 {/* Adaptation of https://stackoverflow.com/a/49357655 solution to Anti-aliasing
                   * However, this is not even remotly anti-aliasing, but a cheap cheat to remove transparent pixels

@@ -135,7 +135,7 @@ class Room extends RoomComponent {
         }
 
         return (
-            <Container fluid>
+            <Container fluid className="h-100">
                 <Row className='main' id="topBar" >
                     <Col xs={4}>
                         {this.state.roundStarted ? <Chrono duration={this.state.roundDuration}/> : ''}
@@ -147,18 +147,18 @@ class Room extends RoomComponent {
                         <Button onClick={this.leaveRoom} className="bg-secondary">Quitter le salon</Button>
                     </Col>
                 </Row>
-                <Row className='main'>
-                    <Col xs={3}>
+                <Row className='main h-100'>
+                    <Col xs={2} style={{height: '80%'}}>
                         <PlayerList socket={this.socket}/>
                     </Col>
-                    <Col xs={7}>
+                    <Col xs={8} style={{height: '80%'}}>
                         <Canvas socket={this.socket}/>
                     </Col>
-                    <Col xs={2}>
+                    <Col xs={2} style={{height: '80%'}}>
                         <Chat socket={this.socket}/>
                     </Col>
-                    <Col xs={{ span: 7, offset: 3 }}>
-                        {this.props.roomInfo.isBoss ? <ToolBar socket={this.socket}/> : '' }
+                    <Col xs={{ span: 7, offset: 3 }} style={{height: '20%'}}>
+                        {true ? <ToolBar socket={this.socket}/> : '' }
                     </Col>
                 </Row>
             </Container>

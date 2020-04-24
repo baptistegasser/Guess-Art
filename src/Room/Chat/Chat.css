@@ -1,7 +1,13 @@
 #chat {
     border-radius: 10px;
     background-color: white;
-    height: 600px;
+    flex-grow: 1;
+}
+
+#chat-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 #input-msg

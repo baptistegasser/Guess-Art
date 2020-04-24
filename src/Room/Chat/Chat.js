@@ -43,7 +43,7 @@ class Chat extends RoomComponent {
         }
 
         return (
-            <div>
+            <div id="chat-wrapper">
                 <div ref={this.chatRef} id="chat" />
                 {inputForm}
             </div>
