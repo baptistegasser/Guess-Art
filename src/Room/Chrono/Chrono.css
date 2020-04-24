@@ -1,16 +1,25 @@
 .chrono {
     width: 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-size: 60px;
+    height: 60px;
+    background-size: cover;
     background-repeat: no-repeat;
-    background-image: url('https://media.giphy.com/media/YWmGm0UFfYnQs/giphy.gif');
+    background-image: url('/chrono.png');
+    background-position: center;
+    padding-top: 21px;
 }
 
-.chrono p {
-    color: #000000 !important;
-    width: 70px;
-    text-align: center;
+.big {
+    padding-left: 20px;
+}
+
+.small {
+    padding-left: 24.5px;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.hidden {
+    visibility: hidden;
 }

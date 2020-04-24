@@ -42,11 +42,31 @@ class Chrono extends React.Component {
     }
 
     render() {
+        if (this.props.displayStyle === 'inline') {
+            return (
+                <span className='inline'>
+                    <b>{this.state.remaining}</b>
+                </span>
+            );
+        }
+
+        let className = '';
+        switch(this.props.displayStyle) {
+            case 'hidden':
+                className = 'hidden';
+                break;
+            default:
+                if (this.state.remaining >= 100) {
+                    className = 'chrono big';
+                } else {
+                    className = 'chrono small';
+                }
+        }
         return (
-            <div className='chrono'>
-                <p>{this.state.remaining}</p>
+            <div className={className}>
+                <b>{this.state.remaining}</b>
             </div>
-        )
+        );
     }
 }
 

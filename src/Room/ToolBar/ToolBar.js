@@ -83,7 +83,7 @@ class ToolBar extends RoomComponent {
 
         let tabTools = [DrawInstrFactory.types.pencil, DrawInstrFactory.types.bucket, DrawInstrFactory.types.eraser];
         let toolsSelector = tabTools.map(type => {
-            return <button className="tool" id={type} onClick={() => this.switchTool(type)}/>;
+            return <button className="tool" key={type} id={type} onClick={() => this.switchTool(type)}/>;
         });
 
         return (

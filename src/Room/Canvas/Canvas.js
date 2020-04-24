@@ -2,6 +2,7 @@ import React from "react";
 import { RoomComponent, connectRoomComponent } from '../RoomComponent';
 import DrawInstrFactory from '../../DrawInstrFactory';
 import './Canvas.css';
+import Chrono from "../Chrono/Chrono";
 
 class Canvas extends RoomComponent {
     constructor(props) {
@@ -178,7 +179,7 @@ class Canvas extends RoomComponent {
 
     gameStart(infos)
     {
-        let overlay = <p className="text_overlay">La partie va commencer dans  {infos.delay}  secondes</p>
+        let overlay = <p className="text_overlay">La partie va commencer dans <Chrono duration={infos.delay} displayStyle='inline'></Chrono></p>
         this.setState({displayOverlay : true,overlay:overlay})
     }
 
