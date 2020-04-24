@@ -50,66 +50,58 @@ class Canvas extends RoomComponent {
         const width = this.ctx.canvas.width;
         const height = this.ctx.canvas.height;
         let imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        let data = imageData.data;
+        // The buffer contain the actual pixel datas, the buf8 and data arrays are used to get the datas
+        // in different format (rgba can be encoded as 4*8bits values or 1*32bits value)
+        let buf = imageData.data.buffer;
+        let buf8 = new Uint8ClampedArray(buf);
+        let data = new Uint32Array(buf);
 
-        this.canvasRef.current.width = width*2
-        this.canvasRef.current.height = height*2
-        this.canvasRef.current.width = width
-        this.canvasRef.current.height = height
+        const colorSplitted = options.color.replace('rgb(', '').replace(')', '').split(',');
+        const targetColor = (colorSplitted[0] | (colorSplitted[1] << 8) | (colorSplitted[2] << 16) | (255 << 24)) >>> 0;
+        const x = options.pos[2];
+        const y = options.pos[3];
+        const srcColor = data[y*width + x];
+        // Don't try to fill if the color to replace is the same
+        if (srcColor === targetColor) {
+            return;
+        }
 
-        function posToRGBA(x, y) {
-            const offset = 4 * ((y-1)*width + x);
-            return [data[0+offset], data[1+offset], data[2+offset], data[3+offset]]
-        }
-        function sameRGBA(rgba_1, rgba_2) {
-            for (let i in rgba_1) {
-                if (rgba_1[i] !== rgba_2[i]) {
-                    if (i === 3) console.log('failed on alpha');
-                    return false;
-                }
-            }
-            return true;
-        }
-        function colorPos(x, y, rgba) {
-            const offset = 4 * ((y-1)*width + x);
-            data[0+offset] = rgba[0];
-            data[1+offset] = rgba[1];
-            data[2+offset] = rgba[2];
-            data[3+offset] = rgba[3];
-        }
         class Point {
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
+                this.color = data[y*width + x]
+            }
+
+            paint() {
+                data[this.y*width + this.x] = targetColor;
             }
         }
 
-        const x = options.pos[2];
-        const y = options.pos[3];
-
-        // TODO remove pink
-        const targetRGBA = [255, 20, 147, 255];
-        const srcRGBA = posToRGBA(x, y);
-
-        // Don't try to fill if the color to replace is the same
-        if (targetRGBA === srcRGBA) {
-            return;
-        }
-
-        let queue = [];
-        colorPos(x, y, [255,255,255,255]);
-        queue.push(new Point(x, y));
+        let startPoint = new Point(x, y);
+        startPoint.paint();
+        let queue = [startPoint];
 
         while(queue.length > 0) {
             const n = queue.shift();
+            // Loop throught neighbour pixels
             for (let next of [new Point(n.x-1, n.y), new Point(n.x, n.y-1), new Point(n.x+1, n.y), new Point(n.x, n.y+1)]) {
-                if (sameRGBA(srcRGBA, posToRGBA(next.x, next.y))) {
-                    colorPos(next.x, next.y, targetRGBA);
+                // Ignore if out of bound
+                if (next.x < 0 || next.y < 0 || next.x > width || next.y > height) {
+                    continue;
+                }
+                // If color of the point is valid, paint him and add hime to the queue
+                if (srcColor === next.color) {
+                    next.paint();
                     queue.push(next);
                 }
             }
         }
+
+        // Set the updated data back and update the canvas.
+        imageData.data.set(buf8);
         this.ctx.putImageData(imageData, 0, 0);
+        console.log('finished filling');
     }
 
     draw_instr(type, options) {
