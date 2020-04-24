@@ -13,6 +13,7 @@ class Canvas extends RoomComponent {
         this.props.socket.on('game_end',(infos)=>this.gameEnd(infos))
         this.props.socket.on('game_info',(infos)=>this.gameInfo(infos))
         this.state = {displayOverlay : false,overlay:null}
+        this.canvasWrapperRef = React.createRef();
         this.canvasRef = React.createRef();
         /** @type {CanvasRenderingContext2D} */
         this.ctx = null;
@@ -21,7 +22,7 @@ class Canvas extends RoomComponent {
         this.last_y = 0;
         this.handler = this.handler.bind(this)
         this.updateDraw = this.updateDraw.bind(this)
-
+        this.updateCanvasSize = this.updateCanvasSize.bind(this);
     }
 
 
@@ -226,6 +227,8 @@ class Canvas extends RoomComponent {
     componentDidMount() {
         const canvas = this.canvasRef.current
         this.ctx = canvas.getContext('2d')
+        window.addEventListener('resize', this.updateCanvasSize);
+        this.updateCanvasSize();
         this.ctx.mozImageSmoothingEnabled = false;
         this.ctx.webkitImageSmoothingEnabled = false;
         this.ctx.msImageSmoothingEnabled = false;
@@ -236,11 +239,21 @@ class Canvas extends RoomComponent {
         canvas.addEventListener("mousemove", event => this.handler(event))
     }
 
+    updateCanvasSize() {
+        const imageData = this.ctx.getImageData(0,0,this.canvasRef.current.width, this.canvasRef.current.height);
+        this.canvasRef.current.width = this.canvasWrapperRef.current.clientWidth;
+        this.canvasRef.current.height = this.canvasWrapperRef.current.clientHeight;
+        this.ctx.putImageData(imageData, 0, 0);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateCanvasSize);
+    }
 
 
     render() {
         return (
-            <div id="canvas-wrap">
+            <div id="canvas-wrap" ref={this.canvasWrapperRef}>
                 {this.state.displayOverlay ? <div id="overlay" >{this.state.overlay}</div> : ''}
                 {/* Adaptation of https://stackoverflow.com/a/49357655 solution to Anti-aliasing
                   * However, this is not even remotly anti-aliasing, but a cheap cheat to remove transparent pixels
@@ -255,7 +268,7 @@ class Canvas extends RoomComponent {
                         </filter>
                     </defs>
                     </svg>
-                <canvas ref={this.canvasRef} id="canvas" /*width="700" height="600"*//>
+                <canvas ref={this.canvasRef} id="canvas"/>
             </div>
         )
     }
