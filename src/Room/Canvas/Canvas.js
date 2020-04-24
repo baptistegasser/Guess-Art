@@ -14,6 +14,7 @@ class Canvas extends RoomComponent {
         this.props.socket.on('game_info',(infos)=>this.gameInfo(infos))
         this.state = {displayOverlay : false,overlay:null}
         this.canvasRef = React.createRef();
+        /** @type {CanvasRenderingContext2D} */
         this.ctx = null;
         this.clicked = false;
         this.last_x = 0;
@@ -27,10 +28,13 @@ class Canvas extends RoomComponent {
 
     updateDraw(data) {
         for (let instr of data) {
-            if (instr.type === DrawInstrFactory.types.trash) {
-                this.clearCanvas();
-            } else {
-                this.draw_instr(instr.type, instr.options);
+            switch(instr.type) {
+                case DrawInstrFactory.types.bucket:
+                    return this.fillCanvas(instr.options)
+                case DrawInstrFactory.types.trash:
+                    return this.clearCanvas();
+                default:
+                    return this.draw_instr(instr.type, instr.options);
             }
         }
     }
@@ -40,6 +44,72 @@ class Canvas extends RoomComponent {
         const canvas = this.canvasRef.current
         this.ctx = canvas.getContext('2d')
         this.ctx.clearRect(0,0,700,600)
+    }
+
+    fillCanvas(options) {
+        const width = this.ctx.canvas.width;
+        const height = this.ctx.canvas.height;
+        let imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        let data = imageData.data;
+
+        this.canvasRef.current.width = width*2
+        this.canvasRef.current.height = height*2
+        this.canvasRef.current.width = width
+        this.canvasRef.current.height = height
+
+        function posToRGBA(x, y) {
+            const offset = 4 * ((y-1)*width + x);
+            return [data[0+offset], data[1+offset], data[2+offset], data[3+offset]]
+        }
+        function sameRGBA(rgba_1, rgba_2) {
+            for (let i in rgba_1) {
+                if (rgba_1[i] !== rgba_2[i]) {
+                    if (i === 3) console.log('failed on alpha');
+                    return false;
+                }
+            }
+            return true;
+        }
+        function colorPos(x, y, rgba) {
+            const offset = 4 * ((y-1)*width + x);
+            data[0+offset] = rgba[0];
+            data[1+offset] = rgba[1];
+            data[2+offset] = rgba[2];
+            data[3+offset] = rgba[3];
+        }
+        class Point {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+            }
+        }
+
+        const x = options.pos[2];
+        const y = options.pos[3];
+
+        // TODO remove pink
+        const targetRGBA = [255, 20, 147, 255];
+        const srcRGBA = posToRGBA(x, y);
+
+        // Don't try to fill if the color to replace is the same
+        if (targetRGBA === srcRGBA) {
+            return;
+        }
+
+        let queue = [];
+        colorPos(x, y, [255,255,255,255]);
+        queue.push(new Point(x, y));
+
+        while(queue.length > 0) {
+            const n = queue.shift();
+            for (let next of [new Point(n.x-1, n.y), new Point(n.x, n.y-1), new Point(n.x+1, n.y), new Point(n.x, n.y+1)]) {
+                if (sameRGBA(srcRGBA, posToRGBA(next.x, next.y))) {
+                    colorPos(next.x, next.y, targetRGBA);
+                    queue.push(next);
+                }
+            }
+        }
+        this.ctx.putImageData(imageData, 0, 0);
     }
 
     draw_instr(type, options) {
@@ -55,6 +125,7 @@ class Canvas extends RoomComponent {
     }
 
     draw_line(last_x, last_y, x, y, color, width) {
+        this.ctx.filter = 'url(#remove-alpha)';
         this.ctx.beginPath()
         this.ctx.moveTo(last_x, last_y)
         this.ctx.lineTo(x, y)
@@ -69,17 +140,21 @@ class Canvas extends RoomComponent {
 
         const x = Math.trunc(event.offsetX)
         const y = Math.trunc(event.offsetY)
+        const tool = this.props.roomInfo.tool;
+        const pos = [this.last_x, this.last_y, x, y];
 
         switch(event.type) {
             case "mousedown":
                 this.last_x = x;
                 this.last_y = y;
-                this.clicked = true;
+                if (this.props.roomInfo.tool.type === DrawInstrFactory.types.bucket) {
+                    this.props.socket.emit('draw_instr', DrawInstrFactory.newInstr(tool.type, pos, tool.color))
+                } else {
+                    this.clicked = true;
+                }
                 break;
             case "mousemove":
                 if (!this.clicked) break;
-                const tool = this.props.roomInfo.tool;
-                const pos = [this.last_x, this.last_y, x, y];
                 this.props.socket.emit("draw_instr", DrawInstrFactory.newInstr(tool.type, pos, tool.color, tool.width));
                 this.last_x = x;
                 this.last_y = y;
@@ -161,6 +236,10 @@ class Canvas extends RoomComponent {
     componentDidMount() {
         const canvas = this.canvasRef.current
         this.ctx = canvas.getContext('2d')
+        this.ctx.mozImageSmoothingEnabled = false;
+        this.ctx.webkitImageSmoothingEnabled = false;
+        this.ctx.msImageSmoothingEnabled = false;
+        this.ctx.imageSmoothingEnabled = false;
         canvas.addEventListener("mousedown", event => this.handler(event))
         canvas.addEventListener("mouseup",   event => this.handler(event))
         canvas.addEventListener("mouseout",  event => this.handler(event))
@@ -173,6 +252,15 @@ class Canvas extends RoomComponent {
         return (
             <div>
                 {this.state.displayOverlay ? <div id="overlay" >{this.state.overlay}</div> : ''}
+                <svg width="0" height="0" style={{position: 'absolute',zIndex: '-1'}}>
+                    <defs>
+                        <filter id="remove-alpha" x="0" y="0" width="100%" height="100%">
+                        <feComponentTransfer>
+                            <feFuncA type="discrete" tableValues="0 1"></feFuncA>
+                        </feComponentTransfer>
+                        </filter>
+                    </defs>
+                    </svg>
                 <canvas ref={this.canvasRef} id="canvas" width="700" height="600"/>
             </div>
         )
