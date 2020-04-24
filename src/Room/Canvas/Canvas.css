@@ -1,6 +1,7 @@
-#canvas {
+canvas {
     border: solid 1px;
     background-color: white;
+    image-rendering: pixelated;
 }
 
 #overlay {
