@@ -41,7 +41,7 @@ class Canvas extends RoomComponent {
     {
         const canvas = this.canvasRef.current
         this.ctx = canvas.getContext('2d')
-        this.ctx.clearRect(0,0,700,600)
+        this.ctx.clearRect(0,0,this.canvasRef.current.width,this.canvasRef.current.height)
     }
 
     fillCanvas(x, y, color) {
@@ -255,7 +255,7 @@ class Canvas extends RoomComponent {
                         </filter>
                     </defs>
                     </svg>
-                <canvas ref={this.canvasRef} id="canvas" width="700" height="600"/>
+                <canvas ref={this.canvasRef} id="canvas" /*width="700" height="600"*//>
             </div>
         )
     }

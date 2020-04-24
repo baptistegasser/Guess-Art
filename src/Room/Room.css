@@ -1,7 +1,18 @@
 .row {
     margin: 0;
+
 }
 
-#main {
+#topBar
+{
+    border-radius:10px;
+    background-color:rgb(102, 204, 255);
+    padding-top:0px;
+    height:70px;
+    margin-top:1%;
+}
+
+
+.main {
     padding-bottom: 0;
 }
