@@ -57,9 +57,9 @@ class Chrono extends React.Component {
                 break;
             default:
                 if (this.state.remaining >= 100) {
-                    className = 'chrono big';
+                    className = 'chrono big-counter';
                 } else {
-                    className = 'chrono small';
+                    className = 'chrono small-counter';
                 }
         }
         return (
