@@ -242,6 +242,10 @@ class Canvas extends RoomComponent {
         return (
             <div>
                 {this.state.displayOverlay ? <div id="overlay" >{this.state.overlay}</div> : ''}
+                {/* Adaptation of https://stackoverflow.com/a/49357655 solution to Anti-aliasing
+                  * However, this is not even remotly anti-aliasing, but a cheap cheat to remove transparent pixels
+                  * created by anti-aliasing
+                */}
                 <svg width="0" height="0" style={{position: 'absolute',zIndex: '-1'}}>
                     <defs>
                         <filter id="remove-alpha" x="0" y="0" width="100%" height="100%">
