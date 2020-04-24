@@ -1,6 +1,8 @@
 .tool, .color, .width {
     width: 50px;
     height: 50px;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .selected {
@@ -17,6 +19,10 @@
 
 #eraser {
     background-image: url('/tool/eraser.png');
+}
+
+#pencil {
+    background-image: url('/tool/brush.png');
 }
 
 .width-1 {

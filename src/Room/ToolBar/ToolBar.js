@@ -34,14 +34,10 @@ class ToolBar extends RoomComponent {
         if (this.props.roomInfo.tool.color === color) return;
 
         // Set the tool's COLOR in redux
-        this.setTool(DrawInstrFactory.types.pencil);
         this.setColor(color);
 
         // Clear the style from the current selected color
         for (let e of document.getElementsByClassName('color selected')) {
-            e.classList.remove('selected');
-        }
-        for (let e of document.getElementsByClassName('tool selected')) {
             e.classList.remove('selected');
         }
 
@@ -95,6 +91,7 @@ class ToolBar extends RoomComponent {
                         {widthSelector}
                         <button className="tool" id="eraser" onClick={(event) => this.switchTool(event, DrawInstrFactory.types.eraser)}/>
                         <button className="tool" id="bucket" onClick={(event) => this.switchTool(event, DrawInstrFactory.types.bucket)}/>
+                        <button className="tool" id="pencil" onClick={(event) => this.switchTool(event, DrawInstrFactory.types.pencil)}/>
                         <button className="tool" id="trash"  onClick={(event) => this.clearCanvas()}/>
                     </Col>
                 </Row>
