@@ -29,8 +29,6 @@ class Canvas extends RoomComponent {
     updateDraw(data) {
         for (let instr of data) {
             switch(instr.type) {
-                case DrawInstrFactory.types.bucket:
-                    return this.fillCanvas(instr.options)
                 case DrawInstrFactory.types.trash:
                     return this.clearCanvas();
                 default:
@@ -46,7 +44,7 @@ class Canvas extends RoomComponent {
         this.ctx.clearRect(0,0,700,600)
     }
 
-    fillCanvas(options) {
+    fillCanvas(x, y, color) {
         const width = this.ctx.canvas.width;
         const height = this.ctx.canvas.height;
         let imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -56,10 +54,8 @@ class Canvas extends RoomComponent {
         let buf8 = new Uint8ClampedArray(buf);
         let data = new Uint32Array(buf);
 
-        const colorSplitted = options.color.replace('rgb(', '').replace(')', '').split(',');
+        const colorSplitted = color.replace('rgb(', '').replace(')', '').split(',');
         const targetColor = (colorSplitted[0] | (colorSplitted[1] << 8) | (colorSplitted[2] << 16) | (255 << 24)) >>> 0;
-        const x = options.pos[2];
-        const y = options.pos[3];
         const srcColor = data[y*width + x];
         // Don't try to fill if the color to replace is the same
         if (srcColor === targetColor) {
@@ -111,6 +107,8 @@ class Canvas extends RoomComponent {
                 return this.draw_line(pos[0], pos[1], pos[2], pos[3], options.color, options.width);
             case DrawInstrFactory.types.eraser:
                 return this.draw_line(pos[0], pos[1], pos[2], pos[3], 'white', options.width);
+            case DrawInstrFactory.types.bucket:
+                return this.fillCanvas(pos[2], pos[3], options.color);
             default:
                 return console.error('Unsupported drawing instruction');
         }
