@@ -174,6 +174,10 @@ class GameScheduler {
         return this._game.startScheduled;
     }
 
+    isGameEnding() {
+        return this._game.endScheduled;
+    }
+
     isRoundStarted() {
         return this._round.started;
     }

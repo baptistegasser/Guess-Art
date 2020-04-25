@@ -106,7 +106,7 @@ class Room {
 
     addClient(socket) {
         if (this.isFull()) throw new Error('Too much clients !');
-        if (this.isConnected(socket)) throw new Error('Client already connected !');
+        if (this.isConnected(socket)) return;
 
         this.log(`${this.getUsername(socket)} connected`)
         for (let i = 0, l = this._connectedClient.length; i < l; ++i) {
@@ -123,9 +123,20 @@ class Room {
         this.broadcast('user_joined', this._gameHandler.getPlayer(socket));
     }
 
+    updateClient(oldSocket, newSocket) {
+        newSocket.join(this._id);
+        for (let i = 0, l = this._connectedClient.length; i < l; ++i) {
+            if (this._connectedClient[i] === oldSocket) {
+                this._connectedClient[i] = newSocket;
+                break;
+            }
+        }
+        this._gameHandler.updateUser(oldSocket, newSocket);
+    }
+
     removeClient(socket) {
         this.log(`${this.getUsername(socket)} disconnected`)
-        if (!this.isConnected(socket)) throw new Error('Client not connected !');
+        if (!this.isConnected(socket)) return;
 
         this.playerCount -= 1;
         socket.leave(this._id);

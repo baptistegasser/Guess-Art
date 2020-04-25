@@ -38,7 +38,7 @@ class GameHandler {
         this._socketToUser.delete(socket);
 
         // First, is there enought player to keep playing ?
-        if ((this._scheduler.isGameStarted() || this._scheduler.isGameStarting()) && this._room.playerCount < this._room.minPlayerToStart) {
+        if ((this._scheduler.isGameStarted() || this._scheduler.isGameStarting()) && !this._scheduler.isGameEnding() && this._room.playerCount < this._room.minPlayerToStart) {
             this._scheduler.endGameNow();
             this._room.broadcastFrom(socket, 'game_info', this.getGameInfo());
             return
@@ -76,6 +76,15 @@ class GameHandler {
         if (!this._scheduler.isGameStarted() && this._room.playerCount >= this._room.minPlayerToStart) {
             this._scheduler.startGameNow();
         }
+    }
+
+    updateUser(oldSocket, newSocket) {
+        if (this._boss === oldSocket) {
+            this._boss = oldSocket;
+        }
+        const user = this._socketToUser.get(oldSocket);
+        this._socketToUser.set(newSocket, user);
+        this._socketToUser.delete(oldSocket);
     }
 
     submitGuess(socket, message) {
