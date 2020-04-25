@@ -170,7 +170,8 @@ class GameHandler {
         this.initRound();
 
         const roundStartData = {
-            boss: this._socketToUser.get(this._boss).username
+            boss: this._socketToUser.get(this._boss).username,
+            mysteryWord: this._mysteryWord.replace(/[^\ ]/g,'-')
         };
 
         this._remainingRounds -= 1;
