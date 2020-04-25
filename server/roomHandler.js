@@ -75,7 +75,7 @@ class RoomHandler {
         try {
             // Retrieve the username, oldSocket (which is the old or current one) and the current room id
             const username = socket.request.session.user.username;
-            const oldSocket = this._userToRoom.get(username);
+            const oldSocket = this._userToSocket.get(username);
             const oldRoomID = this._userToRoom.get(username);
 
             // Does the username is already existing but with a different socket ?
