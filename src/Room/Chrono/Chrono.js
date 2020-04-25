@@ -6,11 +6,18 @@ class Chrono extends React.Component {
         super(props);
         this.state = {
             started: false,
-            remaining: props.duration
+            remaining: -1,
         };
 
         this.chronoTimeout = undefined;
+        this.startChrono = this.startChrono.bind(this);
         this.stopChrono = this.stopChrono.bind(this);
+        this.updateChrono = this.updateChrono.bind(this);
+    }
+
+    startChrono(duration) {
+        this.setState({ started: true, remaining: duration });
+        this.chronoTimeout = setInterval(this.updateChrono, 1000);
     }
 
     updateChrono() {
@@ -37,8 +44,9 @@ class Chrono extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ started: true });
-        this.chronoTimeout = setInterval(this.updateChrono.bind(this), 1000);
+        if (this.props.autostart === true) {
+            this.startChrono(this.props.duration)
+        }
     }
 
     render() {

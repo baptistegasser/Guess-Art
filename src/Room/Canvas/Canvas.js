@@ -179,7 +179,7 @@ class Canvas extends RoomComponent {
 
     gameStart(infos)
     {
-        let overlay = <p className="text_overlay">La partie va commencer dans <Chrono duration={infos.delay} displayStyle='inline'></Chrono></p>
+        let overlay = <p className="text_overlay">La partie va commencer dans <Chrono autostart={true} duration={infos.delay} displayStyle='inline'></Chrono></p>
         this.setState({displayOverlay : true,overlay:overlay})
     }
 

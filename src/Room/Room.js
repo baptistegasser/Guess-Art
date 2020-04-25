@@ -41,6 +41,8 @@ class Room extends RoomComponent {
         this.onGameInfo   = this.onGameInfo.bind(this);
         this.onGameStart  = this.onGameStart.bind(this);
         this.onGameEnd    = this.onGameEnd.bind(this);
+
+        this.chronoRef = React.createRef();
     }
 
     leaveRoom() {
@@ -59,6 +61,7 @@ class Room extends RoomComponent {
         this.setBoss(infos.boss);
         this.setIsBoss(infos.boss === this.props.user);
         this.setState({ roundStarted: true, mysteryWord: infos.mysteryWord});
+        this.chronoRef.current.startChrono(this.state.roundDuration);
         // TODO si isBoss : infos.mystery_word -> contient le mot a dessiner
         // TODO : start chronos et tout
         //TODO caché overlay
@@ -83,6 +86,8 @@ class Room extends RoomComponent {
         if (infos.gameStarted === true) {
             this.setBoss(infos.boss);
             this.setIsBoss(infos.boss === this.props.user);
+            this.setState({ roundStarted: true, mysteryWord: infos.mysteryWord});
+            this.chronoRef.current.startChrono(infos.timeRemaining);
             // TODO afficher l'historique de dessins sur le canvas : infos.draw_instr
             // TODO : start chronos : infos.timeRemaining -> temps restant en secondes
         }
@@ -140,7 +145,7 @@ class Room extends RoomComponent {
                     <Col>
                         <Row id="topBar">
                             <Col xs={4}>
-                                {this.state.roundStarted ? <Chrono duration={this.state.roundDuration}/> : ''}
+                                <Chrono ref={this.chronoRef} displayStyle={this.state.roundStarted ? '' : 'hidden'}/>
                             </Col>
                             <Col xs={6}>
                                 <h2 style={{paddingLeft:"20%"}}>{this.state.mysteryWord} </h2>
