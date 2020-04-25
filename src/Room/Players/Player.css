@@ -1,13 +1,14 @@
+#player-list {
+    height: 100%;
+}
+
 .player > .row {
     margin: 0;
     padding: 0;
     width: 100%
 }
 
-.player {
-    margin-bottom: 2%;
-    border-radius: 10px;
-    background-color: rgb(102, 204, 255);
+.player .col, #icon-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -15,11 +16,25 @@
     text-align: center;
 }
 
+.player {
+    height: 10.5%;
+    margin-bottom: 2%;
+    border-radius: 10px;
+    background-color: rgb(102, 204, 255);
+}
+.player .col p {
+    margin-bottom: 0;
+}
+
 .boss-icon {
-    position: absolute;
-    top: 0;
-    right: 0;
+    align-self: flex-end;
     width: 36px;
     height: 36px;
     border-radius: 10px;
+}
+
+#icon-container {
+    width:100%;
+    height: 100%;
+    position: absolute;
 }
