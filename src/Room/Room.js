@@ -40,18 +40,21 @@ class Room extends RoomComponent {
         this.onRoundEnd   = this.onRoundEnd.bind(this);
         this.onGameInfo   = this.onGameInfo.bind(this);
         this.onGameStart  = this.onGameStart.bind(this);
+        this.onGameEnd    = this.onGameEnd.bind(this);
 
         this.chronoRef = React.createRef();
     }
 
     leaveRoom() {
         this.socket.emit("leave_room");
+        this.socket.off('disconnect');
         if (this.socket.connected) this.socket.disconnect();
         this.setState({ leaving: true });
     }
 
     leaveOnError(errorMessage) {
         this.socket.emit("leave_room");
+        this.socket.off('disconnect');
         if (this.socket.connected) this.socket.disconnect();
         this.setState({ leaving: true, errorMessage: errorMessage });
     }
@@ -89,6 +92,11 @@ class Room extends RoomComponent {
         this.resetPlayersScores();
     }
 
+    onGameEnd(infos) {
+        this.chronoRef.current.stopChrono();
+        this.setState({ mysteryWord: undefined, roundStarted: false });
+    }
+
     componentWillUnmount() {
         // Clear the room infos stored in redux
         this.resetRoomInfos();
@@ -112,14 +120,18 @@ class Room extends RoomComponent {
         this.socket.on('round_end',   (infos) => this.onRoundEnd(infos));
         this.socket.on('game_info',   (infos) => this.onGameInfo(infos));
         this.socket.on('game_start',  (infos) => this.onGameStart(infos));
+        this.socket.on('game_end',    (infos) => this.onGameEnd(infos));
         this.socket.on('disconnect',  (reason) => {
             if (reason === 'transport error') {
                 this.leaveOnError('Sorry, it seem the server crashed !');
             } else {
                 console.error(reason);
-                this.leaveOnError('Something happened that closed your connection.');
+                this.leav('Something happened that closed your connection.');
             }
         });
+        window.onbeforeunload = () => {
+            this.socket.off('disconnect');
+        }
     }
 
     render() {
