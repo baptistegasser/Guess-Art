@@ -57,6 +57,20 @@ class Canvas extends RoomComponent {
         const colorSplitted = color.replace('rgb(', '').replace(')', '').split(',');
         const targetColor = (colorSplitted[0] | (colorSplitted[1] << 8) | (colorSplitted[2] << 16) | (255 << 24)) >>> 0;
         const srcColor = data[y*width + x];
+        const targetRGBA = new Uint8ClampedArray(new Uint32Array([srcColor]).buffer);
+        let alt = [];
+        if (targetRGBA[0] !== 0 || targetRGBA[0] !== 255) {
+            const part = (targetRGBA[1] << 8) | (targetRGBA[2] << 16) | (255 << 24);
+            [1,-1,2,-2].forEach(val => alt.push((targetRGBA[0]+val | part) >>> 0));
+        }
+        if (targetRGBA[1] !== 0 || targetRGBA[1] !== 255) {
+            const part = targetRGBA[0] | (targetRGBA[2] << 16) | (255 << 24);
+            [1,-1,2,-2].forEach(val => alt.push(((targetRGBA[1]+val << 8) | part) >>> 0));
+        }
+        if (targetRGBA[2] !== 0 || targetRGBA[2] !== 255) {
+            const part = targetRGBA[0] | (targetRGBA[1] << 8) | (255 << 24);
+            [1,-1,2,-2].forEach(val => alt.push(((targetRGBA[2]+val << 16) | part) >>> 0));
+        }
         // Don't try to fill if the color to replace is the same
         if (srcColor === targetColor) {
             return;
@@ -90,6 +104,14 @@ class Canvas extends RoomComponent {
                 if (srcColor === next.color) {
                     next.paint();
                     queue.push(next);
+                } else {
+                    for (let altColor of alt) {
+                        if (altColor === next.color) {
+                            next.paint();
+                            queue.push(next);
+                            break;
+                        }
+                    }
                 }
             }
         }
