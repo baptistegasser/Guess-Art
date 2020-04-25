@@ -205,7 +205,7 @@ class Canvas extends RoomComponent {
     {
         let usernames = []; let scores  = [];
         infos.players.sort((a, b) => b.score_gained - a.score_gained);
-        infos.players.map(player => {usernames.push(player.username); scores.push(player.score_gained)})
+        infos.players.forEach(player => {usernames.push(player.username); scores.push(player.score_gained)})
         const overlay = (
             <>
                 <h1>Round ended</h1>
@@ -225,7 +225,7 @@ class Canvas extends RoomComponent {
     {
         let usernames = []; let scores  = [];
         infos.players.sort((a, b) => b.score - a.score);
-        infos.players.map(player => {usernames.push(player.username); scores.push(player.score)})
+        infos.players.forEach(player => {usernames.push(player.username); scores.push(player.score)})
         const overlay = (
             <>
                 <h1>Game ended</h1>
