@@ -3,6 +3,7 @@ import { RoomComponent, connectRoomComponent } from '../RoomComponent';
 import DrawInstrFactory from '../../DrawInstrFactory';
 import './Canvas.css';
 import Chrono from "../Chrono/Chrono";
+import { Table } from "react-bootstrap";
 
 class Canvas extends RoomComponent {
     constructor(props) {
@@ -171,61 +172,76 @@ class Canvas extends RoomComponent {
 
     roundEnd(infos)
     {
-        const overlay = infos.players.map(player => {
-            return <p className="text_overlay" key={player.username}>{player.username} + {player.score_gained} </p>;
-        })
-        this.setState({displayOverlay : true,overlay:overlay})
+        let usernames = []; let scores  = [];
+        infos.players.sort((a, b) => b.score_gained - a.score_gained);
+        infos.players.map(player => {usernames.push(player.username); scores.push(player.score_gained)})
+        const overlay = (
+            <>
+                <h1>Round ended</h1>
+                {this.createScoreTable(usernames, scores, '+')}
+            </>
+        );
+        this.setState({displayOverlay : true, overlay: overlay});
     }
 
     gameStart(infos)
     {
-        let overlay = <p className="text_overlay">La partie va commencer dans <Chrono autostart={true} duration={infos.delay} displayStyle='inline'></Chrono></p>
+        const overlay = <h1>The game will start in <Chrono autostart={true} duration={infos.delay} displayStyle='inline'></Chrono></h1>
         this.setState({displayOverlay : true,overlay:overlay})
     }
 
     gameEnd(infos)
     {
-        function compare(a,b) {
-            if (a.score > b.score)
-                return 1;
-            else if (a.score < b.score)
-                return -1;
-            else
-                return 0;
-        }
-
-        infos.players.sort(compare)
-        let rank = 0;
-        const overlay = infos.players.map(player => {
-            rank++;
-            return <p className="text_overlay" key={player.username}>{rank} {player.username} : {player.score_gained} </p>;
-        })
-        this.setState({displayOverlay : true,overlay:overlay})
-
+        let usernames = []; let scores  = [];
+        infos.players.sort((a, b) => b.score - a.score);
+        infos.players.map(player => {usernames.push(player.username); scores.push(player.score)})
+        const overlay = (
+            <>
+                <h1>Game ended</h1>
+                {this.createScoreTable(usernames, scores)}
+            </>
+        );
+        this.setState({displayOverlay : true, overlay: overlay});
     }
 
-    gameInfo(infos)
-    {
-        let overlay = "";
-        if (infos.gameStarted === false)
-        {
-            overlay = <p className="text_overlay">En attente de joueurs</p>
-            this.setState({displayOverlay : true,overlay:overlay})
+    /**
+     * Create a table to show the scores
+     * @param {{username: string, score: number}[]} players
+     */
+    createScoreTable(usernames, scores, scorePrefix) {
+        let body = [];
+        for (let rank = 0, l = usernames.length; rank < l; ++rank) {
+            body = [
+                ...body,
+                <tr key={rank+1}>
+                    <td className='rank'>{rank+1}</td>
+                    <td className='username'>{usernames[rank]}</td>
+                    <td className='score'>{(scorePrefix === undefined ? '' : scorePrefix)+ scores[rank]}</td>
+                </tr>
+            ];
         }
-        else
-        {
-            if (infos.roundStarted)
-            {
+        return (
+            <Table className="scores">
+                <tbody>
+                    {body}
+                </tbody>
+            </Table>
+        );
+    }
+
+    gameInfo(infos) {
+        let overlay = "";
+        if (infos.gameStarted === false) {
+            overlay = <h1>Waiting for players</h1>
+            this.setState({displayOverlay : true,overlay:overlay})
+        } else {
+            if (infos.roundStarted) {
                 this.clearCanvas()
                 this.updateDraw(infos.draw_instr)
-            }
-            else
-            {
-                overlay = <p className="text_overlay">Le prochain round va bientôt commencer ! </p>
+            } else {
+                overlay = <h1>Le prochain round va bientôt commencer !</h1>
                 this.setState({displayOverlay : true,overlay:overlay})
             }
-
-
         }
     }
 

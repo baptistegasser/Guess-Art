@@ -18,9 +18,37 @@ canvas {
     align-items: center;
 }
 
-.text_overlay {
-    text-align: center;
-    font-size: 30px;
+#overlay > h1 {
+    margin-bottom: 80px;
+    font-size: 3vw;
+}
+
+@media screen and (min-width: 1201px) {
+    .scores {
+        width: 30%;
+        font-size: 25px;
+    }
+}
+@media screen and (max-width: 1200px) {
+    .scores {
+        width: 40%;
+        font-size: 20px;
+    }
+}
+
+.scores .rank {
+    text-align: right;
+    width:48%;
+    white-space:nowrap;
+}
+.scores .username {
+    width:2%;
+    white-space:nowrap;
+}
+.scores .score {
+    text-align: left;
+    width:48%;
+    white-space:nowrap;
 }
 
 #canvas-wrap {
