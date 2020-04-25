@@ -1,0 +1,25 @@
+.player > .row {
+    margin: 0;
+    padding: 0;
+    width: 100%
+}
+
+.player {
+    margin-bottom: 2%;
+    border-radius: 10px;
+    background-color: rgb(102, 204, 255);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.boss-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+}

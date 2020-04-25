@@ -9,7 +9,7 @@ class PlayerList extends RoomComponent {
         });
 
         return (
-            <div id="HboxPlayer">
+            <div>
                 {players}
             </div>
         );
