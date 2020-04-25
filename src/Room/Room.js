@@ -40,20 +40,19 @@ class Room extends RoomComponent {
         this.onRoundEnd   = this.onRoundEnd.bind(this);
         this.onGameInfo   = this.onGameInfo.bind(this);
         this.onGameStart  = this.onGameStart.bind(this);
-        this.onGameEnd    = this.onGameEnd.bind(this);
 
         this.chronoRef = React.createRef();
     }
 
     leaveRoom() {
         this.socket.emit("leave_room");
-        this.socket.disconnect();
+        if (this.socket.connected) this.socket.disconnect();
         this.setState({ leaving: true });
     }
 
     leaveOnError(errorMessage) {
         this.socket.emit("leave_room");
-        this.socket.disconnect();
+        if (this.socket.connected) this.socket.disconnect();
         this.setState({ leaving: true, errorMessage: errorMessage });
     }
 
@@ -62,9 +61,6 @@ class Room extends RoomComponent {
         this.setIsBoss(infos.boss === this.props.user);
         this.setState({ roundStarted: true, mysteryWord: infos.mysteryWord});
         this.chronoRef.current.startChrono(this.state.roundDuration);
-        // TODO si isBoss : infos.mystery_word -> contient le mot a dessiner
-        // TODO : start chronos et tout
-        //TODO caché overlay
     }
 
     onRoundEnd(infos) {
@@ -72,9 +68,7 @@ class Room extends RoomComponent {
         for (let player of infos.players) {
             this.setPlayerScore(player.username, player.score);
         }
-        // TODO stop chornos et tout
-        // TODO afficher l'overlay avec les cores gagné pour "infos.delay" secondes
-        // TODO increment score des joueurs
+        this.chronoRef.current.stopChrono();
     }
 
     onGameInfo(infos) {
@@ -88,25 +82,17 @@ class Room extends RoomComponent {
             this.setIsBoss(infos.boss === this.props.user);
             this.setState({ roundStarted: true, mysteryWord: infos.mysteryWord});
             this.chronoRef.current.startChrono(infos.timeRemaining);
-            // TODO afficher l'historique de dessins sur le canvas : infos.draw_instr
-            // TODO : start chronos : infos.timeRemaining -> temps restant en secondes
         }
     }
 
     onGameStart(infos) {
         this.resetPlayersScores();
-        // TODO stocké le temps du chrono pour chaque round : infos.roundDuration
-        // TODO affiché overlay "game start in x secondes" avec : info.delay -> delay avant start round
-    }
-
-    onGameEnd(infos) {
-        // TODO Stop tout ?
-        // TODO afficher scores finaux : infos.players
     }
 
     componentWillUnmount() {
         // Clear the room infos stored in redux
         this.resetRoomInfos();
+        if (this.socket.connected) this.socket.disconnect();
     }
 
     /**
@@ -126,7 +112,14 @@ class Room extends RoomComponent {
         this.socket.on('round_end',   (infos) => this.onRoundEnd(infos));
         this.socket.on('game_info',   (infos) => this.onGameInfo(infos));
         this.socket.on('game_start',  (infos) => this.onGameStart(infos));
-        this.socket.on('game_end',    (infos) => this.onGameEnd(infos));
+        this.socket.on('disconnect',  (reason) => {
+            if (reason === 'transport error') {
+                this.leaveOnError('Sorry, it seem the server crashed !');
+            } else {
+                console.error(reason);
+                this.leaveOnError('Something happened that closed your connection.');
+            }
+        });
     }
 
     render() {
