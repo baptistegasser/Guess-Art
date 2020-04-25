@@ -113,6 +113,8 @@ class RoomHandler {
     disconnectSocketRooms(socket) {
         try {
             const username = socket.request.session.user.username;
+            if (this._userToSocket.get(username) !== socket) return;
+
             const room = this._rooms.get(this._userToRoom.get(username));
             if (room !== undefined) {
                 room.removeClient(socket);

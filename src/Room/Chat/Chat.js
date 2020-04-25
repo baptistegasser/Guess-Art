@@ -24,7 +24,12 @@ class Chat extends RoomComponent {
     }
 
     displayMessage(data) {
-        this.chatRef.current.innerHTML += `<p><span class='username'>${data.username}</span> : <span class='message'>${data.message}</span></p>`;
+        let html = '';
+        if (data.username !== undefined && data.username.length > 0) {
+            html = `<p><span class='username'>${data.username}</span> : `;
+        }
+        html += `<span class='message'>${data.message}</span></p>`;
+        this.chatRef.current.innerHTML += html;
         this.scrollDown()
     }
 
@@ -57,10 +62,11 @@ class Chat extends RoomComponent {
 
     render() {
         let inputForm = (
-            <form onSubmit={this.onSubmit} >
-                <Form.Control ref={this.inputRef} type="text" id="input-msg" placeholder="Write here"/>
+            <form onSubmit={this.onSubmit}>
+                <Form.Control ref={this.inputRef} autoFocus={true} type="text" id="input-msg" placeholder="Write here"/>
             </form>
         );
+
         // if  we are the boss remove the chat form
         if (this.props.roomInfo.isBoss === true) {
             inputForm = '';
