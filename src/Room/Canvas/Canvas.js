@@ -8,16 +8,15 @@ import { Table } from "react-bootstrap";
 class Canvas extends RoomComponent {
     constructor(props) {
         super(props);
-        this.props.socket.on('draw_instr', (data) => this.updateDraw(data))
-        this.props.socket.on('round_start',(infos)=>this.roundStart(infos))
-        this.props.socket.on('round_end',(infos)=>this.roundEnd(infos))
-        this.props.socket.on('game_start',(infos)=>this.gameStart(infos))
-        this.props.socket.on('game_end',(infos)=>this.gameEnd(infos))
-        this.props.socket.on('game_info',(infos)=>this.gameInfo(infos))
+        props.socket.on('draw_instr',  (data) => this.updateDraw(data))
+        props.socket.on('round_start', (infos)=>this.roundStart(infos))
+        props.socket.on('round_end',   (infos)=>this.roundEnd(infos))
+        props.socket.on('game_start',  (infos)=>this.gameStart(infos))
+        props.socket.on('game_end',    (infos)=>this.gameEnd(infos))
+        props.socket.on('game_info',   (infos)=>this.gameInfo(infos))
         this.state = {displayOverlay : false,overlay:null}
         this.canvasWrapperRef = React.createRef();
         this.canvasRef = React.createRef();
-        /** @type {CanvasRenderingContext2D} */
         this.ctx = null;
         this.clicked = false;
         this.last_x = 0;
@@ -25,9 +24,12 @@ class Canvas extends RoomComponent {
         this.handler = this.handler.bind(this)
         this.updateDraw = this.updateDraw.bind(this)
         this.updateCanvasSize = this.updateCanvasSize.bind(this);
+
+        this.REF_WIDTH = 1250;
+        this.REF_HEIGHT = 735;
+        this.scale_x = 1.0;
+        this.scale_y = 1.0;
     }
-
-
 
     updateDraw(data) {
         for (let instr of data) {
@@ -294,6 +296,9 @@ class Canvas extends RoomComponent {
         this.canvasRef.current.height = this.canvasWrapperRef.current.clientHeight;
         // Set back the canvas content
         this.ctx.putImageData(imageData, 0, 0);
+        // Update the scale
+        this.scale_x = this.canvasRef.current.width/this.REF_WIDTH;
+        this.scale_y = this.canvasRef.current.height/this.REF_HEIGHT;
     }
 
     componentWillUnmount() {
