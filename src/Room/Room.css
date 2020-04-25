@@ -7,15 +7,13 @@
     padding: 0;
 }
 
-#topBar
-{
+#topBar {
     border-radius: 0px 0px 20px 20px;
     background-color:rgb(102, 204, 255);
     margin: 0;
     padding: 8px 0;
 }
 
-
 .main {
-    padding-bottom: 0;
+    padding: 30px 0 0 0 !important;
 }

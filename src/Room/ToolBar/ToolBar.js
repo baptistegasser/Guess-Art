@@ -88,7 +88,7 @@ class ToolBar extends RoomComponent {
 
         return (
             <Container>
-                <Row xs={1}>
+                <Row xs={1} className="p-0">
                     <Col>
                         {colorSelector}
                     </Col>

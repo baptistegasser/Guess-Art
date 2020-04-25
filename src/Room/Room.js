@@ -136,7 +136,7 @@ class Room extends RoomComponent {
 
         return (
             <Container fluid className="h-100 p-0">
-                <Row className='main' id='topBar-wrapper'>
+                <Row id='topBar-wrapper'>
                     <Col>
                         <Row id="topBar">
                             <Col xs={4}>
