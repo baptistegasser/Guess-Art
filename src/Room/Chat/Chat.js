@@ -6,29 +6,53 @@ import { Form } from "react-bootstrap";
 class Chat extends RoomComponent {
     constructor(props) {
         super(props);
+        this.state = {
+            autoScroll: true
+        }
+
         this.props.socket.on('user_msg', (data) => this.displayMessage(data));
         this.props.socket.on('guess_success', () => this.displayGuessSuccess());
 
         this.onSubmit = this.onSubmit.bind(this);
         this.displayMessage = this.displayMessage.bind(this);
         this.displayGuessSuccess = this.displayGuessSuccess.bind(this);
+        this.scrollDown = this.scrollDown.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
 
         this.chatRef = React.createRef();
         this.inputRef = React.createRef();
     }
 
     displayMessage(data) {
-        this.chatRef.current.innerHTML += "<p style='margin-bottom: 0'>" +data.username+">"+data.message +" </p>"
+        this.chatRef.current.innerHTML += "<p style='margin-bottom: 0'>" +data.username+">"+data.message +" </p>";
+        this.scrollDown()
     }
 
     displayGuessSuccess() {
-        this.chatRef.current.innerHTML += "<p style='margin-bottom: 0;color: green'> Tu as trouvé le mot! Bravo!</p>"
+        this.chatRef.current.innerHTML += "<p style='margin-bottom: 0;color: green'> Tu as trouvé le mot! Bravo!</p>";
+        this.scrollDown()
     }
 
     onSubmit(event) {
         event.preventDefault();
         this.props.socket.emit("guess", this.inputRef.current.value);
         this.inputRef.current.value = ''
+    }
+
+    scrollDown() {
+        if (this.state.autoScroll === true) {
+            this.chatRef.current.scrollTop = this.chatRef.current.scrollTopMax;
+        }
+    }
+
+    handleScroll(event) {
+        const div = event.target;
+        const remaining = div.scrollHeight - (div.scrollTop + div.clientHeight)
+        if (remaining === 0 && this.state.autoScroll !== true) {
+            this.setState({ autoScroll: true });
+        } else if (remaining > 0 && this.state.autoScroll !== false) {
+            this.setState({ autoScroll: false });
+        }
     }
 
     render() {
@@ -44,7 +68,7 @@ class Chat extends RoomComponent {
 
         return (
             <div id="chat-wrapper">
-                <div ref={this.chatRef} id="chat" />
+                <div ref={this.chatRef} onScroll={this.handleScroll} id="chat" />
                 {inputForm}
             </div>
         );

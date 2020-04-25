@@ -2,6 +2,13 @@
     border-radius: 10px;
     background-color: white;
     flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+#chat > p {
+    margin-bottom: 0;
+    color: black !important;
 }
 
 #chat-wrapper {
