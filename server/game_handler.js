@@ -216,7 +216,8 @@ class GameHandler {
         });
 
         this._room.broadcast('round_end', {
-            players: players
+            players: players,
+            word : this._mysteryWord
         });
 
         // Schedule next round

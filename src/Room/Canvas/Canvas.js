@@ -208,6 +208,7 @@ class Canvas extends RoomComponent {
         infos.players.forEach(player => {usernames.push(player.username); scores.push(player.score_gained)})
         const overlay = (
             <>
+                <h1>The word was : {infos.word}</h1>
                 <h1>Round ended</h1>
                 {this.createScoreTable(usernames, scores, '+')}
             </>

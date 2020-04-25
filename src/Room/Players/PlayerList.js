@@ -1,7 +1,6 @@
 import React from 'react';
 import Player from './Player';
 import {RoomComponent, connectRoomComponent} from '../RoomComponent';
-import {signOut} from "../../store/actions";
 
 class PlayerList extends RoomComponent {
     constructor(props) {
