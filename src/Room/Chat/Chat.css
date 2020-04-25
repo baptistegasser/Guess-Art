@@ -1,3 +1,9 @@
+#chat-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 #chat {
     border-radius: 10px;
     background-color: white;
@@ -11,10 +17,15 @@
     color: black !important;
 }
 
-#chat-wrapper {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+.username {
+    font-weight: bold;
+}
+
+.message {
+}
+
+#chat > p.success {
+    color: green !important;
 }
 
 #input-msg

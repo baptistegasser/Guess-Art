@@ -65,13 +65,13 @@ class Chrono extends React.Component {
                 break;
             default:
                 if (this.state.remaining >= 100) {
-                    className = 'chrono big-counter';
+                    className = 'big-counter';
                 } else {
-                    className = 'chrono small-counter';
+                    className = 'small-counter';
                 }
         }
         return (
-            <div className={className}>
+            <div className={'chrono ' + className}>
                 <b>{this.state.remaining}</b>
             </div>
         );

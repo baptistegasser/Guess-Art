@@ -126,7 +126,7 @@ class Room extends RoomComponent {
                 this.leaveOnError('Sorry, it seem the server crashed !');
             } else {
                 console.error(reason);
-                this.leav('Something happened that closed your connection.');
+                this.leaveOnError('Something happened that closed your connection.');
             }
         });
         window.onbeforeunload = () => {

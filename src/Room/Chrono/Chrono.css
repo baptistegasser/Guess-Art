@@ -22,4 +22,5 @@
 
 .hidden {
     visibility: hidden;
+    background-image: none;
 }

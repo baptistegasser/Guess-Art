@@ -24,12 +24,12 @@ class Chat extends RoomComponent {
     }
 
     displayMessage(data) {
-        this.chatRef.current.innerHTML += "<p style='margin-bottom: 0'>" +data.username+">"+data.message +" </p>";
+        this.chatRef.current.innerHTML += `<p><span class='username'>${data.username}</span> : <span class='message'>${data.message}</span></p>`;
         this.scrollDown()
     }
 
     displayGuessSuccess() {
-        this.chatRef.current.innerHTML += "<p style='margin-bottom: 0;color: green'> Tu as trouvé le mot! Bravo!</p>";
+        this.chatRef.current.innerHTML += "<p class='success'>You guessed the word !</p>";
         this.scrollDown()
     }
 
