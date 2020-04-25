@@ -169,6 +169,11 @@ class GameHandler {
     startRound() {
         this.initRound();
 
+        this._socketToUser.forEach((user, socket, map) => {
+            user.score = 0;
+            map.set(socket, user);
+        });
+
         const roundStartData = {
             boss: this._socketToUser.get(this._boss).username,
             mysteryWord: this._mysteryWord.replace(/[^\ ]/g,'-')
