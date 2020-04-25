@@ -127,9 +127,8 @@ class Canvas extends RoomComponent {
     draw_instr(instr) {
         const type = instr.type;
         const options = instr.options;
-        const pos = options.pos;
-        const convertREFtoX = x => x * (this.REF_WIDTH/this.canvasRef.current.width);
-        const convertREFtoY = y => y * (this.REF_HEIGHT/this.canvasRef.current.height);
+        const convertREFtoX = x => x * (this.canvasRef.current.width/this.REF_WIDTH);
+        const convertREFtoY = y => y * (this.canvasRef.current.height/this.REF_HEIGHT);
         const last_x = convertREFtoX(options.pos[0]);
         const last_y = convertREFtoY(options.pos[1]);
         const x = convertREFtoX(options.pos[2]);
@@ -163,8 +162,8 @@ class Canvas extends RoomComponent {
         const x = Math.trunc(event.offsetX)
         const y = Math.trunc(event.offsetY)
         const tool = this.props.roomInfo.tool;
-        const convertXToREF = x => x * (this.canvasRef.current.width/this.REF_WIDTH);
-        const convertYToREF = y => y * (this.canvasRef.current.height/this.REF_HEIGHT);
+        const convertXToREF = x => x * (this.REF_WIDTH/this.canvasRef.current.width);
+        const convertYToREF = y => y * (this.REF_HEIGHT/this.canvasRef.current.height);
         const pos = [convertXToREF(this.last_x), convertYToREF(this.last_y), convertXToREF(x), convertYToREF(y)];
 
         switch(event.type) {
