@@ -102,11 +102,7 @@ class GameHandler {
         // If the user guessed right tell him and adapt the message seen by other player
         if (this._scheduler.isRoundStarted() && message.toLowerCase() === this._mysteryWord) {
             this._userWhoGuessed.push(socket);
-            socket.emit('guess_success');
-
-            data.username = '';
-            data.message = `${this._socketToUser.get(socket).username} guessed the word !`;
-            this._room.broadcastFrom(socket, 'user_msg', data);
+            this._room.broadcast('guess_success',{username:this._socketToUser.get(socket).username})
 
             // If everybody guessed the word
             if (this._userWhoGuessed.length >= this._room.playerCount - 1) {

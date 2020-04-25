@@ -1,3 +1,4 @@
+
 import React from "react";
 import {Col, Row} from "react-bootstrap";
 import './Player.css';
@@ -11,7 +12,7 @@ class Player extends React.Component
             <Row className="h-100">
                 <Col className="h-100">
                     <div id='icon-container'>
-                    {this.props.boss === true ? bossImg : ''}
+                        {this.props.boss === true ? bossImg : ''}
                     </div>
                     <h4>{this.props.pseudo}</h4>
                     <p>Points : {this.props.score}</p>
