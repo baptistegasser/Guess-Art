@@ -67,6 +67,7 @@ class Room extends RoomComponent {
     }
 
     onRoundEnd(infos) {
+        this.setIsBoss(true);
         this.setState({ mysteryWord: undefined, roundStarted: false });
         for (let player of infos.players) {
             this.setPlayerScore(player.username, player.score);
@@ -81,7 +82,7 @@ class Room extends RoomComponent {
 
         // Actions if the game started
         if (infos.gameStarted === true) {
-            this.setBoss(infos.boss);
+            this.setIsBoss(infos.boss);
             this.setIsBoss(infos.boss === this.props.user);
             this.setState({ roundStarted: true, mysteryWord: infos.mysteryWord});
             this.chronoRef.current.startChrono(infos.timeRemaining);
@@ -94,6 +95,7 @@ class Room extends RoomComponent {
 
     onGameEnd(infos) {
         this.chronoRef.current.stopChrono();
+        this.setIsBoss(true);
         this.setState({ mysteryWord: undefined, roundStarted: false });
     }
 

@@ -16,6 +16,7 @@ class Chrono extends React.Component {
     }
 
     startChrono(duration) {
+        if (this.state.started) return;
         this.setState({ started: true, remaining: duration });
         this.chronoTimeout = setInterval(this.updateChrono, 1000);
     }
@@ -59,16 +60,14 @@ class Chrono extends React.Component {
         }
 
         let className = '';
-        switch(this.props.displayStyle) {
-            case 'hidden':
-                className = 'hidden';
-                break;
-            default:
-                if (this.state.remaining >= 100) {
-                    className = 'big-counter';
-                } else {
-                    className = 'small-counter';
-                }
+        if (this.props.displayStyle === 'hidden' || this.state.remaining < 0 || isNaN(this.state.remaining)) {
+            className = 'hidden';
+        } else {
+            if (this.state.remaining >= 100) {
+                className = 'big-counter';
+            } else {
+                className = 'small-counter';
+            }
         }
         return (
             <div className={'chrono ' + className}>
