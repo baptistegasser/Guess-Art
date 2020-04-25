@@ -85,6 +85,9 @@ class GameHandler {
         const user = this._socketToUser.get(oldSocket);
         this._socketToUser.set(newSocket, user);
         this._socketToUser.delete(oldSocket);
+        if (this._userWhoGuessed.includes(oldSocket)) {
+            this._userWhoGuessed[this._userWhoGuessed.indexOf(oldSocket)] = newSocket;
+        }
     }
 
     submitGuess(socket, message) {
