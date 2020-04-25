@@ -261,9 +261,16 @@ class Canvas extends RoomComponent {
     }
 
     updateCanvasSize() {
+        // Save the canvas content
         const imageData = this.ctx.getImageData(0,0,this.canvasRef.current.width, this.canvasRef.current.height);
+        // Reduce the canvas so, the canvasWrapper will now resize to it's css without the constrain of the canvas,
+        // usefull when reducing the size, else the div won't reduce because of the canvas
+        this.canvasRef.current.width = 10;
+        this.canvasRef.current.height = 10;
+        // Set the canvas size to the div
         this.canvasRef.current.width = this.canvasWrapperRef.current.clientWidth;
         this.canvasRef.current.height = this.canvasWrapperRef.current.clientHeight;
+        // Set back the canvas content
         this.ctx.putImageData(imageData, 0, 0);
     }
 
