@@ -165,7 +165,7 @@ class Room extends RoomComponent {
                 </Row>
                 <Row className='main h-100'>
                     <Col xs={2} style={{height: '80%'}}>
-                        <PlayerList/>
+                        <PlayerList socket={this.socket}/>
                     </Col>
                     <Col xs={8} style={{height: '80%'}}>
                         <Canvas socket={this.socket}/>

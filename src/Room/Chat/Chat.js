@@ -1,7 +1,14 @@
 import React from "react";
-import {RoomComponent, connectRoomComponent} from '../RoomComponent';
+import { RoomComponent, extendedRoomConnect } from '../RoomComponent';
 import './Chat.css';
 import { Form } from "react-bootstrap";
+
+
+const mapStateToProps = state => (
+    {
+        user: state.user
+    }
+)
 
 class Chat extends RoomComponent {
     constructor(props) {
@@ -11,7 +18,7 @@ class Chat extends RoomComponent {
         }
 
         this.props.socket.on('user_msg', (data) => this.displayMessage(data));
-        this.props.socket.on('guess_success', () => this.displayGuessSuccess());
+        this.props.socket.on('guess_success', (data) => this.displayGuessSuccess(data));
 
         this.onSubmit = this.onSubmit.bind(this);
         this.displayMessage = this.displayMessage.bind(this);
@@ -33,8 +40,11 @@ class Chat extends RoomComponent {
         this.scrollDown()
     }
 
-    displayGuessSuccess() {
-        this.chatRef.current.innerHTML += "<p class='success'>You guessed the word !</p>";
+    displayGuessSuccess(data) {
+        if (data.username === this.props.user)
+            this.chatRef.current.innerHTML += "<p class='success'>You guessed the word !</p>";
+        else
+            this.chatRef.current.innerHTML += "<p class='success'> "+data.username+" guessed the word !</p>";
         this.scrollDown()
     }
 
@@ -81,4 +91,4 @@ class Chat extends RoomComponent {
     }
 }
 
-export default connectRoomComponent(Chat);
+export default extendedRoomConnect(mapStateToProps,null, Chat);
