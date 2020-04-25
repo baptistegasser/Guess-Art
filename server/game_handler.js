@@ -159,6 +159,10 @@ class GameHandler {
             delay: this.delayBeforeFirstRound,
             roundDuration: this._room.roundDuration
         });
+        this._socketToUser.forEach((user, socket, map) => {
+            user.score = 0;
+            map.set(socket, user);
+        });
         this._remainingRounds = this._room.roundCount;
 
         this._scheduler.scheduleRoundStart(this.delayBeforeFirstRound);
@@ -167,11 +171,6 @@ class GameHandler {
 
     startRound() {
         this.initRound();
-
-        this._socketToUser.forEach((user, socket, map) => {
-            user.score = 0;
-            map.set(socket, user);
-        });
 
         const roundStartData = {
             boss: this._socketToUser.get(this._boss).username,
