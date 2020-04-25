@@ -18,6 +18,10 @@ canvas {
     align-items: center;
 }
 
+.scores{
+    color: white
+}
+
 #overlay > h1 {
     margin-bottom: 80px;
     font-size: 3vw;

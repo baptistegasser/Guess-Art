@@ -47,6 +47,8 @@ class Canvas extends RoomComponent {
     }
 
     fillCanvas(x, y, color) {
+        x = Math.floor(x)
+        y = Math.floor(y)
         const width = this.ctx.canvas.width;
         const height = this.ctx.canvas.height;
         let imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
