@@ -39,3 +39,12 @@
     height: 100%;
     position: absolute;
 }
+#normal
+{
+    background-color: rgb(102, 204, 255);
+}
+#guessed
+{
+    background-color: rgb(0, 153, 51);
+}
+
