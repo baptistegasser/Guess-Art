@@ -1,6 +1,6 @@
 const GameScheduler = require('./gameScheduler');
 
-const words_list = ['Box', 'Brush', 'Calendar', 'CD Player', 'Comb', 'Computer', 'Roll of Film', 'Folder', 'Lipstick', 'Mirror', 'Notebook', 'Notepad', 'Pencil', 'Perfume', 'Radio cassette player']
+const words_list = ['diary', 'bottle', 'water', 'packet', 'chewing gum', 'tissue', 'glasses', 'watch', 'sweet', 'photo', 'camera', 'stamp', 'postcard', 'dictionary', 'coin', 'brush', 'credit card', 'identity card', 'key', 'mobile phone', 'phone', 'card', 'wallet', 'button', 'umbrella', 'pen', 'pencil', 'lighter', 'cigarette', 'match', 'lipstick', 'purse', 'case', 'clip', 'scissors', 'rubber', 'file', 'banknote', 'passport', 'driving licence', 'comb', 'notebook', 'laptop', 'rubbish', 'mirror', 'painkiller', 'sunscreen', 'toothbrush', 'headphone', 'player', 'battery', 'light bulb', 'bin', 'newspaper', 'magazine', 'alarm clock'];
 
 class GameHandler {
     constructor(room) {
@@ -229,8 +229,8 @@ class GameHandler {
     }
 
     calclScoreGain(socket) {
-        const chart = [100, 80, 60, 50];
-        const chart_boss = 10;
+        const chart = [50, 35, 20, 10];
+        const chart_boss = Math.floor(50/this._room.playerCount);
 
         if (this.isBoss(socket)) {
             return chart_boss * this._userWhoGuessed.length;
