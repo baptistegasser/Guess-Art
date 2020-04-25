@@ -128,13 +128,19 @@ class Canvas extends RoomComponent {
         const type = instr.type;
         const options = instr.options;
         const pos = options.pos;
+        const convertREFtoX = x => x * (this.REF_WIDTH/this.canvasRef.current.width);
+        const convertREFtoY = y => y * (this.REF_HEIGHT/this.canvasRef.current.height);
+        const last_x = convertREFtoX(options.pos[0]);
+        const last_y = convertREFtoY(options.pos[1]);
+        const x = convertREFtoX(options.pos[2]);
+        const y = convertREFtoY(options.pos[3]);
         switch(type) {
             case DrawInstrFactory.types.pencil:
-                return this.draw_line(pos[0], pos[1], pos[2], pos[3], options.color, options.width);
+                return this.draw_line(last_x, last_y, x, y, options.color, options.width);
             case DrawInstrFactory.types.eraser:
-                return this.draw_line(pos[0], pos[1], pos[2], pos[3], 'white', options.width);
+                return this.draw_line(last_x, last_y, x, y, 'white', options.width);
             case DrawInstrFactory.types.bucket:
-                return this.fillCanvas(pos[2], pos[3], options.color);
+                return this.fillCanvas(x, y, options.color);
             default:
                 return console.error('Unsupported drawing instruction');
         }
@@ -157,7 +163,9 @@ class Canvas extends RoomComponent {
         const x = Math.trunc(event.offsetX)
         const y = Math.trunc(event.offsetY)
         const tool = this.props.roomInfo.tool;
-        const pos = [this.last_x, this.last_y, x, y];
+        const convertXToREF = x => x * (this.canvasRef.current.width/this.REF_WIDTH);
+        const convertYToREF = y => y * (this.canvasRef.current.height/this.REF_HEIGHT);
+        const pos = [convertXToREF(this.last_x), convertYToREF(this.last_y), convertXToREF(x), convertYToREF(y)];
 
         switch(event.type) {
             case "mousedown":
