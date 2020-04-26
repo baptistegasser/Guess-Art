@@ -79,7 +79,7 @@ class RoomHandler {
             const oldRoomID = this._userToRoom.get(username);
 
             // Does the username is already existing but with a different socket ?
-            if (oldSocket !== socket) {
+            if (oldSocket !== undefined && oldSocket !== socket) {
                 this._userToSocket.set(username, socket);
                 // If the user is in a room, update the room
                 if (oldRoomID !== undefined) {
