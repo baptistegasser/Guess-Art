@@ -85,6 +85,12 @@ class RoomHandler {
                 if (oldRoomID !== undefined) {
                     this._rooms.get(this._userToRoom.get(username)).updateClient(oldSocket, socket);
                 }
+                oldSocket.disconnect();
+            }
+
+            // Is trying to go back to is room ?
+            if (oldRoomID === id) {
+                return;
             }
 
             // Kick the user from the old room if any
