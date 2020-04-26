@@ -19,6 +19,7 @@ class GameScheduler {
             started: false,
             startScheduled: false,
             startTimeout: undefined,
+            startTimestamp: undefined,
             endScheduled: false,
             endTimeout: undefined,
         }
@@ -94,6 +95,7 @@ class GameScheduler {
             this._round.started        = true;
             this._round.startScheduled = false;
             this._round.startTimeout   = undefined;
+            this._round.startTimestamp = (new Date()).getTime();
             this._gameHandler.startRound();
         };
         if (delay <= 0) {
@@ -113,6 +115,7 @@ class GameScheduler {
             this._round.started      = false;
             this._round.endScheduled = false;
             this._round.endTimeout   = undefined;
+            this._round.startTimestamp = undefined;
             this._gameHandler.endRound();
         };
         if (delay <= 0) {
@@ -180,6 +183,10 @@ class GameScheduler {
 
     isRoundStarted() {
         return this._round.started;
+    }
+
+    getLapsedSeconds() {
+        return Math.round(this._round.startTimestamp === undefined ? 0 : ((new Date()).getTime() - this._round.startTimestamp) / 1000);
     }
 }
 

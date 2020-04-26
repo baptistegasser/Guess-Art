@@ -17,7 +17,6 @@ class GameHandler {
         this._mysteryWord = undefined;
         this._drawingInstrHistory = [];
         this._remainingRounds = this._room.roundCount;
-        this._roundTimestamp = undefined;
 
         this.delayBetweenRound = 5;
         this.delayBetweenGames = 10;
@@ -178,7 +177,6 @@ class GameHandler {
         };
 
         this._remainingRounds -= 1;
-        this._roundTimestamp = (new Date()).getTime();
 
         this._room.broadcastFrom(this._boss, 'round_start', roundStartData);
         this._boss.emit('round_start', { ...roundStartData, mysteryWord: this._mysteryWord });
@@ -203,8 +201,6 @@ class GameHandler {
 
     endRound() {
         this.log(`Round ${this._remainingRounds} ended`);
-
-        this._roundTimestamp = undefined;
 
         let players = [];
         this._socketToUser.forEach((user, socket, map) => {
@@ -281,7 +277,7 @@ class GameHandler {
         // If round is still playing, send current boss
         if (this._scheduler.isRoundStarted()) {
             infos.boss = this._socketToUser.get(this._boss).username;
-            infos.timeRemaining = ((new Date()).getTime() - this._roundTimestamp) / 1000;
+            infos.timeRemaining = this._room.roundDuration - this._scheduler.getLapsedSeconds();
         }
 
         return infos;
