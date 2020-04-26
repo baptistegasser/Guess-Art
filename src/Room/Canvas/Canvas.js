@@ -211,7 +211,7 @@ class Canvas extends RoomComponent {
         const overlay = (
             <>
                 <h1>The word was : {infos.word}</h1>
-                <h1>Round ended</h1>
+                <h1>Round {infos.numberRound} ended</h1>
                 {this.createScoreTable(usernames, scores, '+')}
             </>
         );

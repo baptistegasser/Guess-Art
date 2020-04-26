@@ -217,7 +217,8 @@ class GameHandler {
 
         this._room.broadcast('round_end', {
             players: players,
-            word : this._mysteryWord
+            word : this._mysteryWord,
+            numberRound : this._room.roundCount - this._remainingRounds
         });
 
         // Schedule next round
