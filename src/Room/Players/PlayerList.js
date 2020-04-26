@@ -16,7 +16,7 @@ class PlayerList extends RoomComponent {
     displayGuessSuccess(data)
     {
         this.state.listPlayerWhoGuess.push(data.username)
-        console.log(this.state.listPlayerWhoGuess)
+        this.setState({listPlayerWhoGuess : this.state.listPlayerWhoGuess})
     }
 
     resetList()
