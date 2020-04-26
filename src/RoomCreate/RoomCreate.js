@@ -1,8 +1,16 @@
 import React from 'react';
-import { Form, Table } from "react-bootstrap";
+import { Form, Table, Button } from "react-bootstrap";
 import { Link, Redirect } from 'react-router-dom';
 import ConnectForm from '../Connection/ConnectForm';
 import './RoomCreate.css';
+import {signOut} from '../store/actions';
+import { connect } from 'react-redux';
+
+const mapDispatchToProps = () => {
+    return {
+        signOut
+    };
+};
 
 class RoomCreate extends React.Component {
     constructor(props) {
@@ -134,6 +142,11 @@ class RoomCreate extends React.Component {
 
         return (
             <ConnectForm onSubmit={this.checkAndSubmit} submit_text='Create room' error_msg={this.state.errorMessage}>
+                <div style={{width: '100%', textAlign: 'center', marginBottom: '20px'}}>
+                    <Link to='/'>
+                        <Button className="bg-error" onClick={() => {this.props.signOut(); fetch('/api/v1/user/signout')}}>Disconnect</Button>
+                    </Link>
+                </div>
                 {this.state.room_list.length > 0 ?
                 <div className="table-container">
                     <Table>
@@ -185,4 +198,4 @@ class RoomCreate extends React.Component {
     }
 }
 
-export default RoomCreate;
+export default connect(null, mapDispatchToProps())(RoomCreate);
