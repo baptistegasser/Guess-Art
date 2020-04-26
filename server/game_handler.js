@@ -280,7 +280,7 @@ class GameHandler {
         // If round is still playing, send current boss
         if (this._scheduler.isRoundStarted()) {
             infos.boss = this._socketToUser.get(this._boss).username;
-            infos.timeRemaining = ((new Date()).getTime() - this._roundTimestamp) * 1000;
+            infos.timeRemaining = ((new Date()).getTime() - this._roundTimestamp) / 1000;
         }
 
         return infos;
