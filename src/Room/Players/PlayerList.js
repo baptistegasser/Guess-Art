@@ -22,7 +22,6 @@ class PlayerList extends RoomComponent {
     resetList()
     {
         this.setState({listPlayerWhoGuess:[]})
-        console.log(this.state.listPlayerWhoGuess)
     }
 
     render() {
