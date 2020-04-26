@@ -35,9 +35,10 @@ class Canvas extends RoomComponent {
         for (let instr of data) {
             switch(instr.type) {
                 case DrawInstrFactory.types.trash:
-                    return this.clearCanvas();
+                    this.clearCanvas();
+                    break;
                 default:
-                    return this.draw_instr(instr);
+                    this.draw_instr(instr);
             }
         }
     }
